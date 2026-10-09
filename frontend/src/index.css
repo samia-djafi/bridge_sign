@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #FAF8F5;
+  --surface: #FFFFFF;
+  --surface-2: #F3F0EB;
+  --border: #E7E2DA;
+  --border-strong: #CFC8BC;
+  --text: #1C1F23;
+  --muted: #5B6470;
+  --primary: #0D9488;
+  --primary-strong: #0F766E;
+  --primary-hover: #115E59;
+  --primary-soft: #F0FDFA;
+  --primary-soft-2: #CCFBF1;
+  --success: #15803D;
+  --warning: #B45309;
+  --error: #B91C1C;
+  --info: #0F766E;
+  --overlay: rgba(28, 31, 35, 0.45);
+}
+
+[data-theme="dark"] {
+  --bg: #0F1315;
+  --surface: #171C1F;
+  --surface-2: #1E2428;
+  --border: #2B3338;
+  --border-strong: #3A444A;
+  --text: #ECEFF1;
+  --muted: #9AA5AE;
+  --primary: #2DD4BF;
+  --primary-strong: #14B8A6;
+  --primary-hover: #2DD4BF;
+  --primary-soft: #0E2A27;
+  --primary-soft-2: #134E48;
+  --success: #4ADE80;
+  --warning: #FBBF24;
+  --error: #F87171;
+  --info: #14B8A6;
+  --overlay: rgba(0, 0, 0, 0.65);
+}
+
+[data-theme="hc"] {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-2: #F0F0F0;
+  --border: #000000;
+  --border-strong: #000000;
+  --text: #000000;
+  --muted: #1F2933;
+  --primary: #0B5D56;
+  --primary-strong: #0B5D56;
+  --primary-hover: #083E39;
+  --primary-soft: #E6F7F5;
+  --primary-soft-2: #D1F0EC;
+  --success: #0B6B2B;
+  --warning: #8F3E00;
+  --error: #990000;
+  --info: #0B5D56;
+  --overlay: rgba(0, 0, 0, 0.75);
+}
+
+[data-theme="hc"] * {
+  border-width: max(1px, 2px);
+}
+
+[data-theme="hc"] *:focus-visible {
+  outline: 3px solid #000000 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 5px #FFFFFF !important;
+}
+
+[data-text-scale="100"] {
+  font-size: 100%;
+}
+[data-text-scale="125"] {
+  font-size: 125%;
+}
+[data-text-scale="150"] {
+  font-size: 150%;
+}
+
+[dir="rtl"] {
+  font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, sans-serif;
+}
+
+[dir="ltr"] {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+[data-reduced-motion="on"] *,
+[data-reduced-motion="on"] ::before,
+[data-reduced-motion="on"] ::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Tabular nums utility */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Base resets for PWA */
+html, body {
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
