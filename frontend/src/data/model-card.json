@@ -1,0 +1,18 @@
+{
+  "name": "LSA-Sequence-TCN-Lite",
+  "version": "0.1.0-mvp",
+  "architecture": "Temporal Sequence Classifier (MediaPipe HandLandmarker + Lite BiLSTM)",
+  "input": "Hand landmarks (2 × 21 × 3) + Selected upper-body pose landmarks (4 points)",
+  "output": "Algerian Sign Language (LSA) isolated & phrase gloss classes",
+  "vocabularySize": 54,
+  "languageLayer": ["fr", "ar", "en"],
+  "evaluation": null,
+  "license": "Apache-2.0",
+  "intendedUse": "Assistive communication tool in emergency and healthcare settings with strict human confirmation before transmission.",
+  "knownLimitations": [
+    "Controlled lighting conditions required (avoids strong backlighting)",
+    "Signing must remain within camera view frame (no occlusion)",
+    "Co-articulation variation between individual signers",
+    "Current MVP models do not parse non-manual facial markers or mouthing"
+  ]
+}
