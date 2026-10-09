@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" fill="none" role="img" aria-label="LSA Bridge Logo">
+  <!-- Bridge Arcs connecting Hand and Bubble -->
+  <g stroke="#0F766E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Hand silhouette icon on the left -->
+    <path d="M16 38V28a3 3 0 0 1 6 0v10" />
+    <path d="M22 28V24a3 3 0 0 1 6 0v14" />
+    <path d="M28 24V22a3 3 0 0 1 6 0v16" />
+    <path d="M34 26a3 3 0 0 1 6 0v12c0 6-4 10-10 10H24c-5 0-9-4-9-9v-6" />
+    <path d="M16 33l-3 3a3 3 0 0 0 4 4" />
+    <!-- Bridge Arch 1 (Top) -->
+    <path d="M36 24 C 44 14, 52 14, 60 26" />
+    <!-- Bridge Arch 2 (Bottom) -->
+    <path d="M32 36 C 42 28, 50 28, 58 38" />
+    <!-- Speech bubble on the right -->
+    <path d="M56 26a10 10 0 0 1 14-2c5 3 6 9 3 13l2 5-6-2a10 10 0 0 1-13-14z" />
+  </g>
+  <!-- Wordmark -->
+  <text x="82" y="37" font-family="'Inter', system-ui, sans-serif" font-size="22" font-weight="600" fill="#1C1F23" letter-spacing="-0.02em">
+    LSA <tspan fill="#0F766E">Bridge</tspan>
+  </text>
+</svg>

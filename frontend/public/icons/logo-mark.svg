@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="LSA Bridge Mark">
+  <rect width="64" height="64" rx="14" fill="#0F766E"/>
+  <g stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Hand silhouette icon on the left -->
+    <path d="M12 36V28a2.5 2.5 0 0 1 5 0v8" />
+    <path d="M17 28V24a2.5 2.5 0 0 1 5 0v12" />
+    <path d="M22 24V22a2.5 2.5 0 0 1 5 0v14" />
+    <path d="M27 25a2.5 2.5 0 0 1 5 0v10c0 5-3 8-8 8H20c-4 0-8-4-8-8v-4" />
+    <!-- Bridge Arch 1 (Top) -->
+    <path d="M29 23 C 35 15, 41 15, 47 25" />
+    <!-- Bridge Arch 2 (Bottom) -->
+    <path d="M26 35 C 33 28, 39 28, 46 36" />
+    <!-- Speech bubble on the right -->
+    <path d="M44 26a8 8 0 0 1 11-1c4 2 5 7 2 10l2 4-5-1a8 8 0 0 1-10-11z" />
+  </g>
+</svg>
