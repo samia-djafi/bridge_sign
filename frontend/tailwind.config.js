@@ -21,6 +21,7 @@ export default {
           'primary-hover': 'var(--primary-hover)',
           'primary-soft': 'var(--primary-soft)',
           'primary-soft-2': 'var(--primary-soft-2)',
+          secondary: 'var(--secondary)',
           success: 'var(--success)',
           warning: 'var(--warning)',
           error: 'var(--error)',
