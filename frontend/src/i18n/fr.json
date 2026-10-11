@@ -1,7 +1,7 @@
 {
   "app": {
-    "name": "LSA Bridge",
-    "tagline": "Deux modalités. Une seule conversation.",
+    "name": "BridgeSign",
+    "tagline": "Chaque main a une voix.",
     "description": "Outil de communication bidirectionnel entre la Langue des Signes Algérienne (LSA) et le français, l'arabe et l'anglais parlés ou écrits.",
     "openApp": "Ouvrir l'application",
     "installApp": "Installer l'application",
@@ -14,6 +14,7 @@
     "signToLang": "LSA → Langue",
     "langToSign": "Langue → LSA",
     "phrasebook": "Phrases rapides",
+    "realStories": "Témoignages",
     "history": "Historique",
     "diagnostics": "Diagnostic IA",
     "settings": "Paramètres",
@@ -146,7 +147,7 @@
     "back": "Retour",
     "continue": "Continuer",
     "finish": "Commencer",
-    "welcomeTitle": "Bienvenue sur LSA Bridge",
+    "welcomeTitle": "Bienvenue sur BridgeSign",
     "welcomeSubtitle": "Une passerelle de communication entre la Langue des Signes Algérienne et la parole.",
     "roleTitle": "Comment participez-vous à la conversation ?",
     "roleSign": "J'utilise la langue des signes",
@@ -168,7 +169,7 @@
     "granted": "Autorisé",
     "blocked": "Bloqué",
     "notRequested": "Non demandé",
-    "limitationsAck": "Je comprends que LSA Bridge est un outil expérimental avec un vocabulaire défini et ne remplace pas un interprète humain certifié."
+    "limitationsAck": "Je comprends que BridgeSign est un outil expérimental avec un vocabulaire défini et ne remplace pas un interprète humain certifié."
   },
   "newConv": {
     "title": "Nouvelle conversation",
@@ -312,15 +313,25 @@
     "checkUpdates": "Vérifier les mises à jour"
   },
   "about": {
-    "title": "À propos de LSA Bridge",
-    "whyTitle": "Pourquoi LSA Bridge ?",
-    "whyText": "En Algérie, les personnes sourdes se heurtent quotidiennement à des barrières de communication lors de consultations médicales ou de démarches administratives en l'absence d'interprète qualifié. LSA Bridge sert de pont d'appoint d'urgence.",
+    "title": "À propos de BridgeSign",
+    "whyTitle": "Pourquoi BridgeSign ?",
+    "whyText": "En Algérie, les personnes sourdes se heurtent quotidiennement à des barrières de communication lors de consultations médicales ou de démarches administratives en l'absence d'interprète qualifié. BridgeSign sert de pont d'appoint d'urgence.",
     "howItWorksTitle": "Comment ça fonctionne ?",
     "signToLangStep": "1. Détection caméra → 2. Points squelettiques → 3. Analyse temporelle → 4. Glose LSA → 5. Synthèse phrase",
     "langToSignStep": "1. Texte/Voix → 2. Normalisation → 3. Appariement glose → 4. Lecture clips LSA",
     "limitationsTitle": "Ce que vous devez savoir",
     "version": "Version {{version}}",
-    "disclaimer": "LSA Bridge est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical."
+    "disclaimer": "BridgeSign est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical."
+  },
+  "stories": {
+    "title": "Témoignages & Récits vécus",
+    "subtitle": "Récits authentiques partagés par des personnes sourdes, malentendantes et des professionnels de santé en Algérie.",
+    "transparencyNotice": "BridgeSign recueille et publie uniquement des retours d'expérience réels et vérifiés avec le consentement de leurs auteurs. Aucun témoignage fictif n'est toléré.",
+    "shareCta": "Vous utilisez BridgeSign ? Partagez votre expérience",
+    "feedbackTitle": "Proposer un retour ou un témoignage",
+    "feedbackDesc": "Vos retours nous aident à enrichir le vocabulaire LSA et à améliorer l'accueil en santé.",
+    "verifiedCommunity": "Communauté sourde d'Algérie",
+    "healthcarePartner": "Professionnel de santé"
   },
   "err": {
     "outOfVocab": "Cette phrase est en dehors du vocabulaire actuel du MVP.",
@@ -345,7 +356,7 @@
     "offline": "Hors ligne",
     "savedLocal": "Enregistré sur cet appareil"
   },
-  "disclaimer": "LSA Bridge est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical.",
+  "disclaimer": "BridgeSign est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical.",
   "privacy": {
     "local": "Enregistré sur cet appareil",
     "helpTitle": "Confidentialité & Aide",

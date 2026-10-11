@@ -1,7 +1,7 @@
 {
   "app": {
-    "name": "LSA Bridge",
-    "tagline": "Two modalities. One conversation.",
+    "name": "BridgeSign",
+    "tagline": "Every hand has a voice.",
     "description": "Bidirectional communication tool between Algerian Sign Language (LSA) and spoken/written French, Arabic, and English.",
     "openApp": "Open app",
     "installApp": "Install app",
@@ -14,6 +14,7 @@
     "signToLang": "Sign → Language",
     "langToSign": "Language → Sign",
     "phrasebook": "Phrasebook",
+    "realStories": "Real Stories",
     "history": "History",
     "diagnostics": "AI Diagnostics",
     "settings": "Settings",
@@ -146,7 +147,7 @@
     "back": "Back",
     "continue": "Continue",
     "finish": "Finish",
-    "welcomeTitle": "Welcome to LSA Bridge",
+    "welcomeTitle": "Welcome to BridgeSign",
     "welcomeSubtitle": "A communication bridge between Algerian Sign Language and spoken language.",
     "roleTitle": "How do you participate in the conversation?",
     "roleSign": "I use sign language",
@@ -168,7 +169,7 @@
     "granted": "Granted",
     "blocked": "Blocked",
     "notRequested": "Not requested",
-    "limitationsAck": "I understand that LSA Bridge is an experimental tool with a defined vocabulary and does not replace a certified human interpreter."
+    "limitationsAck": "I understand that BridgeSign is an experimental tool with a defined vocabulary and does not replace a certified human interpreter."
   },
   "newConv": {
     "title": "New conversation",
@@ -312,15 +313,25 @@
     "checkUpdates": "Check for updates"
   },
   "about": {
-    "title": "About LSA Bridge",
-    "whyTitle": "Why LSA Bridge?",
-    "whyText": "In Algeria, Deaf people face frequent communication barriers at pharmacies, clinics, and administrative offices without a certified interpreter. LSA Bridge serves as an immediate communication bridge.",
+    "title": "About BridgeSign",
+    "whyTitle": "Why BridgeSign?",
+    "whyText": "In Algeria, Deaf people face frequent communication barriers at pharmacies, clinics, and administrative offices without a certified interpreter. BridgeSign serves as an immediate communication bridge.",
     "howItWorksTitle": "How does it work?",
     "signToLangStep": "1. Camera → 2. Hand & pose landmarks → 3. Temporal sequence → 4. LSA gloss → 5. Spoken sentence",
     "langToSignStep": "1. Text/Speech → 2. Normalization → 3. Gloss sequence → 4. Prerecorded sign clips",
     "limitationsTitle": "What you should know",
     "version": "Version {{version}}",
-    "disclaimer": "LSA Bridge is a communication assistance tool. It does not replace professional interpreters and does not provide medical diagnosis or advice."
+    "disclaimer": "BridgeSign is a communication assistance tool. It does not replace professional interpreters and does not provide medical diagnosis or advice."
+  },
+  "stories": {
+    "title": "Real Stories & Community Voices",
+    "subtitle": "Authentic experiences shared by Deaf individuals, hard-of-hearing users, and healthcare providers in Algeria.",
+    "transparencyNotice": "BridgeSign only shares verified, real-world experiences with full consent from participants. No placeholder or simulated testimonials are ever used.",
+    "shareCta": "Are you using BridgeSign? Share your experience",
+    "feedbackTitle": "Submit your experience or feedback",
+    "feedbackDesc": "Your feedback guides our LSA vocabulary additions and healthcare accessibility improvements.",
+    "verifiedCommunity": "Deaf Community in Algeria",
+    "healthcarePartner": "Healthcare Professional"
   },
   "err": {
     "outOfVocab": "This phrase is outside the current MVP vocabulary.",
@@ -345,7 +356,7 @@
     "offline": "Offline",
     "savedLocal": "Saved on this device"
   },
-  "disclaimer": "LSA Bridge is a communication assistance tool. It does not replace professional interpreters and does not provide medical diagnosis or advice.",
+  "disclaimer": "BridgeSign is a communication assistance tool. It does not replace professional interpreters and does not provide medical diagnosis or advice.",
   "privacy": {
     "local": "Saved on this device",
     "helpTitle": "Privacy & Help",
