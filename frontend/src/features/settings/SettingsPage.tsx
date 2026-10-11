@@ -75,7 +75,7 @@ export const SettingsPage: React.FC = () => {
       settings,
       sessions: list,
     };
-    downloadFile('lsa_bridge_full_backup.json', JSON.stringify(payload, null, 2), 'application/json');
+    downloadFile('bridgesign_full_backup.json', JSON.stringify(payload, null, 2), 'application/json');
   };
 
   return (

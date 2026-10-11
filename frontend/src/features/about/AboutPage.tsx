@@ -19,23 +19,23 @@ export const AboutPage: React.FC = () => {
             <img src="/icons/logo-mark.svg" alt="" className="w-9 h-9 invert" />
           </div>
           <div>
-            <h2 className="text-2xl font-extrabold text-app-text">LSA Bridge</h2>
+            <h2 className="text-2xl font-extrabold text-app-text">BridgeSign</h2>
             <p className="text-sm font-semibold text-app-primary-strong">
-              {t('app.tagline', 'Deux modalités. Une seule conversation.')}
+              {t('app.tagline', 'Chaque main a une voix.')}
             </p>
           </div>
         </div>
 
-        {/* 1. Why LSA Bridge */}
+        {/* 1. Why BridgeSign */}
         <Card p={24} className="space-y-3">
           <h3 className="text-lg font-bold text-app-text flex items-center gap-2">
             <HeartHandshake className="w-5 h-5 text-app-primary-strong" />
-            <span>{t('about.whyTitle', 'Pourquoi LSA Bridge ?')}</span>
+            <span>{t('about.whyTitle', 'Pourquoi BridgeSign ?')}</span>
           </h3>
           <p className="text-sm text-app-muted leading-relaxed">
             {t(
               'about.whyText',
-              "En Algérie, les personnes sourdes se heurtent quotidiennement à des barrières de communication lors de consultations médicales ou de démarches administratives en l'absence d'interprète qualifié. LSA Bridge sert de pont d'appoint d'urgence."
+              "En Algérie, les personnes sourdes se heurtent quotidiennement à des barrières de communication lors de consultations médicales ou de démarches administratives en l'absence d'interprète qualifié. BridgeSign sert de pont d'appoint d'urgence."
             )}
           </p>
         </Card>
@@ -79,7 +79,7 @@ export const AboutPage: React.FC = () => {
               essentiels pour la santé et la vie quotidienne.
             </li>
             <li>
-              <strong>Assistance à la communication :</strong> LSA Bridge ne remplace jamais un
+              <strong>Assistance à la communication :</strong> BridgeSign ne remplace jamais un
               interprète assermenté.
             </li>
             <li>

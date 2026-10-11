@@ -27,6 +27,7 @@ import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { Sheet } from '@/components/ui/Sheet';
 import { Modal } from '@/components/ui/Modal';
 import { PhraseCard } from '@/components/domain/PhraseCard';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 import {
   ArrowLeft,
@@ -303,10 +304,10 @@ export const WorkspacePage: React.FC = () => {
             m.direction === 'sign_to_language' ? 'LSA (Signeur)' : 'Interlocuteur'
           }: ${m.outputs[data.session.spokenLang]} (Glose: ${m.gloss.join(' ')})`
       );
-      const text = `CONVERSATION LSA BRIDGE\nTitre: ${data.session.title}\nDate: ${new Date(
+      const text = `CONVERSATION BRIDGESIGN\nTitre: ${data.session.title}\nDate: ${new Date(
         data.session.startedAt
       ).toLocaleString()}\n\n${lines.join('\n')}`;
-      downloadFile(`lsa_conversation_${sessionId}.txt`, text, 'text/plain');
+      downloadFile(`bridgesign_conversation_${sessionId}.txt`, text, 'text/plain');
     }
   };
 
@@ -433,6 +434,9 @@ export const WorkspacePage: React.FC = () => {
           >
             {t('dash.end', 'Terminer')}
           </Button>
+
+          {/* Theme toggle */}
+          <ThemeToggle />
         </div>
       </header>
 
