@@ -3,43 +3,45 @@
 @tailwind utilities;
 
 :root {
-  --bg: #FAF8F5;
+  --bg: #F4FAF9;
   --surface: #FFFFFF;
-  --surface-2: #F3F0EB;
-  --border: #E7E2DA;
-  --border-strong: #CFC8BC;
-  --text: #1C1F23;
-  --muted: #5B6470;
-  --primary: #0D9488;
-  --primary-strong: #0F766E;
-  --primary-hover: #115E59;
-  --primary-soft: #F0FDFA;
-  --primary-soft-2: #CCFBF1;
+  --surface-2: #E6F3F2;
+  --border: #D1E5E3;
+  --border-strong: #A8CECB;
+  --text: #173039;
+  --muted: #4B6B75;
+  --primary: #14B8A6;
+  --primary-strong: #0D9488;
+  --primary-hover: #0F766E;
+  --primary-soft: #E6F9F7;
+  --primary-soft-2: #CCF2EE;
+  --secondary: #8BE9DC;
   --success: #15803D;
   --warning: #B45309;
   --error: #B91C1C;
-  --info: #0F766E;
-  --overlay: rgba(28, 31, 35, 0.45);
+  --info: #0D9488;
+  --overlay: rgba(23, 48, 57, 0.45);
 }
 
 [data-theme="dark"] {
-  --bg: #0F1315;
-  --surface: #171C1F;
-  --surface-2: #1E2428;
-  --border: #2B3338;
-  --border-strong: #3A444A;
-  --text: #ECEFF1;
-  --muted: #9AA5AE;
-  --primary: #2DD4BF;
+  --bg: #091820;
+  --surface: #112630;
+  --surface-2: #193542;
+  --border: #1F3F4D;
+  --border-strong: #2A5364;
+  --text: #F1F7F8;
+  --muted: #8AA4AE;
+  --primary: #8BE9DC;
   --primary-strong: #14B8A6;
-  --primary-hover: #2DD4BF;
-  --primary-soft: #0E2A27;
-  --primary-soft-2: #134E48;
+  --primary-hover: #5EEAD4;
+  --primary-soft: #0E2E38;
+  --primary-soft-2: #14404E;
+  --secondary: #8BE9DC;
   --success: #4ADE80;
   --warning: #FBBF24;
   --error: #F87171;
   --info: #14B8A6;
-  --overlay: rgba(0, 0, 0, 0.65);
+  --overlay: rgba(0, 0, 0, 0.70);
 }
 
 [data-theme="hc"] {
