@@ -43,14 +43,31 @@ const DEFAULT_SETTINGS: Settings = {
   },
 };
 
+let systemThemeMediaQuery: MediaQueryList | null = null;
+let systemThemeListener: ((e: MediaQueryListEvent) => void) | null = null;
+
 function applyDomSettings(settings: Settings) {
   if (typeof document === 'undefined') return;
 
   // Theme
   const root = document.documentElement;
   if (settings.theme === 'system') {
-    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    root.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      if (!systemThemeMediaQuery) {
+        systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        systemThemeListener = (e: MediaQueryListEvent) => {
+          const currentTheme = useSettingsStore?.getState?.()?.settings?.theme;
+          if (currentTheme === 'system') {
+            root.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+          }
+        };
+        systemThemeMediaQuery.addEventListener('change', systemThemeListener);
+      }
+      const isDark = systemThemeMediaQuery.matches;
+      root.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    } else {
+      root.setAttribute('data-theme', 'light');
+    }
   } else {
     root.setAttribute('data-theme', settings.theme);
   }
