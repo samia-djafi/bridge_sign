@@ -12,6 +12,7 @@ import {
   Settings,
   ShieldCheck,
   Home,
+  HeartHandshake,
   MoreHorizontal,
   Siren,
   Info,
@@ -70,12 +71,20 @@ export const AppShell: React.FC = () => {
               <img src="/icons/logo-mark.svg" alt="" className="w-6 h-6 invert" />
             </div>
             <div className="hidden lg:flex flex-col">
-              <span className="font-bold text-base tracking-tight text-app-text">LSA Bridge</span>
+              <span className="font-bold text-base tracking-tight text-app-text">BridgeSign</span>
               <span className="text-[10px] text-app-muted leading-tight truncate">
-                {t('app.tagline', 'Deux modalités. Une seule conversation.')}
+                {t('app.tagline', 'Chaque main a une voix.')}
               </span>
             </div>
           </NavLink>
+
+          {/* Section: MAIN NAVIGATION (Home at top) */}
+          <div className="space-y-1 mb-6">
+            <NavLink to="/app" end className={navLinkClass}>
+              <Home className="w-5 h-5 shrink-0" />
+              <span className="hidden lg:inline">{t('nav.dashboard', 'Accueil')}</span>
+            </NavLink>
+          </div>
 
           {/* Section: WORKSPACE */}
           <div className="space-y-1 mb-6">
@@ -111,6 +120,11 @@ export const AppShell: React.FC = () => {
             <NavLink to="/app/phrasebook" className={navLinkClass}>
               <BookOpen className="w-5 h-5 shrink-0" />
               <span className="hidden lg:inline">{t('nav.phrasebook', 'Phrases rapides')}</span>
+            </NavLink>
+
+            <NavLink to="/app/stories" className={navLinkClass}>
+              <HeartHandshake className="w-5 h-5 shrink-0 text-app-primary-strong" />
+              <span className="hidden lg:inline">{t('nav.realStories', 'Témoignages')}</span>
             </NavLink>
 
             <NavLink to="/app/history" className={navLinkClass}>
@@ -277,13 +291,25 @@ export const AppShell: React.FC = () => {
           <Button
             variant="ghost"
             fullWidth
+            iconStart={<HeartHandshake className="w-5 h-5 text-app-primary-strong" />}
+            onClick={() => {
+              setMobileMoreOpen(false);
+              navigate('/app/stories');
+            }}
+          >
+            {t('nav.realStories', 'Témoignages')}
+          </Button>
+
+          <Button
+            variant="ghost"
+            fullWidth
             iconStart={<Info className="w-5 h-5" />}
             onClick={() => {
               setMobileMoreOpen(false);
               navigate('/app/about');
             }}
           >
-            {t('nav.about', 'À propos de LSA Bridge')}
+            {t('nav.about', 'À propos de BridgeSign')}
           </Button>
 
           <Button

@@ -13,6 +13,7 @@ import { HistoryDetailPage } from '@/features/history/HistoryDetailPage';
 import { DiagnosticsPage } from '@/features/diagnostics/DiagnosticsPage';
 import { SettingsPage } from '@/features/settings/SettingsPage';
 import { AboutPage } from '@/features/about/AboutPage';
+import { StoriesPage } from '@/features/stories/StoriesPage';
 import { DesignPage } from '@/features/design/DesignPage';
 import { NotFoundPage } from '@/features/not-found/NotFoundPage';
 
@@ -60,6 +61,10 @@ export const router = createBrowserRouter([
       {
         path: 'phrasebook',
         element: <PhrasebookPage />,
+      },
+      {
+        path: 'stories',
+        element: <StoriesPage />,
       },
       {
         path: 'history',
