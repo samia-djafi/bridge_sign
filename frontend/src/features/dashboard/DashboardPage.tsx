@@ -6,22 +6,24 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { useDemoStore } from '@/stores/demoStore';
 import { registry } from '@/services/registry';
 import { ConversationSession, Phrase } from '@/types/domain';
-import { StatusBar } from '@/components/domain/StatusBar';
+import { TopNavBar } from '@/components/domain/TopNavBar';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { PhraseCard } from '@/components/domain/PhraseCard';
-import { InstallCard } from '@/components/domain/InstallCard';
+import { STORIES, Story } from '@/data/stories';
 import {
   ArrowLeftRight,
-  Play,
   Sparkles,
   ChevronRight,
-  CheckCircle2,
   Clock,
-  Info,
-  ChevronDown,
-  ChevronUp,
+  Play,
+  Pill,
+  BookOpen,
+  HeartHandshake,
+  Quote,
+  ChevronLeft,
+  MessageSquarePlus,
+  Send,
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/time';
 
@@ -34,10 +36,15 @@ export const DashboardPage: React.FC = () => {
 
   const [recentSessions, setRecentSessions] = useState<ConversationSession[]>([]);
   const [quickPhrases, setQuickPhrases] = useState<Phrase[]>([]);
-  const [showLimits, setShowLimits] = useState(false);
+  const [activeStoryIndex, setActiveStoryIndex] = useState(0);
+
+  const currentLang = (['fr', 'ar', 'en'].includes(i18n.language) ? i18n.language : 'fr') as
+    | 'fr'
+    | 'ar'
+    | 'en';
 
   useEffect(() => {
-    document.title = `${t('nav.dashboard')} — ${t('app.name')}`;
+    document.title = `${t('nav.dashboard', 'Accueil')} — ${t('app.name', 'BridgeSign')}`;
 
     async function loadData() {
       try {
@@ -45,7 +52,11 @@ export const DashboardPage: React.FC = () => {
         setRecentSessions(list.slice(0, 5));
 
         const phrases = await registry.phrasebook.list();
-        setQuickPhrases(phrases.slice(0, 4));
+        // Curate 4 clinical/pharmacy phrases
+        const pharmacyPicks = phrases.filter((p) =>
+          ['ph_headache', 'ph_prescription', 'ph_paracetamol', 'ph_thank_you'].includes(p.id)
+        );
+        setQuickPhrases(pharmacyPicks.length > 0 ? pharmacyPicks : phrases.slice(0, 4));
       } catch {
         // ignore
       }
@@ -53,14 +64,14 @@ export const DashboardPage: React.FC = () => {
     loadData();
   }, [t]);
 
-  // Greeting by hour
+  // Greeting by time of day
   const hour = new Date().getHours();
-  const greetingKey =
+  const greetingText =
     hour < 12
-      ? 'dash.greetingMorning'
+      ? t('dash.greetingMorning', 'Good morning')
       : hour < 18
-      ? 'dash.greetingAfternoon'
-      : 'dash.greetingEvening';
+      ? t('dash.greetingAfternoon', 'Good afternoon')
+      : t('dash.greetingEvening', 'Good evening');
 
   const hasActiveSession = currentSession && (status === 'active' || status === 'paused');
 
@@ -84,69 +95,60 @@ export const DashboardPage: React.FC = () => {
     navigate(`/app/workspace/${sessId}?phrase=${phrase.id}`);
   };
 
+  const currentStory: Story | undefined = STORIES[activeStoryIndex];
+
   return (
-    <div className="flex flex-col min-h-full">
-      <StatusBar title={t('nav.dashboard', 'Accueil')} />
+    <div className="flex flex-col min-h-full bg-app-bg text-app-text">
+      {/* Top Application Header */}
+      <TopNavBar />
 
-      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
-        {/* Header Block & Readiness Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-app-text">
-              {t(greetingKey)}, {t('dash.ready', 'Prêt à communiquer ?')}
-            </h2>
-            <p className="text-sm text-app-muted mt-1">
-              {t('app.tagline', 'Deux modalités. Une seule conversation.')}
-            </p>
-          </div>
-
-          {/* Readiness Chips Row */}
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-app-surface border border-app-border">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>{t('dash.cameraStatus', 'Caméra')}</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-app-surface border border-app-border">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span>{t('dash.micStatus', 'Micro')}</span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-app-surface border border-app-border">
-              <span className="w-2 h-2 rounded-full bg-app-primary-strong" />
-              <span>
-                {registry.ai.adapter === 'demo' ? t('badge.demo', 'Démo') : t('badge.live', 'IA Direct')}
-              </span>
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-app-surface border border-app-border">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{t('dash.offlineStatus', 'Hors-ligne ✓')}</span>
+      {/* Main Content Layout */}
+      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-8">
+        {/* Welcome Hero Section */}
+        <section aria-labelledby="welcome-heading" className="space-y-2">
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+            <h1 id="welcome-heading" className="text-2xl sm:text-3xl font-extrabold tracking-tight text-app-text">
+              {greetingText},
+            </h1>
+            <span className="text-xs text-app-muted font-medium">
+              Algerian Sign Language (LSA) ↔ Français / العربية
             </span>
           </div>
-        </div>
+          <div className="p-4 rounded-card bg-app-surface border border-app-border-strong/60 shadow-1 flex items-start gap-3">
+            <div className="w-1.5 h-12 rounded-full bg-app-primary-strong shrink-0" />
+            <div className="space-y-0.5">
+              <p className="text-xs sm:text-sm font-semibold text-app-text">
+                Communication is a right, not a barrier.
+              </p>
+              <p className="text-xs text-app-muted">
+                We're here to help you bridge the gap between deaf signers and hearing people.
+              </p>
+            </div>
+          </div>
+        </section>
 
-        {/* Resume Card (if active session exists) */}
+        {/* Resume Banner (if active session exists) */}
         {hasActiveSession && (
-          <div className="p-4 rounded-card bg-app-primary-soft border-2 border-app-primary-strong flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-slide-up shadow-1">
-            <div className="flex items-center gap-3">
+          <div className="p-4 rounded-card bg-app-primary-soft border-2 border-app-primary-strong flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-slide-up shadow-2">
+            <div className="flex items-center gap-3 min-w-0">
               <div className="w-10 h-10 rounded-full bg-app-primary-strong text-white flex items-center justify-center shrink-0">
                 <ArrowLeftRight className="w-5 h-5 animate-pulse" />
               </div>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-app-primary-strong">
+              <div className="truncate">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-app-primary-strong block">
                   Conversation en cours
-                </p>
-                <h3 className="font-bold text-base text-app-text">{currentSession.title}</h3>
+                </span>
+                <h2 className="font-bold text-sm sm:text-base text-app-text truncate">
+                  {currentSession.title}
+                </h2>
                 <p className="text-xs text-app-muted">
                   {currentSession.messageCount || 0} messages · {status === 'paused' ? 'En pause' : 'Active'}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => endSession()}
-              >
+            <div className="flex items-center gap-2 shrink-0">
+              <Button variant="ghost" size="sm" onClick={() => endSession()}>
                 {t('dash.end', 'Terminer')}
               </Button>
               <Button
@@ -160,111 +162,243 @@ export const DashboardPage: React.FC = () => {
           </div>
         )}
 
-        {/* 12-Column Responsive Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Main Column (8 cols) */}
-          <div className="lg:col-span-8 space-y-6">
-            {/* Primary Action Card: Two-Way Conversation */}
-            <Card
-              interactive
-              p={24}
-              onClick={() => navigate('/app/new?mode=two_way')}
-              className="bg-app-surface border border-app-primary-strong/30 hover:border-app-primary-strong shadow-2 group"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-app-primary-strong text-white flex items-center justify-center shrink-0 shadow-1 group-hover:scale-105 transition-transform">
-                    <ArrowLeftRight className="w-7 h-7" />
+        {/* 12-Column Responsive Layout: Central Column (8 cols) + Right Column (4 cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Central Column (lg:col-span-8) */}
+          <main className="lg:col-span-8 space-y-8">
+            {/* 1. Primary Two-Way Conversation Card */}
+            <section aria-labelledby="primary-action-heading">
+              <Card
+                interactive
+                p={24}
+                onClick={() => navigate('/app/new?mode=two_way')}
+                className="bg-app-surface border-2 border-app-primary-strong/40 hover:border-app-primary-strong shadow-2 group transition-all"
+              >
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-app-primary-strong text-white flex items-center justify-center shrink-0 shadow-2 group-hover:scale-105 transition-transform">
+                      <ArrowLeftRight className="w-7 h-7" />
+                    </div>
+                    <div className="space-y-1">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-pill bg-app-primary-soft text-app-primary-strong text-[11px] font-bold uppercase tracking-wider">
+                        Recommandé
+                      </span>
+                      <h2 id="primary-action-heading" className="text-xl sm:text-2xl font-extrabold text-app-text">
+                        {t('dash.startTwoWay', 'Start a two-way conversation')}
+                      </h2>
+                      <p className="text-xs sm:text-sm text-app-muted leading-relaxed max-w-md">
+                        {t('dash.startTwoWaySub', 'Both people communicate in one place.')}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <Badge variant="demo" size="sm" className="mb-1.5">
-                      Mode principal recommandé
-                    </Badge>
-                    <h3 className="text-xl font-bold text-app-text">
-                      {t('dash.startTwoWay', 'Démarrer une conversation à double sens')}
+
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="shrink-0 pointer-events-none group-hover:shadow-3"
+                  >
+                    {t('dash.start', 'Démarrer')}
+                  </Button>
+                </div>
+              </Card>
+            </section>
+
+            {/* 2. Communication Mode Cards (Sign → Language & Language → Sign) */}
+            <section aria-label="Modes de communication spécialisés" className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Card 1: Sign → Language */}
+              <Card
+                interactive
+                p={20}
+                onClick={() => navigate('/app/sign-to-language')}
+                className="bg-app-surface border border-app-border hover:border-app-primary-strong transition-all flex flex-col justify-between"
+              >
+                <div className="flex items-start gap-3.5">
+                  <div className="w-11 h-11 rounded-control bg-app-surface-2 text-app-primary-strong flex items-center justify-center shrink-0">
+                    <span className="text-2xl select-none" role="img" aria-label="Langue des signes">
+                      🤟
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-sm text-app-text">
+                      {t('dash.signToLangTitle', 'Sign → Language')}
                     </h3>
-                    <p className="text-sm text-app-muted mt-1 max-w-md">
+                    <p className="text-xs text-app-muted leading-relaxed">
                       {t(
-                        'dash.startTwoWaySub',
-                        'Les deux personnes communiquent au même endroit en alternant signes et parole.'
+                        'dash.signToLangDesc',
+                        'Sign in front of the camera to translate your signs into spoken and written words.'
                       )}
                     </p>
                   </div>
                 </div>
 
-                <Button variant="primary" size="lg" className="shrink-0 pointer-events-none">
-                  {t('dash.start', 'Démarrer')}
-                </Button>
-              </div>
-            </Card>
-
-            {/* Secondary Actions Row: 2-Columns */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Card
-                interactive
-                p={20}
-                onClick={() => navigate('/app/sign-to-language')}
-                className="hover:border-app-primary-strong"
-              >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-control bg-app-surface-2 text-app-primary-strong flex items-center justify-center shrink-0">
-                    <span className="text-xl select-none" aria-hidden="true">
-                      🤟
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm text-app-text">
-                      {t('mode.signToLang', 'LSA → Langue')}
-                    </h4>
-                    <p className="text-xs text-app-muted mt-0.5">
-                      Signez à la caméra et transmettez votre voix/texte
-                    </p>
-                  </div>
+                <div className="pt-3 mt-3 border-t border-app-border flex items-center justify-between text-xs text-app-primary-strong font-semibold">
+                  <span>Signer devant la caméra</span>
+                  <ChevronRight className="w-4 h-4 rtl:-scale-x-100" />
                 </div>
               </Card>
 
+              {/* Card 2: Language → Sign */}
               <Card
                 interactive
                 p={20}
                 onClick={() => navigate('/app/language-to-sign')}
-                className="hover:border-app-primary-strong"
+                className="bg-app-surface border border-app-border hover:border-app-primary-strong transition-all flex flex-col justify-between"
               >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-control bg-app-surface-2 text-app-primary-strong flex items-center justify-center shrink-0">
-                    <span className="text-xl select-none" aria-hidden="true">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-11 h-11 rounded-control bg-app-surface-2 text-app-primary-strong flex items-center justify-center shrink-0">
+                    <span className="text-2xl select-none" role="img" aria-label="Parole et texte">
                       🗣️
                     </span>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-sm text-app-text">
-                      {t('mode.langToSign', 'Langue → LSA')}
-                    </h4>
-                    <p className="text-xs text-app-muted mt-0.5">
-                      Écrivez ou dictez pour jouer les signes LSA
+                  <div className="space-y-1">
+                    <h3 className="font-bold text-sm text-app-text">
+                      {t('dash.langToSignTitle', 'Language → Sign')}
+                    </h3>
+                    <p className="text-xs text-app-muted leading-relaxed">
+                      {t(
+                        'dash.langToSignDesc',
+                        'Type or speak to translate spoken phrases into Algerian Sign Language clips.'
+                      )}
                     </p>
                   </div>
                 </div>
-              </Card>
-            </div>
 
-            {/* Recent Conversations List */}
-            <div className="space-y-3">
+                <div className="pt-3 mt-3 border-t border-app-border flex items-center justify-between text-xs text-app-primary-strong font-semibold">
+                  <span>Écrire ou dicter en LSA</span>
+                  <ChevronRight className="w-4 h-4 rtl:-scale-x-100" />
+                </div>
+              </Card>
+            </section>
+
+            {/* 3. Quick-Access Feature Cards (Pharmacy, Phrasebook, Real Stories) */}
+            <section aria-labelledby="quick-features-heading" className="space-y-3">
+              <h2 id="quick-features-heading" className="text-xs font-bold uppercase tracking-wider text-app-muted">
+                Accès direct aux fonctionnalités
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {/* Feature 1: Pharmacy & Healthcare */}
+                <Card
+                  interactive
+                  p={20}
+                  onClick={() => navigate('/app/phrasebook?context=healthcare')}
+                  className="bg-app-surface border border-app-border hover:border-app-border-strong flex flex-col justify-between transition-all"
+                >
+                  <div className="space-y-2">
+                    <div className="w-9 h-9 rounded-control bg-teal-500/10 text-app-primary-strong flex items-center justify-center">
+                      <Pill className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-xs sm:text-sm text-app-text">
+                        {t('dash.featurePharmacyTitle', 'Pharmacy & Healthcare')}
+                      </h3>
+                      <p className="text-[11px] text-app-muted mt-1 leading-relaxed">
+                        {t(
+                          'dash.featurePharmacyDesc',
+                          'Common clinical phrases and medical vocabulary for pharmacy interactions.'
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-2 text-xs font-semibold text-app-primary-strong flex items-center gap-1">
+                    <span>Ouvrir</span>
+                    <ChevronRight className="w-3.5 h-3.5 rtl:-scale-x-100" />
+                  </div>
+                </Card>
+
+                {/* Feature 2: Phrasebook */}
+                <Card
+                  interactive
+                  p={20}
+                  onClick={() => navigate('/app/phrasebook')}
+                  className="bg-app-surface border border-app-border hover:border-app-border-strong flex flex-col justify-between transition-all"
+                >
+                  <div className="space-y-2">
+                    <div className="w-9 h-9 rounded-control bg-teal-500/10 text-app-primary-strong flex items-center justify-center">
+                      <BookOpen className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-xs sm:text-sm text-app-text">
+                        {t('dash.featurePhrasebookTitle', 'Phrasebook')}
+                      </h3>
+                      <p className="text-[11px] text-app-muted mt-1 leading-relaxed">
+                        {t(
+                          'dash.featurePhrasebookDesc',
+                          'Instant access to frequently used expressions and categorized signs.'
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-2 text-xs font-semibold text-app-primary-strong flex items-center gap-1">
+                    <span>Explorer</span>
+                    <ChevronRight className="w-3.5 h-3.5 rtl:-scale-x-100" />
+                  </div>
+                </Card>
+
+                {/* Feature 3: Real Stories */}
+                <Card
+                  interactive
+                  p={20}
+                  onClick={() => navigate('/app/stories')}
+                  className="bg-app-surface border border-app-border hover:border-app-border-strong flex flex-col justify-between transition-all"
+                >
+                  <div className="space-y-2">
+                    <div className="w-9 h-9 rounded-control bg-teal-500/10 text-app-primary-strong flex items-center justify-center">
+                      <HeartHandshake className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-xs sm:text-sm text-app-text">
+                        {t('dash.featureStoriesTitle', 'Real Stories')}
+                      </h3>
+                      <p className="text-[11px] text-app-muted mt-1 leading-relaxed">
+                        {t(
+                          'dash.featureStoriesDesc',
+                          'Authentic experiences shared by our Deaf community and healthcare staff.'
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="pt-2 text-xs font-semibold text-app-primary-strong flex items-center gap-1">
+                    <span>Lire les récits</span>
+                    <ChevronRight className="w-3.5 h-3.5 rtl:-scale-x-100" />
+                  </div>
+                </Card>
+              </div>
+            </section>
+
+            {/* 4. Recent Conversations */}
+            <section aria-labelledby="recent-heading" className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-app-text">
-                  {t('dash.recentConversations', 'Conversations récentes')}
-                </h3>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-app-primary-strong" />
+                  <h2 id="recent-heading" className="text-sm font-bold text-app-text">
+                    {t('dash.recentConversations', 'Recent conversations')}
+                  </h2>
+                </div>
                 <button
                   type="button"
                   onClick={() => navigate('/app/history')}
                   className="text-xs font-semibold text-app-primary-strong hover:underline"
                 >
-                  Voir tout
+                  {t('dash.viewAll', 'View all')}
                 </button>
               </div>
 
               {recentSessions.length === 0 ? (
-                <div className="p-6 rounded-card bg-app-surface border border-app-border text-center text-xs text-app-muted">
-                  {t('dash.noConversations', 'Aucune conversation pour le moment.')}
+                <div className="p-8 rounded-card bg-app-surface border border-app-border text-center space-y-3">
+                  <div className="w-10 h-10 rounded-full bg-app-surface-2 text-app-muted flex items-center justify-center mx-auto">
+                    <Clock className="w-5 h-5" />
+                  </div>
+                  <p className="text-xs text-app-muted">
+                    {t('dash.noConversations', 'No conversations yet.')}
+                  </p>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    iconStart={<MessageSquarePlus className="w-3.5 h-3.5" />}
+                    onClick={() => navigate('/app/new?mode=two_way')}
+                  >
+                    {t('dash.startFirstConv', 'Start your first conversation')}
+                  </Button>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -277,13 +411,13 @@ export const DashboardPage: React.FC = () => {
                     >
                       <div className="flex items-center gap-3 truncate">
                         <div className="w-8 h-8 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-app-muted">
-                          <Clock className="w-4 h-4" />
+                          <Pill className="w-4 h-4" />
                         </div>
                         <div className="truncate">
-                          <p className="text-sm font-semibold text-app-text truncate">
+                          <p className="text-xs sm:text-sm font-semibold text-app-text truncate">
                             {session.title}
                           </p>
-                          <p className="text-xs text-app-muted">
+                          <p className="text-[11px] text-app-muted">
                             {session.messageCount || 0} messages · {session.spokenLang.toUpperCase()} ↔ LSA
                           </p>
                         </div>
@@ -299,93 +433,148 @@ export const DashboardPage: React.FC = () => {
                   ))}
                 </div>
               )}
-            </div>
-          </div>
+            </section>
+          </main>
 
-          {/* Side Column (4 cols) */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Try the Pharmacy Demo Card */}
-            <div className="p-5 rounded-card bg-gradient-to-br from-app-surface to-app-primary-soft border border-app-primary-strong/20 shadow-1 space-y-3">
+          {/* Right Column (lg:col-span-4): Demo, Quick Phrases, Stories Carousel */}
+          <aside aria-label="Panneau interactif d'accompagnement" className="lg:col-span-4 space-y-6">
+            {/* A. Interactive Pharmacy Demo */}
+            <div className="p-5 rounded-card bg-app-surface border border-app-primary-strong/30 shadow-2 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-app-primary-strong flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4" />
-                  <span>Démonstration interactive</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-app-primary-strong flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{t('dash.interactiveDemo', 'Interactive demonstration')}</span>
                 </span>
                 <Badge variant="demo" size="sm">
                   Démo
                 </Badge>
               </div>
 
-              <div>
-                <h4 className="font-bold text-sm text-app-text">
-                  {t('dash.tryDemo', 'Essayer la démonstration pharmacie')}
-                </h4>
-                <p className="text-xs text-app-muted mt-1 leading-relaxed">
-                  Scénario interactif sans caméra ni micro requis pour découvrir le dialogue complet.
+              <div className="space-y-1">
+                <h3 className="font-bold text-sm text-app-text">
+                  {t('dash.tryDemo', 'Try the pharmacy demo')}
+                </h3>
+                <p className="text-xs text-app-muted leading-relaxed">
+                  {t(
+                    'dash.tryDemoDesc',
+                    'Experience the complete two-way dialogue without needing camera or microphone access.'
+                  )}
                 </p>
               </div>
 
               <Button
                 variant="secondary"
-                size="sm"
+                size="md"
                 fullWidth
                 iconStart={<Play className="w-3.5 h-3.5 fill-current" />}
                 onClick={handleStartDemo}
               >
-                Lancer la démo pharmacie
+                {t('dash.launchDemo', 'Launch demo')}
               </Button>
             </div>
 
-            {/* Quick Phrases Widget */}
-            <div className="space-y-3">
+            {/* B. Quick Phrases Card with Actionable Play */}
+            <div className="p-5 rounded-card bg-app-surface border border-app-border space-y-3 shadow-1">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-bold text-app-text">
-                  {t('dash.quickPhrases', 'Phrases rapides')}
-                </h4>
+                <h3 className="text-sm font-bold text-app-text">
+                  {t('dash.quickPhrases', 'Quick phrases')}
+                </h3>
                 <button
                   type="button"
                   onClick={() => navigate('/app/phrasebook')}
                   className="text-xs font-semibold text-app-primary-strong hover:underline"
                 >
-                  Dictionnaire
+                  {t('dash.viewAll', 'View all')}
                 </button>
               </div>
 
               <div className="space-y-2">
-                {quickPhrases.map((phrase) => (
-                  <PhraseCard
-                    key={phrase.id}
-                    phrase={phrase}
-                    onSendToConversation={handleQuickPhraseSend}
-                  />
-                ))}
+                {quickPhrases.map((phrase) => {
+                  const text = phrase.text[currentLang] || phrase.text.fr;
+                  return (
+                    <div
+                      key={phrase.id}
+                      className="p-2.5 rounded-control bg-app-surface-2 border border-app-border flex items-center justify-between gap-3 text-xs"
+                    >
+                      <div className="truncate">
+                        <p className="font-semibold text-app-text truncate">{text}</p>
+                        <p className="text-[10px] text-app-muted font-mono">{phrase.gloss.join(' ')}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleQuickPhraseSend(phrase)}
+                        className="p-1.5 rounded-control bg-app-surface hover:bg-app-primary-soft text-app-primary-strong transition-colors shrink-0"
+                        title="Envoyer dans la conversation"
+                        aria-label={`Envoyer phrase: ${text}`}
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* PWA Install Card (Conditional) */}
-            <InstallCard />
+            {/* C. Community Stories Card (Authentic Stories Carousel) */}
+            <div className="p-5 rounded-card bg-app-surface border border-app-border space-y-3 shadow-1">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold text-app-text">
+                  {t('dash.communityStories', 'Real voices, real experiences')}
+                </h3>
+                {STORIES.length > 1 && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveStoryIndex((prev) =>
+                          prev === 0 ? STORIES.length - 1 : prev - 1
+                        )
+                      }
+                      className="p-1 rounded text-app-muted hover:text-app-text"
+                      aria-label="Témoignage précédent"
+                    >
+                      <ChevronLeft className="w-4 h-4 rtl:-scale-x-100" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveStoryIndex((prev) =>
+                          prev === STORIES.length - 1 ? 0 : prev + 1
+                        )
+                      }
+                      className="p-1 rounded text-app-muted hover:text-app-text"
+                      aria-label="Témoignage suivant"
+                    >
+                      <ChevronRight className="w-4 h-4 rtl:-scale-x-100" />
+                    </button>
+                  </div>
+                )}
+              </div>
 
-            {/* Limitations Collapsible Info Card */}
-            <div className="p-4 rounded-card bg-app-surface border border-app-border text-xs text-app-muted space-y-2">
-              <button
-                type="button"
-                onClick={() => setShowLimits(!showLimits)}
-                className="w-full flex items-center justify-between font-semibold text-app-text"
-              >
-                <div className="flex items-center gap-1.5">
-                  <Info className="w-4 h-4 text-app-primary-strong" />
-                  <span>{t('dash.limitationsTitle', "Rappel d'usage")}</span>
+              {currentStory ? (
+                <div className="space-y-3 pt-1">
+                  <div className="relative">
+                    <Quote className="w-5 h-5 text-app-primary-strong/20 absolute -top-1 -start-1 rtl:-scale-x-100" />
+                    <p className="text-xs text-app-text italic ps-3 leading-relaxed">
+                      « {currentStory.quote[currentLang] || currentStory.quote.fr} »
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-app-border flex items-center justify-between text-[11px]">
+                    <div>
+                      <span className="font-bold text-app-text block">{currentStory.author}</span>
+                      <span className="text-app-muted">{currentStory.role[currentLang] || currentStory.role.fr}</span>
+                    </div>
+                    <span className="text-[10px] text-app-muted font-mono">{currentStory.date}</span>
+                  </div>
                 </div>
-                {showLimits ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-              </button>
-
-              {showLimits && (
-                <p className="leading-relaxed animate-fade-in pt-1">
-                  {t('dash.limitationsText')}
+              ) : (
+                <p className="text-xs text-app-muted">
+                  {t('dash.noStoriesYet', 'Be the first to share your experience with BridgeSign.')}
                 </p>
               )}
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </div>
