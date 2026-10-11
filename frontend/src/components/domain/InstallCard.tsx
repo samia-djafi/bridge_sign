@@ -67,7 +67,7 @@ export const InstallCard: React.FC<{ className?: string }> = ({ className = '' }
       >
         <div className="space-y-4 text-sm text-app-text">
           <p className="text-app-muted text-xs">
-            Pour installer LSA Bridge sur Safari iOS, suivez ces 3 étapes simples :
+            Pour installer BridgeSign sur Safari iOS, suivez ces 3 étapes simples :
           </p>
 
           <div className="flex items-center gap-3 p-3 rounded-control bg-app-surface-2 border border-app-border">

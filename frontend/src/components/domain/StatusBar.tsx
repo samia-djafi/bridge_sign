@@ -5,6 +5,7 @@ import { registry } from '@/services/registry';
 import { StatusType } from '@/components/ui/StatusIndicator';
 import { Wifi, WifiOff, Camera, Mic, Cpu } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export interface StatusBarProps {
   title?: string;
@@ -100,6 +101,9 @@ export const StatusBar: React.FC<StatusBarProps> = ({
             {isOnline ? t('badge.online', 'En ligne') : t('badge.offline', 'Hors ligne')}
           </span>
         </button>
+
+        {/* Theme Toggle */}
+        <ThemeToggle />
       </div>
 
       {/* Explanatory Popover Modal */}
