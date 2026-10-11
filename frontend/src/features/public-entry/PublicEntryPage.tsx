@@ -5,6 +5,7 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { useUiStore } from '@/stores/uiStore';
 import { Button } from '@/components/ui/Button';
 import { LanguageSelector } from '@/components/domain/LanguageSelector';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Download, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export const PublicEntryPage: React.FC = () => {
@@ -34,8 +35,9 @@ export const PublicEntryPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-app-bg text-app-text flex flex-col justify-between p-6">
-      {/* Top Header: Language Switcher */}
-      <header className="flex justify-end w-full max-w-lg mx-auto">
+      {/* Top Header: Language Switcher & Theme Toggle */}
+      <header className="flex justify-end items-center gap-2 w-full max-w-lg mx-auto">
+        <ThemeToggle size="md" />
         <div className="w-40">
           <LanguageSelector
             value={settings.uiLang}
