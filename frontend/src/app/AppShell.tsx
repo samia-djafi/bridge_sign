@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useUiStore } from '@/stores/uiStore';
 import {
-  MessageSquarePlus,
   ArrowLeftRight,
   BookOpen,
   History,
@@ -78,25 +77,15 @@ export const AppShell: React.FC = () => {
             </div>
           </NavLink>
 
-          {/* Section: MAIN NAVIGATION (Home at top) */}
-          <div className="space-y-1 mb-6">
+          {/* Main Navigation in exact requested order */}
+          <nav aria-label="Navigation des pages" className="space-y-1 mb-6">
+            {/* 1. Home */}
             <NavLink to="/app" end className={navLinkClass}>
               <Home className="w-5 h-5 shrink-0" />
               <span className="hidden lg:inline">{t('nav.dashboard', 'Accueil')}</span>
             </NavLink>
-          </div>
 
-          {/* Section: WORKSPACE */}
-          <div className="space-y-1 mb-6">
-            <span className="hidden lg:block text-[11px] font-bold text-app-muted uppercase tracking-wider px-3 mb-2">
-              {t('nav.workspace', 'ESPACE DE TRAVAIL')}
-            </span>
-
-            <NavLink to="/app/new" className={navLinkClass}>
-              <MessageSquarePlus className="w-5 h-5 shrink-0" />
-              <span className="hidden lg:inline">{t('nav.newConversation', 'Nouvelle conversation')}</span>
-            </NavLink>
-
+            {/* 2. Conversation */}
             <NavLink
               to={hasActiveSession ? `/app/workspace/${currentSession.id}` : '/app/new?mode=two_way'}
               className={navLinkClass}
@@ -107,70 +96,75 @@ export const AppShell: React.FC = () => {
                   <span className="absolute -top-1 -end-1 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse ring-2 ring-white" />
                 )}
               </div>
-              <span className="hidden lg:inline">{t('nav.twoWay', 'Conversation à double sens')}</span>
+              <span className="hidden lg:inline">{t('nav.twoWay', 'Conversation')}</span>
             </NavLink>
-          </div>
 
-          {/* Section: RESOURCES */}
-          <div className="space-y-1 mb-6">
-            <span className="hidden lg:block text-[11px] font-bold text-app-muted uppercase tracking-wider px-3 mb-2">
-              {t('nav.resources', 'RESSOURCES')}
-            </span>
-
+            {/* 3. Phrasebook */}
             <NavLink to="/app/phrasebook" className={navLinkClass}>
               <BookOpen className="w-5 h-5 shrink-0" />
               <span className="hidden lg:inline">{t('nav.phrasebook', 'Phrases rapides')}</span>
             </NavLink>
 
+            {/* 4. Real Stories (with subtle New pill) */}
             <NavLink to="/app/stories" className={navLinkClass}>
               <HeartHandshake className="w-5 h-5 shrink-0 text-app-primary-strong" />
-              <span className="hidden lg:inline">{t('nav.realStories', 'Témoignages')}</span>
+              <span className="hidden lg:inline flex-1">{t('nav.realStories', 'Témoignages')}</span>
+              <span className="hidden lg:inline-flex text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-pill bg-app-primary-soft text-app-primary-strong border border-app-primary-strong/30">
+                New
+              </span>
             </NavLink>
 
+            {/* 5. History */}
             <NavLink to="/app/history" className={navLinkClass}>
               <History className="w-5 h-5 shrink-0" />
               <span className="hidden lg:inline">{t('nav.history', 'Historique')}</span>
             </NavLink>
-          </div>
 
-          {/* Section: SYSTEM */}
-          <div className="space-y-1">
-            <span className="hidden lg:block text-[11px] font-bold text-app-muted uppercase tracking-wider px-3 mb-2">
-              {t('nav.system', 'SYSTÈME')}
-            </span>
-
+            {/* 6. Diagnostics */}
             <NavLink to="/app/diagnostics" className={navLinkClass}>
               <Activity className="w-5 h-5 shrink-0" />
               <span className="hidden lg:inline">{t('nav.diagnostics', 'Diagnostic IA')}</span>
             </NavLink>
 
+            {/* 7. Settings */}
             <NavLink to="/app/settings" className={navLinkClass}>
               <Settings className="w-5 h-5 shrink-0" />
               <span className="hidden lg:inline">{t('nav.settings', 'Paramètres')}</span>
             </NavLink>
-          </div>
+          </nav>
         </div>
 
-        {/* Footer: Privacy, Emergency & Profile */}
-        <div className="p-3 border-t border-app-border space-y-2">
-          {/* Emergency Trigger Button */}
+        {/* Footer: Emergency Alert + Accessibility / Help Card */}
+        <div className="p-3 border-t border-app-border space-y-2.5">
+          {/* Emergency Trigger Button in noticeable Red/Orange */}
           <button
             type="button"
             onClick={() => setEmergencySheetOpen(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-control bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold transition-colors"
+            className="w-full flex items-center justify-center lg:justify-start gap-2.5 px-3 py-2.5 rounded-control bg-orange-600 hover:bg-orange-700 text-white shadow-1 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
+            aria-label={t('emergency.button', 'Phrases d’urgence')}
           >
-            <Siren className="w-4 h-4 text-app-warning shrink-0" />
+            <Siren className="w-4 h-4 shrink-0 text-white animate-pulse" />
             <span className="hidden lg:inline">{t('emergency.button', 'Phrases d’urgence')}</span>
           </button>
 
-          {/* Privacy & Help */}
+          {/* Accessibility / Help Support Card */}
           <button
             type="button"
             onClick={() => setPrivacySheetOpen(true)}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-control text-xs text-app-muted hover:text-app-text hover:bg-app-surface-2 transition-colors"
+            className="w-full flex items-center gap-3 p-2.5 rounded-control bg-app-surface-2 hover:bg-app-border border border-app-border text-start transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
+            aria-label={t('nav.privacyHelp', 'Confidentialité & Aide')}
           >
-            <ShieldCheck className="w-4 h-4 shrink-0 text-app-primary-strong" />
-            <span className="hidden lg:inline">{t('nav.privacyHelp', 'Confidentialité & Aide')}</span>
+            <div className="w-7 h-7 rounded-full bg-app-primary-soft text-app-primary-strong flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-4 h-4" />
+            </div>
+            <div className="hidden lg:flex flex-col min-w-0">
+              <span className="text-xs font-bold text-app-text truncate">
+                {t('nav.privacyHelp', 'Accessibilité & Aide')}
+              </span>
+              <span className="text-[10px] text-app-muted truncate">
+                Support & confidentialité locale
+              </span>
+            </div>
           </button>
         </div>
       </aside>
