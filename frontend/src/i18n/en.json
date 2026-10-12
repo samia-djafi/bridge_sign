@@ -14,7 +14,7 @@
     "signToLang": "Sign → Language",
     "langToSign": "Language → Sign",
     "phrasebook": "Phrasebook",
-    "realStories": "Usage Scenarios",
+    "realStories": "Real Stories",
     "history": "History",
     "diagnostics": "AI Diagnostics",
     "settings": "Settings",
@@ -359,8 +359,8 @@
     "disclaimer": "BridgeSign is a communication assistance tool. It does not replace professional interpreters and does not provide medical diagnosis or advice."
   },
   "stories": {
-    "title": "Usage Scenarios",
-    "subtitle": "These scenarios are illustrative and are not real testimonials. They demonstrate BridgeSign's intended use cases in healthcare and daily settings in Algeria.",
+    "title": "Real Stories",
+    "subtitle": "Real voices, experiences, and illustrative usage scenarios demonstrating BridgeSign's intended use cases in healthcare and daily settings in Algeria.",
     "transparencyNotice": "These scenarios are illustrative and are not real testimonials. Authentic testimonials will be published once collected with explicit prior consent.",
     "shareCta": "Save local feedback note",
     "feedbackTitle": "Feedback & Suggestions (Local Draft)",
