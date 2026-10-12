@@ -9,7 +9,7 @@ import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { ContextId, SessionMode, SpokenLang } from '@/types/domain';
-import { ArrowLeftRight, Camera, Mic, Sparkles } from 'lucide-react';
+import { ArrowLeftRight, Camera, Mic, Sparkles, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { registry } from '@/services/registry';
 
 export const NewConversationPage: React.FC = () => {
@@ -27,6 +27,59 @@ export const NewConversationPage: React.FC = () => {
   const [mode, setMode] = useState<SessionMode>(initialMode);
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Accurate sensor permission inspection without triggering getUserMedia
+  type SensorStatus = 'pending_start' | 'granted' | 'denied' | 'unsupported' | 'not_needed';
+  const [camStatus, setCamStatus] = useState<SensorStatus>('pending_start');
+  const [micStatus, setMicStatus] = useState<SensorStatus>('pending_start');
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkSensors() {
+      const needsCam = mode === 'two_way' || mode === 'sign_to_language';
+      const needsMic = mode === 'two_way' || mode === 'language_to_sign';
+
+      if (!needsCam) {
+        setCamStatus('not_needed');
+      } else if (!navigator.mediaDevices) {
+        setCamStatus('unsupported');
+      } else if ('permissions' in navigator && navigator.permissions.query) {
+        try {
+          const res = await navigator.permissions.query({ name: 'camera' as any });
+          if (isMounted) {
+            setCamStatus(res.state === 'granted' ? 'granted' : res.state === 'denied' ? 'denied' : 'pending_start');
+          }
+        } catch {
+          if (isMounted) setCamStatus('pending_start');
+        }
+      } else {
+        setCamStatus('pending_start');
+      }
+
+      if (!needsMic) {
+        setMicStatus('not_needed');
+      } else if (!navigator.mediaDevices) {
+        setMicStatus('unsupported');
+      } else if ('permissions' in navigator && navigator.permissions.query) {
+        try {
+          const res = await navigator.permissions.query({ name: 'microphone' as any });
+          if (isMounted) {
+            setMicStatus(res.state === 'granted' ? 'granted' : res.state === 'denied' ? 'denied' : 'pending_start');
+          }
+        } catch {
+          if (isMounted) setMicStatus('pending_start');
+        }
+      } else {
+        setMicStatus('pending_start');
+      }
+    }
+
+    checkSensors();
+    return () => {
+      isMounted = false;
+    };
+  }, [mode]);
 
   useEffect(() => {
     document.title = `${t('nav.newConversation')} — ${t('app.name')}`;
@@ -123,23 +176,65 @@ export const NewConversationPage: React.FC = () => {
               />
             </div>
 
-            {/* 5. Readiness Checklist (Non-blocking) */}
+            {/* 5. Readiness Checklist (Accurate Sensor Inspection) */}
             <div className="p-3.5 rounded-control bg-app-surface-2 border border-app-border space-y-2 text-xs">
-              <span className="font-semibold text-app-muted uppercase tracking-wider">
-                État des capteurs
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-app-muted uppercase tracking-wider">
+                  Capteurs requis au démarrage
+                </span>
+                <span className="text-[11px] text-app-muted">Initialisation au lancement</span>
+              </div>
               <div className="flex flex-wrap items-center gap-4 text-app-text">
+                {/* Camera Status */}
                 <span className="inline-flex items-center gap-1.5 font-medium">
-                  <Camera className="w-4 h-4 text-app-primary-strong" />
-                  <span>Caméra prête</span>
+                  {camStatus === 'denied' ? (
+                    <AlertTriangle className="w-4 h-4 text-app-error" />
+                  ) : camStatus === 'granted' ? (
+                    <CheckCircle2 className="w-4 h-4 text-app-success" />
+                  ) : (
+                    <Camera className="w-4 h-4 text-app-muted" />
+                  )}
+                  <span className={camStatus === 'denied' ? 'text-app-error font-semibold' : ''}>
+                    {camStatus === 'not_needed'
+                      ? 'Caméra : non requise pour ce mode'
+                      : camStatus === 'denied'
+                      ? 'Accès caméra bloqué (autoriser dans le navigateur)'
+                      : camStatus === 'unsupported'
+                      ? 'Caméra : non supportée sur cette connexion'
+                      : camStatus === 'granted'
+                      ? 'Caméra : autorisation accordée'
+                      : 'Caméra requise au démarrage'}
+                  </span>
                 </span>
+
+                {/* Microphone Status */}
                 <span className="inline-flex items-center gap-1.5 font-medium">
-                  <Mic className="w-4 h-4 text-app-primary-strong" />
-                  <span>Microphone prêt</span>
+                  {micStatus === 'denied' ? (
+                    <AlertTriangle className="w-4 h-4 text-app-error" />
+                  ) : micStatus === 'granted' ? (
+                    <CheckCircle2 className="w-4 h-4 text-app-success" />
+                  ) : (
+                    <Mic className="w-4 h-4 text-app-muted" />
+                  )}
+                  <span className={micStatus === 'denied' ? 'text-app-error font-semibold' : ''}>
+                    {micStatus === 'not_needed'
+                      ? 'Microphone : non requis pour ce mode'
+                      : micStatus === 'denied'
+                      ? 'Accès micro bloqué (autoriser dans le navigateur)'
+                      : micStatus === 'unsupported'
+                      ? 'Microphone : non supporté'
+                      : micStatus === 'granted'
+                      ? 'Microphone : autorisation accordée'
+                      : 'Microphone requis au démarrage'}
+                  </span>
                 </span>
+
+                {/* AI Model Status */}
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <Sparkles className="w-4 h-4 text-app-primary-strong" />
-                  <span>Modèle IA ({registry.ai.adapter === 'demo' ? 'Démo' : 'Direct'})</span>
+                  <span>
+                    Modèle IA ({registry.ai.adapter === 'demo' ? 'Mode Démo' : 'Mode Direct'})
+                  </span>
                 </span>
               </div>
             </div>
