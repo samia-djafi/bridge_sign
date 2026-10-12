@@ -47,7 +47,7 @@ export const CameraPanel: React.FC<CameraPanelProps> = ({
           playsInline
           muted
           autoPlay
-          className={`w-full h-full object-cover transition-transform duration-200 ${
+          className={`w-full h-full object-contain transition-transform duration-200 ${
             mirror ? 'scale-x-[-1]' : 'scale-x-100'
           }`}
         />

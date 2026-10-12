@@ -392,9 +392,9 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
       >
         <div className="space-y-3 text-xs sm:text-sm text-app-text">
           <div className="p-3 rounded-control bg-app-primary-soft border border-app-primary-strong/30 space-y-1">
-            <p className="font-bold text-app-primary-strong">Mise à jour BridgeSign disponible</p>
+            <p className="font-bold text-app-primary-strong">Prêt pour le déploiement local</p>
             <p className="text-xs text-app-muted">
-              Le nouveau module de dialogue pharmaceutique LSA est activé en mode démo et direct.
+              Le dictionnaire et le dialogue LSA fonctionnent en mode local autonome (Démo / Simulation). Le modèle IA distant peut être connecté ultérieurement via les Paramètres.
             </p>
           </div>
           <div className="p-3 rounded-control bg-app-surface-2 border border-app-border space-y-1">

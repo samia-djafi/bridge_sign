@@ -156,7 +156,7 @@ export const SignPlayer: React.FC<SignPlayerProps> = ({
           ref={canvasRef}
           width={640}
           height={360}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
 
         {/* Top Badges */}
