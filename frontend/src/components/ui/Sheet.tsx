@@ -9,7 +9,7 @@ export interface SheetProps {
   subtitle?: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl';
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl';
 }
 
 export const Sheet: React.FC<SheetProps> = ({
@@ -54,6 +54,9 @@ export const Sheet: React.FC<SheetProps> = ({
     md: 'md:max-w-md',
     lg: 'md:max-w-xl',
     xl: 'md:max-w-2xl',
+    '2xl': 'md:max-w-2xl',
+    '4xl': 'md:max-w-3xl lg:max-w-4xl xl:max-w-5xl',
+    '5xl': 'md:max-w-4xl lg:max-w-5xl xl:max-w-6xl',
   }[maxWidth];
 
   return (
