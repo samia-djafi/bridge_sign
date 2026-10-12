@@ -2,16 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { useProfileStore } from '@/stores/profileStore';
 import { registry } from '@/services/registry';
 import { Phrase, ConversationSession } from '@/types/domain';
-import { Search, Bell, X, Clock, BookOpen } from 'lucide-react';
+import { Search, Bell, X, Clock, BookOpen, User } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Modal } from '@/components/ui/Modal';
 
-export const TopNavBar: React.FC = () => {
+import { Link } from 'react-router-dom';
+
+export interface TopNavBarProps {
+  title?: string;
+}
+
+export const TopNavBar: React.FC<TopNavBarProps> = ({ title }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { settings } = useSettingsStore();
+  const { preferredName } = useProfileStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -69,8 +77,9 @@ export const TopNavBar: React.FC = () => {
 
   return (
     <header className="h-16 bg-app-surface border-b border-app-border px-4 sm:px-6 flex items-center justify-between gap-3 sticky top-0 z-30 select-none">
-      {/* Search Input Bar (Center/Left) */}
-      <div className="relative flex-1 max-w-xl">
+
+      {/* Search Input Bar (Center) */}
+      <div className="relative flex-1 max-w-md lg:max-w-lg">
         <div className="relative flex items-center">
           <Search className="w-4 h-4 text-app-muted absolute start-3.5 pointer-events-none" />
           <input
@@ -199,15 +208,20 @@ export const TopNavBar: React.FC = () => {
         {/* Functional Dark/Light Theme Toggle */}
         <ThemeToggle size="sm" />
 
-        {/* User Role / Profile Pill */}
-        <div
-          role="status"
-          aria-label="Mode actif"
-          className="hidden sm:inline-flex items-center gap-2 px-2.5 py-1 rounded-control bg-app-surface-2 border border-app-border text-xs text-app-text font-medium select-none"
+        {/* User Role / Profile Pill (Clickable to edit profile) */}
+        <button
+          type="button"
+          onClick={() => navigate('/app/settings')}
+          aria-label={preferredName ? `Profil : ${preferredName}` : 'Paramètres du profil'}
+          title="Modifier le profil"
+          className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-control bg-app-surface-2 hover:bg-app-border border border-app-border text-xs text-app-text font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong select-none"
         >
           <div className="w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-emerald-500/20" />
-          <span className="capitalize">{settings.role}</span>
-        </div>
+          <User className="w-3.5 h-3.5 text-app-muted" />
+          <span className="max-w-[120px] truncate">
+            {preferredName || <span className="capitalize">{settings.role}</span>}
+          </span>
+        </button>
       </div>
 
       {/* Notifications Informative Modal */}
