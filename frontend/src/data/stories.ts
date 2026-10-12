@@ -1,5 +1,11 @@
 export interface Story {
   id: string;
+  isIllustrative: boolean;
+  scenarioTitle: {
+    fr: string;
+    ar: string;
+    en: string;
+  };
   author: string;
   role: {
     fr: string;
@@ -25,42 +31,54 @@ export interface Story {
 export const STORIES: Story[] = [
   {
     id: 'story-1',
-    author: 'Amina K.',
+    isIllustrative: true,
+    scenarioTitle: {
+      fr: 'Scénario 1 : Consultation en officine',
+      ar: 'سيناريو 1: استشارة في الصيدلية',
+      en: 'Scenario 1: Pharmacy Consultation',
+    },
+    author: 'Cas d’usage : Demande de médicament',
     role: {
-      fr: 'Membre de la communauté sourde',
-      ar: 'عضوة في مجتمع الصم',
-      en: 'Deaf Community Member',
+      fr: 'Patiente sourde (Cas illustratif)',
+      ar: 'مريضة صماء (حالة توضيحية)',
+      en: 'Deaf Patient (Illustrative case)',
     },
     location: 'Alger (Bab El Oued)',
     badge: 'deaf_community',
     context: 'pharmacy',
     quote: {
-      fr: "À la pharmacie, je devais toujours écrire sur des bouts de papier froissés ou attendre qu'un proche soit disponible. Pouvoir signer mes symptômes et voir les phrases traduites immédiatement change tout.",
-      ar: 'في الصيدلية، كنت دائمًا مضطرة للكتابة على قصاصات ورق أو انتظار مرافقة أحد الأقارب. القدرة على الإشارة بأعراضي ورؤية ترجمتها فورًا غيّرت كل شيء.',
-      en: 'At the pharmacy, I always had to write on crumpled scraps of paper or wait for a relative to accompany me. Being able to sign my symptoms and see them translated immediately changes everything.',
+      fr: 'Situation illustrée : Exprimer directement des symptômes de migraine et valider la posologie du traitement sans dépendre de papier froissé ou d’un tiers.',
+      ar: 'حالة توضيحية: التعبير عن أعراض الصداع بدقة ومعرفة الجرعة المحددة دون الحاجة إلى قصاصة ورقية أو وسيط.',
+      en: 'Illustrative situation: Expressing headache symptoms directly and validating treatment dosage without relying on scraps of paper or a third party.',
     },
     details: {
-      fr: 'Utilisation lors d’un épisode de migraine aiguë avec demande de paracétamol et posologie claire.',
-      ar: 'استخدام خلال نوبة صداع حاد مع طلب دواء الباراسيتامول ومعرفة الجرعة بدقة.',
-      en: 'Used during an acute migraine episode to request paracetamol and confirm exact dosage.',
+      fr: 'Cas d’usage lors d’un épisode de migraine aiguë avec demande de paracétamol et posologie claire.',
+      ar: 'دراسة حالة لاستخدام المنظومة خلال نوبة صداع حاد مع طلب دواء الباراسيتامول ومعرفة الجرعة بدقة.',
+      en: 'Use case during an acute headache episode to request paracetamol and confirm exact dosage.',
     },
     date: '2026-09',
   },
   {
     id: 'story-2',
-    author: 'Dr. Yacine M.',
+    isIllustrative: true,
+    scenarioTitle: {
+      fr: 'Scénario 2 : Accueil au comptoir pharmaceutique',
+      ar: 'سيناريو 2: استقبال بالصيدلية وتوضيح الجرعات',
+      en: 'Scenario 2: Pharmacy Counter Communication',
+    },
+    author: 'Cas d’usage : Sécurisation de la posologie',
     role: {
-      fr: 'Pharmacien d’officine',
-      ar: 'صيدلي ممارس',
-      en: 'Community Pharmacist',
+      fr: 'Pharmacien d’officine (Cas illustratif)',
+      ar: 'صيدلي ممارس (حالة توضيحية)',
+      en: 'Community Pharmacist (Illustrative case)',
     },
     location: 'Oran',
     badge: 'healthcare',
     context: 'pharmacy',
     quote: {
-      fr: "En officine, la compréhension exacte des allergies médicamenteuses et de la posologie est vitale. BridgeSign nous a permis d'accueillir nos patients sourds avec le respect, la rigueur et la confidentialité qu'ils méritent.",
-      ar: 'في الصيدلية، الفهم الدقيق للحساسية الدوائية والجرعات أمر حيوي لسلامة المريض. ساعدنا BridgeSign على استقبال المرضى الصم بالاحترام والدقة والسرية التي يستحقونها.',
-      en: 'At our pharmacy, understanding drug allergies and dosage instructions accurately is vital. BridgeSign enabled us to welcome Deaf patients with the respect, rigor, and privacy they deserve.',
+      fr: 'Situation illustrée : Vérification rigoureuse des allergies médicamenteuses et explication des prises matin et soir dans le respect de la confidentialité du patient.',
+      ar: 'حالة توضيحية: التحقق الدقيق من الحساسية الدوائية وشرح مواعيد تناول الدواء في إطار السرية التامة للمريض.',
+      en: 'Illustrative situation: Rigorous allergy verification and clear morning/evening dosage instructions preserving patient confidentiality.',
     },
     details: {
       fr: 'Validation de posologie et explication de prise matin et soir sans intermédiaire.',
@@ -71,24 +89,30 @@ export const STORIES: Story[] = [
   },
   {
     id: 'story-3',
-    author: 'Karim B.',
+    isIllustrative: true,
+    scenarioTitle: {
+      fr: 'Scénario 3 : Consultation médicale et vocabulaire LSA',
+      ar: 'سيناريو 3: استشارة طبية ومفردات لغة الإشارة',
+      en: 'Scenario 3: Clinical Consultation & LSA Vocabulary',
+    },
+    author: 'Cas d’usage : Autonomie de communication',
     role: {
-      fr: 'Étudiant sourd en informatique',
-      ar: 'طالب جامعي أصم في الإعلام الآلي',
-      en: 'Deaf CS Student',
+      fr: 'Étudiant sourd (Cas illustratif)',
+      ar: 'طالب أصم (حالة توضيحية)',
+      en: 'Deaf Student (Illustrative case)',
     },
     location: 'Constantine',
     badge: 'deaf_community',
     context: 'clinic',
     quote: {
-      fr: "La langue des signes algérienne est notre langue naturelle. Ce projet nous redonne de l'autonomie et prouve que notre langue a toute sa place dans les outils technologiques modernes.",
-      ar: 'لغة الإشارة الجزائرية هي لغتنا الطبيعية. هذا المشروع يعيد لنا استقلاليتنا ويثبت أن لغتنا لها مكانتها الكاملة في أدوات التكنولوجيا الحديثة.',
-      en: 'Algerian Sign Language is our natural language. This project gives us our independence back and proves that our language deserves full recognition in modern technology.',
+      fr: 'Situation illustrée : Échange direct avec un professionnel de santé pour décrire des antécédents médicaux en s’appuyant sur les signes du lexique LSA standardisé.',
+      ar: 'حالة توضيحية: تواصل مباشر مع الطبيب لوصف التاريخ المرضي بالاعتماد على إشارات القاموس الطبي للغة الإشارة الجزائرية.',
+      en: 'Illustrative situation: Direct communication with a healthcare provider describing medical history using standardized LSA sign vocabulary.',
     },
     details: {
-      fr: 'Partage d’expérience lors d’une visite en cabinet médical généraliste.',
-      ar: 'مشاركة تجربة شخصية خلال زيارة عيادة طبية عامة.',
-      en: 'Experience shared during a visit to a general medicine clinic.',
+      fr: 'Cas d’usage d’expression de symptômes lors d’une visite en cabinet médical généraliste.',
+      ar: 'دراسة حالة لوصف الأعراض خلال زيارة عيادة طبية عامة.',
+      en: 'Symptom expression use case during a visit to a general medicine clinic.',
     },
     date: '2026-10',
   },
