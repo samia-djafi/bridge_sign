@@ -18,6 +18,7 @@ interface SessionState {
   editMessage: (messageId: string, newOutputs: ConversationMessage['outputs']) => Promise<void>;
   setSpokenLang: (lang: SpokenLang) => Promise<void>;
   updateSessionTitle: (title: string) => Promise<void>;
+  clearSessionMessages: () => Promise<boolean>;
   incrementActiveTime: (deltaMs: number) => void;
 }
 
@@ -195,6 +196,25 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     set({
       currentSession: { ...currentSession, title },
     });
+  },
+
+  clearSessionMessages: async (): Promise<boolean> => {
+    const { currentSession } = get();
+    if (!currentSession) return false;
+
+    try {
+      await registry.sessions.clearSessionMessages(currentSession.id);
+      set((state) => ({
+        messages: [],
+        currentSession: state.currentSession
+          ? { ...state.currentSession, messageCount: 0 }
+          : null,
+      }));
+      return true;
+    } catch (err) {
+      console.error('Failed to clear session messages:', err);
+      return false;
+    }
   },
 
   incrementActiveTime: (deltaMs: number) => {
