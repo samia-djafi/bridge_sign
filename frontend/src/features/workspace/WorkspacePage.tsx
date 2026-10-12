@@ -612,8 +612,20 @@ export const WorkspacePage: React.FC = () => {
                   </h3>
                 </div>
                 <RecognitionStatus
-                  state={recognition.state}
-                  errorMessage={recognition.errorMessage}
+                  state={
+                    camera.status === 'idle'
+                      ? 'permission_needed'
+                      : camera.status === 'error'
+                      ? 'error'
+                      : recognition.state
+                  }
+                  errorMessage={
+                    camera.status === 'error'
+                      ? camera.errorCode === 'CAM-001'
+                        ? "Accès caméra refusé. Activez la caméra dans votre navigateur."
+                        : "Erreur matérielle caméra."
+                      : recognition.errorMessage
+                  }
                 />
               </div>
 
