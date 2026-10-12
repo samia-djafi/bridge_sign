@@ -65,10 +65,11 @@ export const WorkspacePage: React.FC = () => {
     editMessage,
     setSpokenLang,
     updateSessionTitle,
+    clearSessionMessages,
   } = useSessionStore();
 
   const { settings, updateSettings } = useSettingsStore();
-  const { addToast, setEmergencySheetOpen } = useUiStore();
+  const { addToast, setEmergencySheetOpen, setPrivacySheetOpen } = useUiStore();
   const { isDemoActive, getCurrentStep, nextStep } = useDemoStore();
 
   // Mobile navigation tabs
@@ -78,6 +79,7 @@ export const WorkspacePage: React.FC = () => {
   // Modals & Sheets
   const [endConfirmOpen, setEndConfirmOpen] = useState(false);
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
+  const [isClearingMessages, setIsClearingMessages] = useState(false);
   const [phrasePickerOpen, setPhrasePickerOpen] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleInput, setTitleInput] = useState('');
@@ -89,8 +91,9 @@ export const WorkspacePage: React.FC = () => {
   const [translatedClips, setTranslatedClips] = useState<SignClip[]>([]);
   const [composerSuggestions, setComposerSuggestions] = useState<Phrase[]>([]);
 
-  // Timeline auto-scroll
+  // Refs
   const timelineRef = useRef<HTMLDivElement>(null);
+  const composerTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [showScrollBottom, setShowScrollBottom] = useState(false);
 
   // Camera & recognition hooks
@@ -226,6 +229,99 @@ export const WorkspacePage: React.FC = () => {
       });
     }
   };
+
+  // Advertised Workspace Keyboard Shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      const isInput =
+        activeEl instanceof HTMLInputElement ||
+        activeEl instanceof HTMLTextAreaElement ||
+        activeEl instanceof HTMLSelectElement ||
+        (activeEl instanceof HTMLElement && activeEl.isContentEditable);
+
+      // Escape: Dismiss active modals/sheets or stop speech input
+      if (e.key === 'Escape') {
+        if (clearConfirmOpen) {
+          setClearConfirmOpen(false);
+          return;
+        }
+        if (endConfirmOpen) {
+          setEndConfirmOpen(false);
+          return;
+        }
+        if (phrasePickerOpen) {
+          setPhrasePickerOpen(false);
+          return;
+        }
+        if (sttListening) {
+          toggleSpeechRecognition();
+          return;
+        }
+        if (isInput && activeEl instanceof HTMLElement) {
+          activeEl.blur();
+          return;
+        }
+      }
+
+      // Space: Toggle Camera (Only outside input fields and buttons)
+      if (e.key === ' ' || e.code === 'Space') {
+        if (isInput || activeEl instanceof HTMLButtonElement) {
+          return;
+        }
+        e.preventDefault();
+        if (camera.status === 'active') {
+          camera.stopCamera();
+          addToast({ message: 'Caméra désactivée (Espace)', type: 'status' });
+        } else {
+          camera.startCamera();
+          addToast({ message: 'Caméra activée (Espace)', type: 'status' });
+        }
+        return;
+      }
+
+      // Alt key combinations
+      if (e.altKey && !e.ctrlKey && !e.metaKey) {
+        const k = e.key.toLowerCase();
+        if (k === 'e') {
+          e.preventDefault();
+          setEmergencySheetOpen(true);
+          addToast({ message: 'Phrases d’urgence (Alt+E)', type: 'status' });
+        } else if (k === 'm') {
+          e.preventDefault();
+          toggleSpeechRecognition();
+        } else if (k === 'p') {
+          e.preventDefault();
+          setPrivacySheetOpen(true);
+          addToast({ message: 'Confidentialité & Aide (Alt+P)', type: 'status' });
+        } else if (k === 'r') {
+          e.preventDefault();
+          setPhrasePickerOpen((prev) => !prev);
+        } else if (k === 't') {
+          e.preventDefault();
+          setComposerMode('type');
+          setTimeout(() => {
+            composerTextareaRef.current?.focus();
+          }, 50);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    clearConfirmOpen,
+    endConfirmOpen,
+    phrasePickerOpen,
+    sttListening,
+    camera.status,
+    camera.startCamera,
+    camera.stopCamera,
+    setEmergencySheetOpen,
+    setPrivacySheetOpen,
+    addToast,
+    toggleSpeechRecognition,
+  ]);
 
   // Left Panel: Send proposed sentence from LSA
   const handleSendProposed = async (sentence: Translation, displayLang: SpokenLang) => {
@@ -408,7 +504,7 @@ export const WorkspacePage: React.FC = () => {
             size="sm"
             onClick={() => setEmergencySheetOpen(true)}
             iconStart={<Siren className="w-4 h-4 text-app-warning" />}
-            className="border-app-warning/50 hover:bg-amber-50"
+            className="border-app-warning/50 hover:bg-amber-500/10 dark:hover:bg-amber-500/15"
           >
             <span className="hidden md:inline">{t('emergency.button', 'Urgence')}</span>
           </Button>
@@ -474,13 +570,13 @@ export const WorkspacePage: React.FC = () => {
       </div>
 
       {/* Main Workspace Area (Desktop Grid vs Mobile View) */}
-      <div className="flex-1 overflow-y-auto lg:overflow-hidden p-4 md:p-6 flex flex-col gap-4">
+      <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden p-3 sm:p-4 lg:p-5 flex flex-col gap-3 lg:gap-4">
         {/* TOP ROW: Panels (Sign on Start, Language on End) */}
-        <div className={`grid grid-cols-1 ${colRatio} gap-4 lg:min-h-[380px] lg:max-h-[50vh]`}>
+        <div className={`grid grid-cols-1 ${colRatio} gap-3 lg:gap-4 min-h-0 lg:flex-1`}>
           {/* LEFT PANEL: LSA (Sign side) */}
           <Card
             p={20}
-            className={`flex flex-col justify-between overflow-y-auto ${
+            className={`flex flex-col justify-between min-h-0 overflow-y-auto ${
               mobileTab !== 'sign' ? 'hidden md:flex' : 'flex'
             }`}
           >
@@ -619,7 +715,7 @@ export const WorkspacePage: React.FC = () => {
           {/* RIGHT PANEL: Language (Spoken / Hearing side) */}
           <Card
             p={20}
-            className={`flex flex-col justify-between overflow-y-auto ${
+            className={`flex flex-col justify-between min-h-0 overflow-y-auto ${
               mobileTab !== 'speech' ? 'hidden md:flex' : 'flex'
             }`}
           >
@@ -649,6 +745,7 @@ export const WorkspacePage: React.FC = () => {
               {composerMode === 'type' ? (
                 <div className="space-y-2">
                   <textarea
+                    ref={composerTextareaRef}
                     rows={3}
                     dir="auto"
                     value={composerText}
@@ -745,7 +842,7 @@ export const WorkspacePage: React.FC = () => {
         {/* BOTTOM ROW: Conversation Timeline */}
         <Card
           p={20}
-          className={`flex-1 flex flex-col min-h-[300px] overflow-hidden ${
+          className={`flex-1 min-h-[220px] lg:min-h-0 flex flex-col overflow-hidden ${
             mobileTab !== 'conversation' ? 'hidden md:flex' : 'flex'
           }`}
         >
@@ -888,28 +985,54 @@ export const WorkspacePage: React.FC = () => {
       {/* Clear Messages Confirmation Modal */}
       <Modal
         isOpen={clearConfirmOpen}
-        onClose={() => setClearConfirmOpen(false)}
-        title="Effacer les messages ?"
+        onClose={() => !isClearingMessages && setClearConfirmOpen(false)}
+        title={t('timeline.clearConfirmTitle', 'Effacer les messages ?')}
         maxWidth="sm"
         footer={
           <>
-            <Button variant="ghost" onClick={() => setClearConfirmOpen(false)}>
-              Annuler
+            <Button
+              variant="ghost"
+              disabled={isClearingMessages}
+              onClick={() => setClearConfirmOpen(false)}
+            >
+              {t('common.cancel', 'Annuler')}
             </Button>
             <Button
               variant="destructive"
+              disabled={isClearingMessages}
               onClick={async () => {
-                setClearConfirmOpen(false);
-                // Clear messages in state
+                setIsClearingMessages(true);
+                try {
+                  const success = await clearSessionMessages();
+                  if (success) {
+                    setClearConfirmOpen(false);
+                    addToast({
+                      message: t('timeline.messagesCleared', 'Messages effacés avec succès'),
+                      type: 'status',
+                    });
+                  } else {
+                    addToast({
+                      message: t('timeline.clearFailed', 'Échec de la suppression des messages'),
+                      type: 'alert',
+                    });
+                  }
+                } catch {
+                  addToast({
+                    message: t('timeline.clearFailed', 'Échec de la suppression des messages'),
+                    type: 'alert',
+                  });
+                } finally {
+                  setIsClearingMessages(false);
+                }
               }}
             >
-              Effacer
+              {isClearingMessages ? t('common.loading', 'Effacement…') : t('timeline.clearAction', 'Effacer')}
             </Button>
           </>
         }
       >
         <p className="text-sm text-app-muted">
-          Tous les messages actuels seront effacés de cette session.
+          {t('timeline.clearConfirmDesc', 'Tous les messages de la conversation active seront effacés.')}
         </p>
       </Modal>
     </div>
