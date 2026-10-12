@@ -81,7 +81,7 @@ export const EmergencySheet: React.FC = () => {
                 key={phrase.id}
                 type="button"
                 onClick={() => handlePhraseSelect(phrase)}
-                className="flex flex-col items-center justify-center p-4 min-h-[96px] rounded-card border-2 border-app-warning/40 bg-app-surface hover:bg-amber-50 hover:border-app-warning active:scale-95 transition-all text-center gap-2 shadow-1"
+                className="flex flex-col items-center justify-center p-4 min-h-[96px] rounded-card border-2 border-app-warning/50 dark:border-app-warning/40 bg-app-surface hover:bg-amber-500/10 dark:hover:bg-amber-500/15 hover:border-app-warning focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong active:scale-95 transition-all text-center gap-2 shadow-1"
               >
                 {getEmergencyIcon(phrase.gloss)}
                 <span className="text-sm font-bold text-app-text leading-tight">
