@@ -7,6 +7,7 @@ import { speechService } from './speech';
 import { sessionRepository } from './session-repository';
 import { phrasebookService } from './phrasebook-service';
 import { metricsService } from './metrics';
+import { profileService } from './profile-service';
 import { AiMode } from '@/types/domain';
 import { SignRecognitionService } from '@/types/services';
 
@@ -66,6 +67,10 @@ class ServiceRegistry {
 
   get metrics() {
     return metricsService;
+  }
+
+  get profile() {
+    return profileService;
   }
 }
 
