@@ -71,14 +71,14 @@ export const AppShell: React.FC = () => {
             className="flex items-center gap-3 py-2 px-1 rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong mb-6"
           >
             <img
-              src="/icons/logo-mark.svg"
+              src="/icons/logo-mark.png"
               alt="BridgeSign Logo"
-              className="w-10 h-10 rounded-control shrink-0 shadow-1"
+              className="w-10 h-10 rounded-control shrink-0 shadow-1 object-cover"
             />
             <div className="hidden lg:flex flex-col">
               <span className="font-bold text-base tracking-tight text-app-text">BridgeSign</span>
               <span className="text-[10px] text-app-muted leading-tight truncate">
-                {t('app.tagline', 'Chaque main a une voix.')}
+                {t('app.tagline', 'Every Hand Has a Voice.')}
               </span>
             </div>
           </NavLink>
