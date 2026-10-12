@@ -90,6 +90,10 @@ export const router = createBrowserRouter([
         path: 'design',
         element: <DesignPage />,
       },
+      {
+        path: '*',
+        element: <NotFoundPage />,
+      },
     ],
   },
   {
