@@ -82,6 +82,7 @@ export interface SessionRepository {
   appendMessage(message: Omit<ConversationMessage, 'id' | 'createdAt'>): Promise<ConversationMessage>;
   listMessages(sessionId: string): Promise<ConversationMessage[]>;
   updateMessage(id: string, changes: Partial<ConversationMessage>): Promise<void>;
+  clearSessionMessages(sessionId: string): Promise<void>;
   clearAll(): Promise<void>;
   exportSession(id: string): Promise<{ session: ConversationSession; messages: ConversationMessage[] }>;
 }
