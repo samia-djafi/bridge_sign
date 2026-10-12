@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useUiStore } from '@/stores/uiStore';
@@ -17,6 +17,7 @@ import {
   Info,
 } from 'lucide-react';
 import { OfflineBanner } from '@/components/domain/OfflineBanner';
+import { TopNavBar } from '@/components/domain/TopNavBar';
 import { ToastContainer } from '@/components/ui/Toast';
 import { EmergencySheet } from '@/components/domain/EmergencySheet';
 import { PrivacySheet } from '@/components/domain/PrivacySheet';
@@ -26,9 +27,12 @@ import { Button } from '@/components/ui/Button';
 export const AppShell: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentSession, status } = useSessionStore();
   const { setPrivacySheetOpen, setEmergencySheetOpen } = useUiStore();
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
+
+  const isWorkspace = location.pathname.startsWith('/app/workspace/');
 
   const hasActiveSession = currentSession && status === 'active';
 
@@ -173,6 +177,9 @@ export const AppShell: React.FC = () => {
       <div className="flex flex-col flex-1 min-w-0 h-full overflow-hidden">
         {/* Offline notification banner if network dropped */}
         <OfflineBanner />
+
+        {/* Global Standardized Top Bar across website (except specialized full-bleed workspace) */}
+        {!isWorkspace && <TopNavBar />}
 
         {/* Route views rendered inside scrollable main container */}
         <main
