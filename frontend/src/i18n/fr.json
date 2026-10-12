@@ -11,12 +11,12 @@
     "dashboard": "Accueil",
     "newConversation": "Nouvelle conversation",
     "twoWay": "Conversation à double sens",
-    "signToLang": "LSA → Langue",
-    "langToSign": "Langue → LSA",
+    "signToLang": "Signes → Texte",
+    "langToSign": "Texte → Signes",
     "phrasebook": "Phrases rapides",
     "realStories": "Témoignages",
     "history": "Historique",
-    "diagnostics": "Diagnostic IA",
+    "diagnostics": "Diagnostics",
     "settings": "Paramètres",
     "about": "À propos",
     "privacyHelp": "Confidentialité & Aide",
@@ -40,9 +40,9 @@
     "end": "Terminer",
     "continue": "Continuer",
     "viewAll": "Voir tout",
-    "signToLangTitle": "LSA → Langue",
+    "signToLangTitle": "Signes → Texte",
     "signToLangDesc": "Signez face à la caméra pour traduire vos gestes en texte et voix de synthèse.",
-    "langToSignTitle": "Langue → LSA",
+    "langToSignTitle": "Texte → Signes",
     "langToSignDesc": "Tapez du texte ou parlez au micro pour afficher la séquence de signes LSA.",
     "featurePharmacyTitle": "Pharmacie & Santé",
     "featurePharmacyDesc": "Vocabulaire médical et phrases courantes adaptées au comptoir officinal.",
@@ -68,8 +68,8 @@
     "offlineStatus": "Prêt hors-ligne"
   },
   "mode": {
-    "signToLang": "LSA → Langue",
-    "langToSign": "Langue → LSA",
+    "signToLang": "Signes → Texte",
+    "langToSign": "Texte → Signes",
     "twoWay": "Conversation à double sens"
   },
   "rec": {

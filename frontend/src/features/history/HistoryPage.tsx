@@ -34,7 +34,7 @@ export const HistoryPage: React.FC = () => {
   };
 
   useEffect(() => {
-    document.title = `${t('nav.history')} — ${t('app.name')}`;
+    document.title = `${t('nav.history')} | ${t('app.name')}`;
     loadSessions();
   }, [t]);
 

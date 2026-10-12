@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/Card';
 import { ShieldCheck, Info, HeartHandshake } from 'lucide-react';
@@ -6,6 +6,10 @@ import { VOCAB_SIZE } from '@/data/vocabulary.config';
 
 export const AboutPage: React.FC = () => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    document.title = `${t('nav.about', 'About')} | ${t('app.name', 'BridgeSign')}`;
+  }, [t]);
 
   return (
     <div className="flex flex-col min-h-full">

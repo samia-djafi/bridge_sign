@@ -46,7 +46,7 @@ export const StoriesPage: React.FC = () => {
 
   // Load saved local feedback on mount
   useEffect(() => {
-    document.title = `${t('nav.realStories', 'Témoignages')} — ${t('app.name', 'BridgeSign')}`;
+    document.title = `${t('nav.realStories', 'Real Stories')} | ${t('app.name', 'BridgeSign')}`;
     loadLocalFeedback();
   }, [t]);
 
