@@ -1,14 +1,11 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { SessionMode } from '@/types/domain';
-import { StatusBar } from '@/components/domain/StatusBar';
 import { Loader } from 'lucide-react';
 
 export const SingleModePage: React.FC = () => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { startSession } = useSessionStore();
@@ -40,7 +37,6 @@ export const SingleModePage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <StatusBar title={isSignToLang ? t('mode.signToLang') : t('mode.langToSign')} />
       <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-3 text-app-muted">
         <Loader className="w-8 h-8 animate-spin text-app-primary-strong" />
         <p className="text-sm font-medium">Ouverture du mode ciblé…</p>

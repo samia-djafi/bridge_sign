@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { registry } from '@/services/registry';
 import { ConversationSession } from '@/types/domain';
 import { useUiStore } from '@/stores/uiStore';
-import { StatusBar } from '@/components/domain/StatusBar';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -26,6 +25,7 @@ export const HistoryPage: React.FC = () => {
   const [sessions, setSessions] = useState<ConversationSession[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sessionToDelete, setSessionToDelete] = useState<ConversationSession | null>(null);
+  const [clearAllConfirmOpen, setClearAllConfirmOpen] = useState(false);
   const [storageBannerDismissed, setStorageBannerDismissed] = useState(false);
 
   const loadSessions = async () => {
@@ -37,6 +37,16 @@ export const HistoryPage: React.FC = () => {
     document.title = `${t('nav.history')} — ${t('app.name')}`;
     loadSessions();
   }, [t]);
+
+  const handleClearAll = async () => {
+    await registry.sessions.clearAll();
+    setClearAllConfirmOpen(false);
+    await loadSessions();
+    addToast({
+      message: t('history.clearedAllToast', 'Tout l\'historique des conversations a été effacé.'),
+      type: 'status',
+    });
+  };
 
   const handleDeleteWithUndo = async (session: ConversationSession) => {
     setSessionToDelete(null);
@@ -64,17 +74,27 @@ export const HistoryPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <StatusBar title={t('nav.history', 'Historique')} />
-
       <div className="p-4 sm:p-6 lg:p-8 max-w-5xl w-full mx-auto space-y-6">
-        {/* Title */}
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-app-text">
-            {t('history.title', 'Historique des conversations')}
-          </h2>
-          <p className="text-sm text-app-muted mt-1">
-            Retrouvez et réécoutez vos échanges précédents.
-          </p>
+        {/* Title & Clear Action */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-app-text">
+              {t('history.title', 'Historique des conversations')}
+            </h2>
+            <p className="text-sm text-app-muted mt-1">
+              Retrouvez et réécoutez vos échanges précédents.
+            </p>
+          </div>
+          {sessions.length > 0 && (
+            <Button
+              variant="destructive"
+              size="sm"
+              iconStart={<Trash2 className="w-4 h-4" />}
+              onClick={() => setClearAllConfirmOpen(true)}
+            >
+              {t('history.clearAll', 'Effacer l\'historique')}
+            </Button>
+          )}
         </div>
 
         {/* Local Storage Banner */}
@@ -209,6 +229,31 @@ export const HistoryPage: React.FC = () => {
           {t(
             'history.deleteConfirmText',
             'Cette action peut être annulée pendant 5 secondes.'
+          )}
+        </p>
+      </Modal>
+
+      {/* Clear All Confirmation Modal */}
+      <Modal
+        isOpen={clearAllConfirmOpen}
+        onClose={() => setClearAllConfirmOpen(false)}
+        title={t('history.clearAllConfirmTitle', 'Effacer tout l\'historique des conversations ?')}
+        maxWidth="sm"
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setClearAllConfirmOpen(false)}>
+              Annuler
+            </Button>
+            <Button variant="destructive" onClick={handleClearAll}>
+              {t('history.clearAll', 'Effacer l\'historique')}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-app-muted">
+          {t(
+            'history.clearAllConfirmText',
+            'Cette action supprimera définitivement toutes les sessions et tous les messages enregistrés sur cet appareil.'
           )}
         </p>
       </Modal>

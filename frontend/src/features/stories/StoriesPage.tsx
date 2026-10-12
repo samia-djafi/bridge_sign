@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StatusBar } from '@/components/domain/StatusBar';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -47,8 +46,6 @@ export const StoriesPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <StatusBar title={t('nav.realStories', 'Témoignages')} />
-
       <div className="p-4 sm:p-6 lg:p-8 max-w-5xl w-full mx-auto space-y-6">
         {/* Header Hero */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-app-border">
