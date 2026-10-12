@@ -112,26 +112,45 @@ export const NewConversationPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <div className="p-4 sm:p-6 lg:p-8 max-w-3xl w-full mx-auto">
-        <form onSubmit={handleStart} className="space-y-6">
-          <Card p={24} className="bg-app-surface border border-app-border shadow-2 space-y-6">
+      <div className="p-3 sm:p-5 lg:p-7 max-w-5xl w-full mx-auto">
+        <form onSubmit={handleStart} className="space-y-4 sm:space-y-5">
+          <Card p={20} className="bg-app-surface border border-app-border shadow-2 space-y-5">
             <div>
               <h2 className="text-xl font-bold text-app-text">
                 {t('newConv.title', 'Nouvelle conversation')}
               </h2>
-              <p className="text-xs text-app-muted mt-1">
+              <p className="text-xs text-app-muted mt-0.5">
                 Configurez l'environnement avant de commencer l'échange.
               </p>
             </div>
 
-            {/* 1. Context */}
-            <div className="space-y-2">
-              <label className="block text-xs font-bold uppercase tracking-wider text-app-muted">
-                {t('newConv.contextLabel', "Contexte de l'échange")}
-              </label>
-              <ContextSelector value={context} onChange={setContext} />
-            </div>
+            {/* 1. Context & Title in responsive desktop grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
+              <div className="min-w-0 w-full space-y-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-app-muted">
+                  {t('newConv.contextLabel', "Contexte de l'échange")}
+                </label>
+                <ContextSelector value={context} onChange={setContext} />
+              </div>
 
+              <div className="w-full min-w-0">
+                <label
+                  htmlFor="session-title"
+                  className="block text-xs font-bold uppercase tracking-wider text-app-muted"
+                >
+                  {t('newConv.titleLabel', 'Titre de la session (facultatif)')}
+                </label>
+                <input
+                  id="session-title"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder={t('newConv.titlePlaceholder', 'ex. Pharmacie - Mardi')}
+                  className="w-full h-11 px-3.5 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D9488]"
+                />
+              </div>
+            </div>
+            
             {/* 2. Spoken Language & 3. Mode */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -156,24 +175,6 @@ export const NewConversationPage: React.FC = () => {
                   className="w-full"
                 />
               </div>
-            </div>
-
-            {/* 4. Title Input */}
-            <div className="space-y-2">
-              <label
-                htmlFor="session-title"
-                className="block text-xs font-bold uppercase tracking-wider text-app-muted"
-              >
-                {t('newConv.titleLabel', 'Titre de la session (facultatif)')}
-              </label>
-              <input
-                id="session-title"
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={t('newConv.titlePlaceholder', 'ex. Pharmacie — Mardi')}
-                className="w-full h-11 px-3.5 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
-              />
             </div>
 
             {/* 5. Readiness Checklist (Accurate Sensor Inspection) */}

@@ -46,7 +46,7 @@ export const StoriesPage: React.FC = () => {
 
   // Load saved local feedback on mount
   useEffect(() => {
-    document.title = `${t('nav.realStories', 'Scénarios d’usage')} — ${t('app.name', 'BridgeSign')}`;
+    document.title = `${t('nav.realStories', 'Témoignages')} — ${t('app.name', 'BridgeSign')}`;
     loadLocalFeedback();
   }, [t]);
 
@@ -112,13 +112,13 @@ export const StoriesPage: React.FC = () => {
                 <HeartHandshake className="w-5 h-5" />
               </div>
               <h2 className="text-2xl font-extrabold text-app-text">
-                {t('stories.title', 'Scénarios d’usage')}
+                {t('stories.title', 'Témoignages')}
               </h2>
             </div>
             <p className="text-xs sm:text-sm text-app-muted max-w-2xl leading-relaxed">
               {t(
                 'stories.subtitle',
-                'Ces scénarios sont illustratifs et ne constituent pas des témoignages réels. Ils présentent les cas d’usage prévus de BridgeSign en milieu médical et quotidien en Algérie.'
+                'Histoires vécues et scénarios illustratifs de BridgeSign dans le milieu médical et le quotidien en Algérie.'
               )}
             </p>
           </div>

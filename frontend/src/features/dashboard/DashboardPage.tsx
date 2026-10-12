@@ -123,14 +123,6 @@ export const DashboardPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Illustration 1: Hands silhouette graphic */}
-            <div className="pointer-events-none absolute end-0 inset-y-0 flex items-center justify-end overflow-hidden opacity-90 sm:opacity-100">
-              <img
-                src="/illustrations/welcome-hands.png"
-                alt=""
-                className="h-full max-h-36 sm:max-h-44 w-auto object-contain object-right"
-              />
-            </div>
           </div>
         </section>
 
@@ -582,14 +574,6 @@ export const DashboardPage: React.FC = () => {
               )}
             </div>
 
-            {/* Illustration 2: "Every hand has a voice" wave banner */}
-            <div className="rounded-card overflow-hidden border border-app-border-strong/40 bg-app-surface shadow-1">
-              <img
-                src="/illustrations/slogan-wave.png"
-                alt="Every hand has a voice."
-                className="w-full h-auto object-cover"
-              />
-            </div>
           </aside>
         </div>
       </div>

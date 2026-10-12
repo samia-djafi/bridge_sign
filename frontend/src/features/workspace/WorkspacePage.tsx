@@ -570,17 +570,17 @@ export const WorkspacePage: React.FC = () => {
       </div>
 
       {/* Main Workspace Area (Desktop Grid vs Mobile View) */}
-      <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden p-3 sm:p-4 lg:p-5 flex flex-col gap-3 lg:gap-4">
+      <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden p-2.5 sm:p-3.5 lg:p-4 w-full max-w-[1720px] mx-auto flex flex-col gap-2.5 lg:gap-3">
         {/* TOP ROW: Panels (Sign on Start, Language on End) */}
-        <div className={`grid grid-cols-1 ${colRatio} gap-3 lg:gap-4 min-h-0 lg:flex-1`}>
+        <div className={`grid grid-cols-1 ${colRatio} gap-2.5 lg:gap-3.5 min-h-0 lg:flex-1`}>
           {/* LEFT PANEL: LSA (Sign side) */}
           <Card
-            p={20}
+            p={16}
             className={`flex flex-col justify-between min-h-0 overflow-y-auto ${
               mobileTab !== 'sign' ? 'hidden md:flex' : 'flex'
             }`}
           >
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <div className="flex items-center justify-between border-b border-app-border pb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xl" aria-hidden="true">
@@ -661,28 +661,28 @@ export const WorkspacePage: React.FC = () => {
             </div>
 
             {/* Left Controls Strip */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-app-border mt-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-app-border mt-2.5">
               <div className="flex items-center gap-2">
                 {recognition.state === 'recognizing' || recognition.state === 'capturing' ? (
                   <Button
                     variant="destructive"
-                    size="md"
+                    size="sm"
                     onClick={recognition.stopRecognition}
-                    iconStart={<StopCircle className="w-4 h-4" />}
+                    iconStart={<StopCircle className="w-3.5 h-3.5" />}
                   >
                     {t('rec.stopRec', 'Arrêter')}
                   </Button>
                 ) : (
                   <Button
                     variant="primary"
-                    size="md"
+                    size="sm"
                     onClick={async () => {
                       if (camera.status !== 'ready') {
                         await camera.startCamera();
                       }
                       recognition.startRecognition();
                     }}
-                    iconStart={<Radio className="w-4 h-4 animate-pulse" />}
+                    iconStart={<Radio className="w-3.5 h-3.5 animate-pulse" />}
                   >
                     {t('rec.startRec', 'Démarrer la reconnaissance')}
                   </Button>
@@ -692,9 +692,9 @@ export const WorkspacePage: React.FC = () => {
                 {isDemoActive && (
                   <Button
                     variant="secondary"
-                    size="md"
+                    size="sm"
                     onClick={handleSimulateSign}
-                    iconStart={<Sparkles className="w-4 h-4 text-app-warning" />}
+                    iconStart={<Sparkles className="w-3.5 h-3.5 text-app-warning" />}
                   >
                     {t('rec.simulateSign', 'Simuler le signe')}
                   </Button>
@@ -703,9 +703,9 @@ export const WorkspacePage: React.FC = () => {
 
               <Button
                 variant="ghost"
-                size="md"
+                size="sm"
                 onClick={() => setPhrasePickerOpen(true)}
-                iconStart={<BookOpen className="w-4 h-4" />}
+                iconStart={<BookOpen className="w-3.5 h-3.5" />}
               >
                 {t('rec.usePhrases', 'Phrases rapides')}
               </Button>
@@ -714,12 +714,12 @@ export const WorkspacePage: React.FC = () => {
 
           {/* RIGHT PANEL: Language (Spoken / Hearing side) */}
           <Card
-            p={20}
+            p={16}
             className={`flex flex-col justify-between min-h-0 overflow-y-auto ${
               mobileTab !== 'speech' ? 'hidden md:flex' : 'flex'
             }`}
           >
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center justify-between border-b border-app-border pb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xl" aria-hidden="true">
@@ -746,7 +746,7 @@ export const WorkspacePage: React.FC = () => {
                 <div className="space-y-2">
                   <textarea
                     ref={composerTextareaRef}
-                    rows={3}
+                    rows={2}
                     dir="auto"
                     value={composerText}
                     onChange={(e) => setComposerText(e.target.value)}
@@ -757,37 +757,37 @@ export const WorkspacePage: React.FC = () => {
                       }
                     }}
                     placeholder={t('composer.placeholder', 'Tapez votre message… (Entrée pour traduire)')}
-                    className="w-full p-3.5 rounded-control border border-app-border-strong bg-app-surface text-app-text text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
+                    className="w-full p-3 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm sm:text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
                   />
                   <div className="flex justify-end">
                     <Button
                       variant="primary"
-                      size="md"
+                      size="sm"
                       disabled={!composerText.trim()}
                       onClick={() => handleTranslateToLsa()}
-                      iconEnd={<Send className="w-4 h-4" />}
+                      iconEnd={<Send className="w-3.5 h-3.5" />}
                     >
                       {t('composer.translateAction', 'Traduire en LSA')}
                     </Button>
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center p-6 bg-app-surface-2 rounded-control border border-app-border space-y-4 text-center">
+                <div className="flex flex-col items-center justify-center p-4 bg-app-surface-2 rounded-control border border-app-border space-y-2.5 text-center">
                   <button
                     type="button"
                     onClick={toggleSpeechRecognition}
                     aria-label={sttListening ? 'Arrêter l’écoute' : 'Appuyer pour parler'}
-                    className={`w-18 h-18 rounded-full flex items-center justify-center transition-all ${
+                    className={`w-14 h-14 rounded-full flex items-center justify-center transition-all ${
                       sttListening
                         ? 'bg-app-error text-white animate-pulse shadow-lg scale-105'
                         : 'bg-app-primary-strong text-white hover:bg-app-primary-hover shadow-1'
                     }`}
                   >
-                    <Mic className="w-8 h-8" />
+                    <Mic className="w-6 h-6" />
                   </button>
 
                   <div>
-                    <p className="text-sm font-bold text-app-text">
+                    <p className="text-xs sm:text-sm font-bold text-app-text">
                       {sttListening
                         ? t('composer.listening', 'Écoute en cours…')
                         : t('composer.tapToSpeak', 'Appuyer pour parler')}
@@ -802,8 +802,8 @@ export const WorkspacePage: React.FC = () => {
               )}
 
               {/* Quick suggestions chips */}
-              <div className="space-y-1.5">
-                <span className="text-xs font-semibold uppercase tracking-wider text-app-muted">
+              <div className="space-y-1">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-app-muted">
                   {t('composer.quickSuggestions', 'Suggestions rapides')}
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -817,7 +817,7 @@ export const WorkspacePage: React.FC = () => {
                           setComposerText(text);
                           handleTranslateToLsa(text);
                         }}
-                        className="px-2.5 py-1 rounded-control bg-app-surface-2 border border-app-border hover:bg-app-border text-xs text-app-text transition-colors text-start"
+                        className="px-2 py-1 rounded-control bg-app-surface-2 border border-app-border hover:bg-app-border text-xs text-app-text transition-colors text-start"
                       >
                         {text}
                       </button>
@@ -828,7 +828,7 @@ export const WorkspacePage: React.FC = () => {
 
               {/* Sign Player for translated LSA clips */}
               {translatedClips.length > 0 && (
-                <div className="space-y-2 pt-2 border-t border-app-border">
+                <div className="space-y-1.5 pt-2 border-t border-app-border">
                   <span className="text-xs font-bold uppercase tracking-wider text-app-primary-strong">
                     {t('composer.lsaSequence', 'Séquence LSA')}
                   </span>
@@ -841,8 +841,8 @@ export const WorkspacePage: React.FC = () => {
 
         {/* BOTTOM ROW: Conversation Timeline */}
         <Card
-          p={20}
-          className={`flex-1 min-h-[220px] lg:min-h-0 flex flex-col overflow-hidden ${
+          p={16}
+          className={`flex-1 min-h-[160px] max-h-[36vh] lg:min-h-0 flex flex-col overflow-hidden ${
             mobileTab !== 'conversation' ? 'hidden md:flex' : 'flex'
           }`}
         >

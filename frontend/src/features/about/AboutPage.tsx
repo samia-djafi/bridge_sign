@@ -12,13 +12,13 @@ export const AboutPage: React.FC = () => {
       <div className="p-4 sm:p-6 lg:p-8 max-w-4xl w-full mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-app-primary-strong flex items-center justify-center shrink-0 shadow-2">
-            <img src="/icons/logo-mark.svg" alt="" className="w-9 h-9 invert" />
+          <div className="w-14 h-14 rounded-2xl overflow-hidden flex items-center justify-center shrink-0 shadow-2">
+            <img src="/icons/logo-mark.png" alt="BridgeSign Logo" className="w-full h-full object-cover" />
           </div>
           <div>
             <h2 className="text-2xl font-extrabold text-app-text">BridgeSign</h2>
             <p className="text-sm font-semibold text-app-primary-strong">
-              {t('app.tagline', 'Chaque main a une voix.')}
+              {t('app.tagline', 'Every Hand Has a Voice.')}
             </p>
           </div>
         </div>
