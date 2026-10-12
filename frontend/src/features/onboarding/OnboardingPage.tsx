@@ -75,29 +75,34 @@ export const OnboardingPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-app-bg text-app-text flex flex-col justify-between p-6 max-w-2xl mx-auto">
+    <div className="min-h-screen bg-app-bg text-app-text flex flex-col justify-between p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto selection:bg-teal-500/20">
       {/* Top Header: Stepper Dots & Skip */}
-      <header className="flex items-center justify-between py-2">
-        <div
-          className="flex items-center gap-2"
-          role="progressbar"
-          aria-valuenow={currentStep}
-          aria-valuemin={1}
-          aria-valuemax={totalSteps}
-          aria-label={`Étape ${currentStep} sur ${totalSteps}`}
-        >
-          {[1, 2, 3, 4, 5].map((s) => (
-            <div
-              key={s}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                s === currentStep
-                  ? 'w-8 bg-app-primary-strong'
-                  : s < currentStep
-                  ? 'w-2 bg-app-primary'
-                  : 'w-2 bg-app-border-strong'
-              }`}
-            />
-          ))}
+      <header className="flex items-center justify-between py-3 px-2 border-b border-app-border/60">
+        <div className="flex items-center gap-3">
+          <div
+            className="flex items-center gap-2"
+            role="progressbar"
+            aria-valuenow={currentStep}
+            aria-valuemin={1}
+            aria-valuemax={totalSteps}
+            aria-label={`Étape ${currentStep} sur ${totalSteps}`}
+          >
+            {[1, 2, 3, 4, 5].map((s) => (
+              <div
+                key={s}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  s === currentStep
+                    ? 'w-9 bg-[#0D9488]'
+                    : s < currentStep
+                    ? 'w-2.5 bg-teal-600/70'
+                    : 'w-2 bg-app-border-strong'
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-xs font-semibold text-app-muted">
+            {currentStep} / {totalSteps}
+          </span>
         </div>
 
         {currentStep < totalSteps && (
@@ -110,7 +115,7 @@ export const OnboardingPage: React.FC = () => {
               }
               setCurrentStep(totalSteps);
             }}
-            className="text-xs font-semibold text-app-muted hover:text-app-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong rounded px-1.5 py-0.5"
+            className="text-xs font-semibold text-app-muted hover:text-app-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D9488] rounded px-2.5 py-1 transition-colors"
           >
             {t('onboarding.skip', 'Passer')}
           </button>
@@ -118,35 +123,28 @@ export const OnboardingPage: React.FC = () => {
       </header>
 
       {/* Step Contents */}
-      <main className="my-auto py-6">
+      <main className="my-auto py-8">
         {/* STEP 1: Welcome & Preferred Name */}
         {currentStep === 1 && (
           <div className="flex flex-col items-center text-center space-y-6 animate-fade-in max-w-lg mx-auto">
-            {/* SVG Bridge Visual */}
-            <div className="w-48 h-28 flex items-center justify-center">
-              <svg viewBox="0 0 200 100" fill="none" className="w-full h-full" aria-hidden="true">
-                <circle cx="35" cy="50" r="14" stroke="#0F766E" strokeWidth="3" />
-                <path d="M20 85 C20 70, 50 70, 50 85" stroke="#0F766E" strokeWidth="3" />
-                <circle cx="165" cy="50" r="14" stroke="#0F766E" strokeWidth="3" />
-                <path d="M150 85 C150 70, 180 70, 180 85" stroke="#0F766E" strokeWidth="3" />
-                {/* Connecting Arc */}
-                <path
-                  d="M48 40 C 70 10, 130 10, 152 40"
-                  stroke="#2DD4BF"
-                  strokeWidth="4"
-                  strokeDasharray="4 4"
+            {/* Official Brand Logo Mark */}
+            <div className="relative group">
+              <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-2 border border-teal-500/20 bg-[#0F2229] p-1.5 flex items-center justify-center">
+                <img
+                  src="/icons/logo-mark.png"
+                  alt="BridgeSign Logo"
+                  className="w-full h-full object-cover rounded-xl"
                 />
-                <path d="M60 55 C 80 30, 120 30, 140 55" stroke="#0F766E" strokeWidth="3" />
-              </svg>
+              </div>
             </div>
 
             {/* Product branding */}
             <div className="space-y-1">
-              <span className="text-xs font-bold tracking-widest uppercase text-app-primary-strong">
+              <span className="text-xs font-bold tracking-widest uppercase text-[#0D9488]">
                 BridgeSign
               </span>
               <p className="text-xs text-app-muted italic">
-                {t('app.tagline', 'Every hand has a voice.')}
+                {t('app.tagline', 'Every Hand Has a Voice.')}
               </p>
             </div>
 
@@ -155,16 +153,16 @@ export const OnboardingPage: React.FC = () => {
               <h1 className="text-2xl sm:text-3xl font-extrabold text-app-text tracking-tight">
                 {t('onboarding.makeYoursHeading', "Let's make this yours.")}
               </h1>
-              <p className="text-sm font-semibold text-app-primary-strong">
+              <p className="text-sm font-semibold text-[#0D9488]">
                 {t('onboarding.whatIsYourName', "What's your name?")}
               </p>
-              <p className="text-xs sm:text-sm text-app-muted">
+              <p className="text-xs sm:text-sm text-app-muted max-w-sm mx-auto leading-relaxed">
                 {t('onboarding.whatToCallYou', 'What would you like us to call you?')}
               </p>
             </div>
 
             {/* Name Input with validation & keyboard submit */}
-            <div className="w-full space-y-2 text-start">
+            <div className="w-full space-y-2 text-start bg-app-surface p-5 sm:p-6 rounded-card border border-app-border shadow-1">
               <label htmlFor="preferred-name-input" className="sr-only">
                 {t('onboarding.whatIsYourName', "What's your name?")}
               </label>
@@ -187,10 +185,10 @@ export const OnboardingPage: React.FC = () => {
                     }
                   }}
                   placeholder={t('onboarding.namePlaceholder', 'Enter your preferred name')}
-                  className={`w-full h-11 ps-10 pe-4 rounded-control bg-app-surface border text-sm text-app-text placeholder:text-app-muted focus-visible:outline-none focus-visible:ring-2 transition-all ${
+                  className={`w-full h-11 ps-10 pe-4 rounded-control bg-app-surface-2 border text-sm text-app-text placeholder:text-app-muted focus-visible:outline-none focus-visible:ring-2 transition-all ${
                     nameError
                       ? 'border-app-error focus-visible:ring-app-error'
-                      : 'border-app-border focus-visible:ring-app-primary-strong'
+                      : 'border-app-border focus-visible:ring-[#0D9488]'
                   }`}
                   aria-invalid={nameError ? 'true' : 'false'}
                   aria-describedby={nameError ? 'name-error-message' : undefined}
@@ -205,7 +203,7 @@ export const OnboardingPage: React.FC = () => {
               )}
 
               {/* Action buttons inside Step 1 */}
-              <div className="pt-2 flex flex-col sm:flex-row items-center gap-3 w-full">
+              <div className="pt-3 flex flex-col sm:flex-row items-center gap-3 w-full">
                 <Button
                   variant="primary"
                   size="md"
@@ -218,7 +216,7 @@ export const OnboardingPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleSkipName}
-                  className="w-full sm:w-auto px-4 py-2.5 text-xs font-semibold text-app-muted hover:text-app-text transition-colors rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong text-center"
+                  className="w-full sm:w-auto px-4 py-2.5 text-xs font-semibold text-app-muted hover:text-app-text transition-colors rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D9488] text-center"
                 >
                   {t('onboarding.skipForNow', 'Skip for now')}
                 </button>
@@ -229,12 +227,15 @@ export const OnboardingPage: React.FC = () => {
 
         {/* STEP 2: Role */}
         {currentStep === 2 && (
-          <div className="space-y-5 animate-fade-in">
-            <div className="text-center sm:text-start space-y-1">
-              <h1 className="text-2xl font-bold text-app-text">
+          <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
+            <div className="text-center sm:text-start space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0D9488]">
+                Étape 2 sur 5
+              </span>
+              <h1 className="text-2xl font-bold text-app-text tracking-tight">
                 {t('onboarding.roleTitle', 'Comment participez-vous à la conversation ?')}
               </h1>
-              <p className="text-sm text-app-muted">
+              <p className="text-sm text-app-muted leading-relaxed">
                 Votre choix adapte la disposition des commandes de l’interface.
               </p>
             </div>
@@ -245,16 +246,20 @@ export const OnboardingPage: React.FC = () => {
                 interactive
                 selected={selectedRole === 'sign'}
                 onClick={() => setSelectedRole('sign')}
-                className="flex items-start gap-4 p-4"
+                className={`flex items-start gap-4 p-4.5 rounded-card border transition-all ${
+                  selectedRole === 'sign'
+                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                    : 'border-app-border hover:border-app-border-strong'
+                }`}
               >
-                <span className="text-2xl shrink-0" aria-hidden="true">
+                <div className="w-11 h-11 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-2xl" aria-hidden="true">
                   🤟
-                </span>
-                <div>
+                </div>
+                <div className="space-y-1">
                   <h3 className="font-bold text-sm text-app-text">
                     {t('onboarding.roleSign', "J'utilise la langue des signes")}
                   </h3>
-                  <p className="text-xs text-app-muted mt-0.5">
+                  <p className="text-xs text-app-muted leading-relaxed">
                     {t(
                       'onboarding.roleSignDesc',
                       'Interface adaptée avec priorité à la caméra et aux signes'
@@ -268,16 +273,20 @@ export const OnboardingPage: React.FC = () => {
                 interactive
                 selected={selectedRole === 'speech'}
                 onClick={() => setSelectedRole('speech')}
-                className="flex items-start gap-4 p-4"
+                className={`flex items-start gap-4 p-4.5 rounded-card border transition-all ${
+                  selectedRole === 'speech'
+                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                    : 'border-app-border hover:border-app-border-strong'
+                }`}
               >
-                <span className="text-2xl shrink-0" aria-hidden="true">
+                <div className="w-11 h-11 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-2xl" aria-hidden="true">
                   🗣️
-                </span>
-                <div>
+                </div>
+                <div className="space-y-1">
                   <h3 className="font-bold text-sm text-app-text">
                     {t('onboarding.roleSpeech', 'Je communique par la parole ou le texte')}
                   </h3>
-                  <p className="text-xs text-app-muted mt-0.5">
+                  <p className="text-xs text-app-muted leading-relaxed">
                     {t(
                       'onboarding.roleSpeechDesc',
                       'Interface adaptée avec priorité à la saisie et au retour vocal'
@@ -291,16 +300,20 @@ export const OnboardingPage: React.FC = () => {
                 interactive
                 selected={selectedRole === 'helper'}
                 onClick={() => setSelectedRole('helper')}
-                className="flex items-start gap-4 p-4"
+                className={`flex items-start gap-4 p-4.5 rounded-card border transition-all ${
+                  selectedRole === 'helper'
+                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                    : 'border-app-border hover:border-app-border-strong'
+                }`}
               >
-                <span className="text-2xl shrink-0" aria-hidden="true">
+                <div className="w-11 h-11 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-2xl" aria-hidden="true">
                   ↔️
-                </span>
-                <div>
+                </div>
+                <div className="space-y-1">
                   <h3 className="font-bold text-sm text-app-text">
                     {t('onboarding.roleHelper', 'J’aide deux personnes à communiquer')}
                   </h3>
-                  <p className="text-xs text-app-muted mt-0.5">
+                  <p className="text-xs text-app-muted leading-relaxed">
                     {t(
                       'onboarding.roleHelperDesc',
                       'Interface équilibrée pour manipuler l’appareil pour les deux'
@@ -314,17 +327,20 @@ export const OnboardingPage: React.FC = () => {
 
         {/* STEP 3: Language */}
         {currentStep === 3 && (
-          <div className="space-y-5 animate-fade-in">
-            <div className="text-center sm:text-start space-y-1">
-              <h1 className="text-2xl font-bold text-app-text">
+          <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
+            <div className="text-center sm:text-start space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0D9488]">
+                Étape 3 sur 5
+              </span>
+              <h1 className="text-2xl font-bold text-app-text tracking-tight">
                 {t('onboarding.langTitle', 'Choisissez votre langue')}
               </h1>
-              <p className="text-sm text-app-muted">
+              <p className="text-sm text-app-muted leading-relaxed">
                 La sélection met à jour instantanément la direction de l’interface (RTL / LTR).
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               {(
                 [
                   { code: 'fr', flag: '🇫🇷', name: 'Français', sub: 'French' },
@@ -340,9 +356,13 @@ export const OnboardingPage: React.FC = () => {
                     interactive
                     selected={isSelected}
                     onClick={() => setUiLanguage(lang.code)}
-                    className="flex flex-col items-center text-center p-5 gap-2"
+                    className={`flex flex-col items-center text-center p-5 gap-2 rounded-card border transition-all ${
+                      isSelected
+                        ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                        : 'border-app-border hover:border-app-border-strong'
+                    }`}
                   >
-                    <span className="text-3xl" aria-hidden="true">
+                    <span className="text-3xl select-none" aria-hidden="true">
                       {lang.flag}
                     </span>
                     <span className="font-bold text-base text-app-text">{lang.name}</span>
@@ -356,12 +376,15 @@ export const OnboardingPage: React.FC = () => {
 
         {/* STEP 4: Mode */}
         {currentStep === 4 && (
-          <div className="space-y-5 animate-fade-in">
-            <div className="text-center sm:text-start space-y-1">
-              <h1 className="text-2xl font-bold text-app-text">
+          <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
+            <div className="text-center sm:text-start space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0D9488]">
+                Étape 4 sur 5
+              </span>
+              <h1 className="text-2xl font-bold text-app-text tracking-tight">
                 {t('onboarding.modeTitle', 'Mode de démarrage favori')}
               </h1>
-              <p className="text-sm text-app-muted">
+              <p className="text-sm text-app-muted leading-relaxed">
                 Vous pourrez toujours basculer ou démarrer un autre mode à tout moment.
               </p>
             </div>
@@ -372,7 +395,11 @@ export const OnboardingPage: React.FC = () => {
                 interactive
                 selected={selectedMode === 'two_way'}
                 onClick={() => setSelectedMode('two_way')}
-                className="p-4"
+                className={`p-4.5 rounded-card border transition-all ${
+                  selectedMode === 'two_way'
+                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                    : 'border-app-border hover:border-app-border-strong'
+                }`}
               >
                 <div className="flex items-center justify-between mb-1">
                   <h3 className="font-bold text-sm text-app-text">
@@ -382,7 +409,7 @@ export const OnboardingPage: React.FC = () => {
                     Recommandé
                   </Badge>
                 </div>
-                <p className="text-xs text-app-muted">
+                <p className="text-xs text-app-muted leading-relaxed">
                   {t(
                     'onboarding.modeTwoWayDesc',
                     'Échange complet bidirectionnel (Recommandé pour la clinique/pharmacie)'
@@ -395,12 +422,16 @@ export const OnboardingPage: React.FC = () => {
                 interactive
                 selected={selectedMode === 'sign_to_language'}
                 onClick={() => setSelectedMode('sign_to_language')}
-                className="p-4"
+                className={`p-4.5 rounded-card border transition-all ${
+                  selectedMode === 'sign_to_language'
+                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                    : 'border-app-border hover:border-app-border-strong'
+                }`}
               >
                 <h3 className="font-bold text-sm text-app-text mb-1">
                   {t('mode.signToLang', 'LSA → Langue')}
                 </h3>
-                <p className="text-xs text-app-muted">
+                <p className="text-xs text-app-muted leading-relaxed">
                   {t(
                     'onboarding.modeSignDesc',
                     'Traduction directe de vos signes vers du texte ou de la parole'
@@ -413,12 +444,16 @@ export const OnboardingPage: React.FC = () => {
                 interactive
                 selected={selectedMode === 'language_to_sign'}
                 onClick={() => setSelectedMode('language_to_sign')}
-                className="p-4"
+                className={`p-4.5 rounded-card border transition-all ${
+                  selectedMode === 'language_to_sign'
+                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                    : 'border-app-border hover:border-app-border-strong'
+                }`}
               >
                 <h3 className="font-bold text-sm text-app-text mb-1">
                   {t('mode.langToSign', 'Langue → LSA')}
                 </h3>
-                <p className="text-xs text-app-muted">
+                <p className="text-xs text-app-muted leading-relaxed">
                   {t(
                     'onboarding.modeLangDesc',
                     'Traduction de votre parole ou texte vers des clips LSA'
@@ -431,12 +466,15 @@ export const OnboardingPage: React.FC = () => {
 
         {/* STEP 5: Permissions & Limits */}
         {currentStep === 5 && (
-          <div className="space-y-5 animate-fade-in">
-            <div className="text-center sm:text-start space-y-1">
-              <h1 className="text-2xl font-bold text-app-text">
+          <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
+            <div className="text-center sm:text-start space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0D9488]">
+                Étape 5 sur 5
+              </span>
+              <h1 className="text-2xl font-bold text-app-text tracking-tight">
                 {t('onboarding.permissionsTitle', 'Autorisations & limites')}
               </h1>
-              <p className="text-sm text-app-muted">
+              <p className="text-sm text-app-muted leading-relaxed">
                 Vos autorisations permettent d'activer le suivi caméra et l'entrée vocale.
               </p>
             </div>
@@ -444,12 +482,14 @@ export const OnboardingPage: React.FC = () => {
             {/* Permission rows */}
             <div className="space-y-3">
               {/* Camera row */}
-              <div className="p-4 rounded-card bg-app-surface border border-app-border flex items-center justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <Camera className="w-5 h-5 text-app-primary-strong shrink-0 mt-0.5" />
+              <div className="p-4 sm:p-5 rounded-card bg-app-surface border border-app-border flex items-center justify-between gap-4 shadow-1">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-control bg-teal-500/10 text-[#0D9488] flex items-center justify-center shrink-0">
+                    <Camera className="w-5 h-5" />
+                  </div>
                   <div>
-                    <h3 className="font-bold text-xs text-app-text">Caméra</h3>
-                    <p className="text-xs text-app-muted mt-0.5 max-w-sm">
+                    <h3 className="font-bold text-xs sm:text-sm text-app-text">Caméra</h3>
+                    <p className="text-xs text-app-muted mt-0.5 max-w-sm leading-relaxed">
                       {t('onboarding.cameraWhy')}
                     </p>
                   </div>
@@ -457,7 +497,7 @@ export const OnboardingPage: React.FC = () => {
 
                 <div className="shrink-0">
                   {cameraGranted ? (
-                    <span className="inline-flex items-center gap-1 text-xs font-bold text-app-success">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-pill">
                       <CheckCircle2 className="w-4 h-4" />
                       {t('onboarding.granted', 'Autorisé')}
                     </span>
@@ -470,12 +510,14 @@ export const OnboardingPage: React.FC = () => {
               </div>
 
               {/* Mic row */}
-              <div className="p-4 rounded-card bg-app-surface border border-app-border flex items-center justify-between gap-4">
-                <div className="flex items-start gap-3">
-                  <Mic className="w-5 h-5 text-app-primary-strong shrink-0 mt-0.5" />
+              <div className="p-4 sm:p-5 rounded-card bg-app-surface border border-app-border flex items-center justify-between gap-4 shadow-1">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-control bg-teal-500/10 text-[#0D9488] flex items-center justify-center shrink-0">
+                    <Mic className="w-5 h-5" />
+                  </div>
                   <div>
-                    <h3 className="font-bold text-xs text-app-text">Microphone</h3>
-                    <p className="text-xs text-app-muted mt-0.5 max-w-sm">
+                    <h3 className="font-bold text-xs sm:text-sm text-app-text">Microphone</h3>
+                    <p className="text-xs text-app-muted mt-0.5 max-w-sm leading-relaxed">
                       {t('onboarding.micWhy')}
                     </p>
                   </div>
@@ -483,7 +525,7 @@ export const OnboardingPage: React.FC = () => {
 
                 <div className="shrink-0">
                   {micGranted ? (
-                    <span className="inline-flex items-center gap-1 text-xs font-bold text-app-success">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-pill">
                       <CheckCircle2 className="w-4 h-4" />
                       {t('onboarding.granted', 'Autorisé')}
                     </span>
@@ -497,13 +539,13 @@ export const OnboardingPage: React.FC = () => {
             </div>
 
             {/* Limitations disclaimer check */}
-            <div className="p-4 rounded-card bg-amber-50 dark:bg-amber-950/40 border border-app-warning/30 space-y-3">
+            <div className="p-4 sm:p-5 rounded-card bg-amber-50/70 dark:bg-amber-950/30 border border-amber-300/40 dark:border-amber-700/30 space-y-3">
               <label className="flex items-start gap-3 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={limitsAck}
                   onChange={(e) => setLimitsAck(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-app-border-strong text-app-primary-strong focus:ring-app-primary-strong"
+                  className="mt-1 h-4 w-4 rounded border-app-border-strong text-[#0D9488] focus:ring-[#0D9488]"
                 />
                 <span className="text-xs text-app-text leading-relaxed font-medium">
                   {t(

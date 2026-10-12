@@ -49,17 +49,17 @@ export const PublicEntryPage: React.FC = () => {
       {/* Main Centered Content */}
       <main className="w-full max-w-md mx-auto my-auto flex flex-col items-center text-center space-y-6">
         {/* Logo mark 56px */}
-        <div className="w-14 h-14 rounded-2xl bg-app-primary-strong flex items-center justify-center shadow-2">
-          <img src="/icons/logo-mark.svg" alt="" className="w-9 h-9 invert" />
+        <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-2 flex items-center justify-center">
+          <img src="/icons/logo-mark.png" alt="BridgeSign Logo" className="w-full h-full object-cover" />
         </div>
 
         {/* Headings */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <h1 className="text-3xl font-extrabold tracking-tight text-app-text">
             {t('app.name', 'BridgeSign')}
           </h1>
-          <p className="text-base font-semibold text-app-primary-strong">
-            {t('app.tagline', 'Every hand has a voice.')}
+          <p className="text-sm font-semibold text-app-primary-strong tracking-wide">
+            {t('app.tagline', 'Every Hand Has a Voice.')}
           </p>
         </div>
 

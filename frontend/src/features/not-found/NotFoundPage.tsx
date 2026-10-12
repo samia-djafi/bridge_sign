@@ -18,14 +18,14 @@ export const NotFoundPage: React.FC = () => {
         {/* BridgeSign Official Logo Mark */}
         <div className="flex flex-col items-center justify-center gap-2">
           <img
-            src="/icons/logo-mark.svg"
+            src="/icons/logo-mark.png"
             alt="BridgeSign Logo"
-            className="w-14 h-14 rounded-control shadow-1"
+            className="w-14 h-14 rounded-control shadow-1 object-cover"
           />
           <div className="space-y-0.5">
             <h1 className="text-xl font-extrabold text-app-text tracking-tight">BridgeSign</h1>
             <p className="text-xs text-app-primary-strong font-medium italic">
-              {t('app.tagline', 'Chaque main a une voix.')}
+              {t('app.tagline', 'Every Hand Has a Voice.')}
             </p>
           </div>
         </div>
