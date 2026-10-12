@@ -44,6 +44,7 @@ import {
   BookOpen,
   Send,
   Sparkles,
+  MessageSquare,
 } from 'lucide-react';
 
 export const WorkspacePage: React.FC = () => {
@@ -81,6 +82,7 @@ export const WorkspacePage: React.FC = () => {
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   const [isClearingMessages, setIsClearingMessages] = useState(false);
   const [phrasePickerOpen, setPhrasePickerOpen] = useState(false);
+  const [conversationDrawerOpen, setConversationDrawerOpen] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleInput, setTitleInput] = useState('');
 
@@ -522,6 +524,25 @@ export const WorkspacePage: React.FC = () => {
             )}
           </Button>
 
+          {/* Conversation History Drawer (Desktop) */}
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              setConversationDrawerOpen(true);
+              setUnreadMessages(false);
+            }}
+            iconStart={<MessageSquare className="w-4 h-4 text-app-primary-strong" />}
+            className="hidden md:inline-flex items-center gap-1.5"
+            aria-label={t('timeline.title', 'Conversation')}
+          >
+            <span>{t('timeline.title', 'Conversation')}</span>
+            <span className="px-1.5 py-0.5 rounded-pill bg-app-surface-2 text-[11px] font-mono font-bold text-app-muted">
+              {messages.length}
+            </span>
+            {unreadMessages && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />}
+          </Button>
+
           {/* End session */}
           <Button
             variant="destructive"
@@ -570,9 +591,9 @@ export const WorkspacePage: React.FC = () => {
       </div>
 
       {/* Main Workspace Area (Desktop Grid vs Mobile View) */}
-      <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden p-2.5 sm:p-3.5 lg:p-4 w-full max-w-[1720px] mx-auto flex flex-col gap-2.5 lg:gap-3">
-        {/* TOP ROW: Panels (Sign on Start, Language on End) */}
-        <div className={`grid grid-cols-1 ${colRatio} gap-2.5 lg:gap-3.5 min-h-0 lg:flex-1`}>
+      <div className="flex-1 min-h-0 overflow-hidden p-2 sm:p-3 lg:p-4 w-full max-w-[1720px] mx-auto flex flex-col">
+        {/* Primary Interaction Panels (Sign on Start, Language on End) */}
+        <div className={`grid grid-cols-1 ${colRatio} gap-3 sm:gap-4 flex-1 min-h-0 h-full`}>
           {/* LEFT PANEL: LSA (Sign side) */}
           <Card
             p={16}
@@ -839,11 +860,11 @@ export const WorkspacePage: React.FC = () => {
           </Card>
         </div>
 
-        {/* BOTTOM ROW: Conversation Timeline */}
+        {/* Mobile-Only Conversation Timeline Tab */}
         <Card
           p={16}
-          className={`flex-1 min-h-[160px] max-h-[36vh] lg:min-h-0 flex flex-col overflow-hidden ${
-            mobileTab !== 'conversation' ? 'hidden md:flex' : 'flex'
+          className={`md:hidden flex-1 min-h-0 flex flex-col overflow-hidden ${
+            mobileTab !== 'conversation' ? 'hidden' : 'flex'
           }`}
         >
           {/* Timeline Header */}
@@ -927,6 +948,70 @@ export const WorkspacePage: React.FC = () => {
           </div>
         </Card>
       </div>
+
+      {/* Desktop Conversation History Drawer Sheet */}
+      <Sheet
+        isOpen={conversationDrawerOpen}
+        onClose={() => setConversationDrawerOpen(false)}
+        title={`${t('timeline.title', 'Conversation')} (${messages.length})`}
+        maxWidth="lg"
+      >
+        <div className="flex flex-col h-[75vh]">
+          {/* Timeline Action Header */}
+          <div className="flex items-center justify-end gap-2 pb-3 border-b border-app-border shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleExport('txt')}
+              iconStart={<Download className="w-3.5 h-3.5" />}
+            >
+              Exporter
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setClearConfirmOpen(true)}
+              iconStart={<Trash2 className="w-3.5 h-3.5 text-app-muted" />}
+            >
+              Effacer
+            </Button>
+          </div>
+
+          {/* Timeline Messages List */}
+          <div
+            role="log"
+            aria-live="polite"
+            className="flex-1 overflow-y-auto py-4 px-1 space-y-2 relative"
+          >
+            {messages.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-app-muted space-y-2">
+                <p className="text-sm">{t('timeline.empty', 'Votre conversation apparaîtra ici.')}</p>
+                <div className="flex items-center gap-3 text-xs">
+                  <span className="px-2.5 py-1 bg-app-surface-2 rounded-control">
+                    🤟 Signez à la caméra
+                  </span>
+                  <span className="px-2.5 py-1 bg-app-surface-2 rounded-control">
+                    🗣️ Écrivez ou parlez
+                  </span>
+                </div>
+              </div>
+            ) : (
+              messages.map((msg) => (
+                <MessageItem
+                  key={msg.id}
+                  message={msg}
+                  onReplaySigns={async (gloss) => {
+                    const clips = await registry.signAssets.getClips(gloss);
+                    setTranslatedClips(clips);
+                    setConversationDrawerOpen(false);
+                  }}
+                  onEditMessage={editMessage}
+                />
+              ))
+            )}
+          </div>
+        </div>
+      </Sheet>
 
       {/* Phrasebook Picker Sheet */}
       <Sheet

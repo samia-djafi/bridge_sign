@@ -82,7 +82,7 @@ export const NewConversationPage: React.FC = () => {
   }, [mode]);
 
   useEffect(() => {
-    document.title = `${t('nav.newConversation')} — ${t('app.name')}`;
+    document.title = `${t('nav.newConversation')} | ${t('app.name')}`;
   }, [t]);
 
   const handleStart = async (e: React.FormEvent) => {
@@ -115,44 +115,31 @@ export const NewConversationPage: React.FC = () => {
       <div className="p-3 sm:p-5 lg:p-7 max-w-5xl w-full mx-auto">
         <form onSubmit={handleStart} className="space-y-4 sm:space-y-5">
           <Card p={20} className="bg-app-surface border border-app-border shadow-2 space-y-5">
-            <div>
-              <h2 className="text-xl font-bold text-app-text">
+            {/* Page Title & Subtitle */}
+            <div className="space-y-1 pb-1 border-b border-app-border/60">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-app-text tracking-tight">
                 {t('newConv.title', 'Nouvelle conversation')}
               </h2>
-              <p className="text-xs text-app-muted mt-0.5">
+              <p className="text-xs sm:text-sm text-app-muted">
                 Configurez l'environnement avant de commencer l'échange.
               </p>
             </div>
 
-            {/* 1. Context & Title in responsive desktop grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
-              <div className="min-w-0 w-full space-y-2">
+            {/* 1. Context Selector: Dedicated Full Width Section */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
                 <label className="block text-xs font-bold uppercase tracking-wider text-app-muted">
                   {t('newConv.contextLabel', "Contexte de l'échange")}
                 </label>
-                <ContextSelector value={context} onChange={setContext} />
+                <span className="text-[11px] text-app-muted">
+                  Adapte les suggestions rapides
+                </span>
               </div>
-
-              <div className="w-full min-w-0">
-                <label
-                  htmlFor="session-title"
-                  className="block text-xs font-bold uppercase tracking-wider text-app-muted"
-                >
-                  {t('newConv.titleLabel', 'Titre de la session (facultatif)')}
-                </label>
-                <input
-                  id="session-title"
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder={t('newConv.titlePlaceholder', 'ex. Pharmacie - Mardi')}
-                  className="w-full h-11 px-3.5 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D9488]"
-                />
-              </div>
+              <ContextSelector value={context} onChange={setContext} />
             </div>
-            
+
             {/* 2. Spoken Language & 3. Mode */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
               <div className="space-y-2">
                 <label className="block text-xs font-bold uppercase tracking-wider text-app-muted">
                   {t('newConv.langLabel', 'Langue parlée')}
@@ -175,6 +162,24 @@ export const NewConversationPage: React.FC = () => {
                   className="w-full"
                 />
               </div>
+            </div>
+
+            {/* 4. Session Title Input (Optional) */}
+            <div className="space-y-2">
+              <label
+                htmlFor="session-title"
+                className="block text-xs font-bold uppercase tracking-wider text-app-muted"
+              >
+                {t('newConv.titleLabel', 'Titre de la session (facultatif)')}
+              </label>
+              <input
+                id="session-title"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={t('newConv.titlePlaceholder', 'ex. Pharmacie - Mardi')}
+                className="w-full h-11 px-3.5 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D9488]"
+              />
             </div>
 
             {/* 5. Readiness Checklist (Accurate Sensor Inspection) */}

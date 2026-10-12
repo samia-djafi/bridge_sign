@@ -1,0 +1,58 @@
+{
+  "name": "BridgeSign",
+  "short_name": "BridgeSign",
+  "description": "Accessible communication between Algerian Sign Language (LSA) users and hearing people.",
+  "id": "/",
+  "start_url": "/app?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "theme_color": "#0D9488",
+  "background_color": "#F4FAF9",
+  "lang": "fr",
+  "categories": ["accessibility", "utilities", "medical"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Two-way conversation",
+      "url": "/app/new?mode=two_way",
+      "description": "Start a two-way LSA conversation"
+    },
+    {
+      "name": "Phrasebook",
+      "url": "/app/phrasebook",
+      "description": "Open quick phrases"
+    },
+    {
+      "name": "Emergency phrases",
+      "url": "/app/phrasebook?category=emergency",
+      "description": "Emergency phrases for immediate communication"
+    }
+  ]
+}

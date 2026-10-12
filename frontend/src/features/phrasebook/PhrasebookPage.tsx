@@ -29,7 +29,7 @@ export const PhrasebookPage: React.FC = () => {
 
   // Load phrases and favorites
   useEffect(() => {
-    document.title = `${t('nav.phrasebook')} — ${t('app.name')}`;
+    document.title = `${t('nav.phrasebook')} | ${t('app.name')}`;
 
     async function load() {
       const favs = await registry.phrasebook.getFavorites();

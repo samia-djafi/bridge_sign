@@ -30,7 +30,7 @@ export const DiagnosticsPage: React.FC = () => {
   const [copiedJson, setCopiedJson] = useState(false);
 
   useEffect(() => {
-    document.title = `${t('nav.diagnostics')} — ${t('app.name')}`;
+    document.title = `${t('nav.diagnostics')} | ${t('app.name')}`;
     const unsubMetrics = registry.metrics.subscribe(setMetrics);
     const unsubLogs = logger.subscribe(setLogs);
 

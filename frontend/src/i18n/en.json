@@ -11,12 +11,12 @@
     "dashboard": "Home",
     "newConversation": "New conversation",
     "twoWay": "Two-way conversation",
-    "signToLang": "Sign → Language",
-    "langToSign": "Language → Sign",
+    "signToLang": "Sign to Text",
+    "langToSign": "Text to Sign",
     "phrasebook": "Phrasebook",
     "realStories": "Real Stories",
     "history": "History",
-    "diagnostics": "AI Diagnostics",
+    "diagnostics": "Diagnostics",
     "settings": "Settings",
     "about": "About",
     "privacyHelp": "Privacy & Help",
@@ -40,9 +40,9 @@
     "end": "End",
     "continue": "Continue",
     "viewAll": "View all",
-    "signToLangTitle": "Sign → Language",
+    "signToLangTitle": "Sign to Text",
     "signToLangDesc": "Sign in front of the camera to translate your signs into spoken and written words.",
-    "langToSignTitle": "Language → Sign",
+    "langToSignTitle": "Text to Sign",
     "langToSignDesc": "Type or speak to translate spoken phrases into Algerian Sign Language clips.",
     "featurePharmacyTitle": "Pharmacy & Healthcare",
     "featurePharmacyDesc": "Common clinical phrases and medical vocabulary for pharmacy interactions.",
@@ -68,8 +68,8 @@
     "offlineStatus": "Offline ready"
   },
   "mode": {
-    "signToLang": "Sign → Language",
-    "langToSign": "Language → Sign",
+    "signToLang": "Sign to Text",
+    "langToSign": "Text to Sign",
     "twoWay": "Two-way conversation"
   },
   "rec": {

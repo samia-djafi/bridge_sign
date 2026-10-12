@@ -38,9 +38,9 @@ export const CameraPanel: React.FC<CameraPanelProps> = ({
   const { t } = useTranslation();
 
   return (
-    <div className={`flex flex-col gap-2 ${className}`}>
+    <div className={`flex flex-col gap-1.5 ${className}`}>
       {/* Video Container Layer */}
-      <div className="relative aspect-video sm:aspect-video w-full rounded-card bg-neutral-900 border border-app-border overflow-hidden shadow-1 flex items-center justify-center">
+      <div className="relative aspect-video max-h-[260px] sm:max-h-[320px] lg:max-h-[380px] w-full rounded-card bg-neutral-900 border border-app-border overflow-hidden shadow-1 flex items-center justify-center">
         {/* Layer 1: HTML5 Video Element */}
         <video
           ref={videoRef}

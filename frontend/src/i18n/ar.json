@@ -11,12 +11,12 @@
     "dashboard": "الرئيسية",
     "newConversation": "محادثة جديدة",
     "twoWay": "محادثة ثنائية الاتجاه",
-    "signToLang": "لغة الإشارة ← اللغة",
-    "langToSign": "اللغة ← لغة الإشارة",
+    "signToLang": "الإشارة إلى نص",
+    "langToSign": "النص إلى إشارة",
     "phrasebook": "عبارات سريعة",
     "realStories": "تجارب وقصص",
     "history": "السجل",
-    "diagnostics": "تشخيص الذكاء الاصطناعي",
+    "diagnostics": "التشخيص",
     "settings": "الإعدادات",
     "about": "حول التطبيق",
     "privacyHelp": "الخصوصية والمساعدة",
@@ -40,9 +40,9 @@
     "end": "إنهاء",
     "continue": "متابعة",
     "viewAll": "عرض الكل",
-    "signToLangTitle": "لغة الإشارة ← اللغة",
+    "signToLangTitle": "الإشارة إلى نص",
     "signToLangDesc": "أشر أمام الكاميرا لترجمة إشاراتك إلى كلام مكتوب ومنطوق فورًا.",
-    "langToSignTitle": "اللغة ← لغة الإشارة",
+    "langToSignTitle": "النص إلى إشارة",
     "langToSignDesc": "اكتب أو تحدّث بالصوت لتحويل العبارات إلى مقاطع لغة الإشارة الجزائرية.",
     "featurePharmacyTitle": "الصيدلية والرعاية الصحية",
     "featurePharmacyDesc": "عبارات طبية شائعة ومفردات مخصصة لزيارة الصيدلية والعيادات.",
@@ -68,8 +68,8 @@
     "offlineStatus": "جاهز دون اتصال"
   },
   "mode": {
-    "signToLang": "لغة الإشارة ← اللغة",
-    "langToSign": "اللغة ← لغة الإشارة",
+    "signToLang": "الإشارة إلى نص",
+    "langToSign": "النص إلى إشارة",
     "twoWay": "محادثة ثنائية الاتجاه"
   },
   "rec": {

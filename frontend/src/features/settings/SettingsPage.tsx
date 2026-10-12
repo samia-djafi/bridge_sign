@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useUiStore } from '@/stores/uiStore';
@@ -35,6 +35,10 @@ export const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     'profile' | 'language' | 'appearance' | 'a11y' | 'camera' | 'audio' | 'ai' | 'privacy'
   >('profile');
+
+  useEffect(() => {
+    document.title = `${t('nav.settings', 'Settings')} | ${t('app.name', 'BridgeSign')}`;
+  }, [t]);
 
   const [savedIndicator, setSavedIndicator] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);

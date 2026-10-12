@@ -21,6 +21,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<{
     phrases: Phrase[];
     sessions: ConversationSession[];
@@ -28,6 +29,19 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
   const [notificationModalOpen, setNotificationModalOpen] = useState(false);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
+
+  // Keyboard escape listener to dismiss mobile search
+  useEffect(() => {
+    if (!isMobileSearchOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMobileSearchOpen(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isMobileSearchOpen]);
 
   // Search logic across phrases and sessions
   useEffect(() => {
@@ -64,12 +78,14 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
   const handleSelectPhrase = (phrase: Phrase) => {
     setSearchQuery('');
     setIsSearchOpen(false);
+    setIsMobileSearchOpen(false);
     navigate(`/app/phrasebook?category=${phrase.category}`);
   };
 
   const handleSelectSession = (session: ConversationSession) => {
     setSearchQuery('');
     setIsSearchOpen(false);
+    setIsMobileSearchOpen(false);
     navigate(`/app/history/${session.id}`);
   };
 
@@ -91,8 +107,8 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
         </button>
       </div>
 
-      {/* Search Input Bar (Center) */}
-      <div className="relative flex-1 max-w-xs sm:max-w-md lg:max-w-lg">
+      {/* Search Input Bar (Center Desktop) */}
+      <div className="hidden md:block relative flex-1 max-w-xs sm:max-w-md lg:max-w-lg">
         <div className="relative flex items-center">
           <Search className="w-4 h-4 text-app-muted absolute start-3.5 pointer-events-none" />
           <input
@@ -206,6 +222,20 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
 
       {/* Right Controls: Notifications, Theme Toggle, Account / Status Indicator */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {/* Mobile Search Trigger Icon Button (< 768px) */}
+        <button
+          type="button"
+          onClick={() => {
+            setIsMobileSearchOpen(true);
+            setTimeout(() => mobileSearchInputRef.current?.focus(), 60);
+          }}
+          className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-control bg-app-surface-2 hover:bg-app-border text-app-text transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
+          aria-label="Open search"
+          title="Rechercher"
+        >
+          <Search className="w-4 h-4 text-app-muted" />
+        </button>
+
         {/* Notifications Icon Button */}
         <button
           type="button"
@@ -236,6 +266,122 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
           </span>
         </button>
       </div>
+
+      {/* Mobile Full-Screen Search Bar & Autocomplete Overlay */}
+      {isMobileSearchOpen && (
+        <div className="md:hidden fixed inset-x-0 top-0 h-16 bg-app-surface border-b border-app-border px-3 sm:px-4 flex items-center gap-2 z-50 shadow-2 animate-fade-in">
+          <div className="relative flex-1 flex items-center">
+            <Search className="w-4 h-4 text-app-muted absolute start-3 pointer-events-none" />
+            <input
+              ref={mobileSearchInputRef}
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t('dash.searchPlaceholder', 'Search a conversation, phrase or topic...')}
+              className="w-full h-10 ps-9 pe-9 rounded-control bg-app-surface-2 border border-app-border text-sm text-app-text placeholder:text-app-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
+              aria-label="Recherche"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute end-2.5 p-1 text-app-muted hover:text-app-text"
+                aria-label="Effacer la recherche"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setIsMobileSearchOpen(false);
+              setSearchQuery('');
+            }}
+            className="p-2 rounded-control text-app-muted hover:text-app-text hover:bg-app-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong shrink-0"
+            aria-label="Close search"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {/* Mobile Live Results Dropdown */}
+          {searchQuery.trim() && (
+            <div
+              className="absolute top-16 inset-x-0 bg-app-surface border-b border-app-border shadow-3 p-3 max-h-[calc(100vh-4.5rem)] overflow-y-auto space-y-3 z-50"
+              role="listbox"
+            >
+              {searchResults.phrases.length === 0 && searchResults.sessions.length === 0 ? (
+                <div className="p-4 text-center text-xs text-app-muted">
+                  Aucun résultat pour « {searchQuery} »
+                </div>
+              ) : (
+                <>
+                  {searchResults.phrases.length > 0 && (
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-app-muted px-2 block mb-1">
+                        Phrases utiles
+                      </span>
+                      <div className="space-y-0.5">
+                        {searchResults.phrases.map((p) => {
+                          const currentLang = (['fr', 'ar', 'en'].includes(i18n.language)
+                            ? i18n.language
+                            : 'fr') as 'fr' | 'ar' | 'en';
+                          return (
+                            <button
+                              key={p.id}
+                              type="button"
+                              onClick={() => handleSelectPhrase(p)}
+                              className="w-full flex items-center justify-between p-2 rounded-control hover:bg-app-surface-2 text-start transition-colors"
+                            >
+                              <div className="flex items-center gap-2 truncate">
+                                <BookOpen className="w-3.5 h-3.5 text-app-primary-strong shrink-0" />
+                                <span className="text-xs font-medium text-app-text truncate">
+                                  {p.text[currentLang] || p.text.fr}
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-app-muted font-mono shrink-0">
+                                {p.gloss.join(' ')}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {searchResults.sessions.length > 0 && (
+                    <div className="pt-2 border-t border-app-border">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-app-muted px-2 block mb-1">
+                        Conversations
+                      </span>
+                      <div className="space-y-0.5">
+                        {searchResults.sessions.map((s) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => handleSelectSession(s)}
+                            className="w-full flex items-center justify-between p-2 rounded-control hover:bg-app-surface-2 text-start transition-colors"
+                          >
+                            <div className="flex items-center gap-2 truncate">
+                              <Clock className="w-3.5 h-3.5 text-app-muted shrink-0" />
+                              <span className="text-xs font-semibold text-app-text truncate">
+                                {s.title}
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-app-muted">
+                              {s.spokenLang.toUpperCase()} ↔ LSA
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Notifications Informative Modal */}
       <Modal
