@@ -125,4 +125,78 @@ describe('session-repository', () => {
     expect(exported.session.id).toBe(session.id);
     expect(exported.messages.length).toBe(1);
   });
+
+  it('clears messages for the active session without touching other sessions or deleting the session', async () => {
+    // Create Session 1
+    const session1 = await sessionRepository.create({
+      title: 'Session 1',
+      context: 'healthcare',
+      signLanguage: 'LSA',
+      spokenLang: 'fr',
+      mode: 'two_way',
+      status: 'active',
+      aiMode: 'demo',
+      privacy: 'local',
+    });
+
+    // Create Session 2
+    const session2 = await sessionRepository.create({
+      title: 'Session 2',
+      context: 'administration',
+      signLanguage: 'LSA',
+      spokenLang: 'fr',
+      mode: 'two_way',
+      status: 'active',
+      aiMode: 'demo',
+      privacy: 'local',
+    });
+
+    // Add messages to Session 1
+    await sessionRepository.appendMessage({
+      sessionId: session1.id,
+      direction: 'sign_to_language',
+      source: 'lsa',
+      originalInput: ['HELLO'],
+      outputs: { fr: 'Bonjour', ar: 'مرحبا', en: 'Hello' },
+      gloss: ['HELLO'],
+      displayLang: 'fr',
+      confidence: 0.99,
+      level: 'high',
+      edited: false,
+    });
+
+    // Add messages to Session 2
+    await sessionRepository.appendMessage({
+      sessionId: session2.id,
+      direction: 'sign_to_language',
+      source: 'lsa',
+      originalInput: ['THANK_YOU'],
+      outputs: { fr: 'Merci', ar: 'شكرا', en: 'Thank you' },
+      gloss: ['THANK_YOU'],
+      displayLang: 'fr',
+      confidence: 0.95,
+      level: 'high',
+      edited: false,
+    });
+
+    expect((await sessionRepository.listMessages(session1.id)).length).toBe(1);
+    expect((await sessionRepository.listMessages(session2.id)).length).toBe(1);
+
+    // Clear session 1 messages
+    await sessionRepository.clearSessionMessages(session1.id);
+
+    // Session 1 messages should be 0, session still exists, messageCount is 0
+    const s1Messages = await sessionRepository.listMessages(session1.id);
+    expect(s1Messages.length).toBe(0);
+    const s1Fetched = await sessionRepository.get(session1.id);
+    expect(s1Fetched).toBeDefined();
+    expect(s1Fetched?.messageCount).toBe(0);
+
+    // Session 2 messages should still exist and remain untouched
+    const s2Messages = await sessionRepository.listMessages(session2.id);
+    expect(s2Messages.length).toBe(1);
+    const s2Fetched = await sessionRepository.get(session2.id);
+    expect(s2Fetched).toBeDefined();
+    expect(s2Fetched?.messageCount).toBe(1);
+  });
 });
