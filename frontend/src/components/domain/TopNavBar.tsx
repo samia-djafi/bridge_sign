@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useProfileStore } from '@/stores/profileStore';
 import { registry } from '@/services/registry';
@@ -13,7 +13,7 @@ export interface TopNavBarProps {
   title?: string;
 }
 
-export const TopNavBar: React.FC<TopNavBarProps> = ({ title }) => {
+export const TopNavBar: React.FC<TopNavBarProps> = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { settings } = useSettingsStore();
@@ -75,6 +75,21 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({ title }) => {
 
   return (
     <header className="h-16 bg-app-surface border-b border-app-border px-4 sm:px-6 flex items-center justify-between gap-3 sticky top-0 z-30 select-none">
+      {/* Mobile Brand Logo Mark (< 768px) */}
+      <div className="md:hidden flex items-center shrink-0">
+        <button
+          type="button"
+          onClick={() => navigate('/app')}
+          className="flex items-center gap-2 p-1 rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
+          aria-label="BridgeSign Accueil"
+        >
+          <img
+            src="/icons/logo-mark.png"
+            alt="BridgeSign Logo"
+            className="w-8 h-8 rounded-control shrink-0 shadow-1 object-cover"
+          />
+        </button>
+      </div>
 
       {/* Search Input Bar (Center) */}
       <div className="relative flex-1 max-w-xs sm:max-w-md lg:max-w-lg">
