@@ -14,7 +14,7 @@
     "signToLang": "Sign → Language",
     "langToSign": "Language → Sign",
     "phrasebook": "Phrasebook",
-    "realStories": "Real Stories",
+    "realStories": "Usage Scenarios",
     "history": "History",
     "diagnostics": "AI Diagnostics",
     "settings": "Settings",
@@ -359,14 +359,14 @@
     "disclaimer": "BridgeSign is a communication assistance tool. It does not replace professional interpreters and does not provide medical diagnosis or advice."
   },
   "stories": {
-    "title": "Real Stories & Community Voices",
-    "subtitle": "Authentic experiences shared by Deaf individuals, hard-of-hearing users, and healthcare providers in Algeria.",
-    "transparencyNotice": "BridgeSign only shares verified, real-world experiences with full consent from participants. No placeholder or simulated testimonials are ever used.",
-    "shareCta": "Are you using BridgeSign? Share your experience",
-    "feedbackTitle": "Submit your experience or feedback",
-    "feedbackDesc": "Your feedback guides our LSA vocabulary additions and healthcare accessibility improvements.",
-    "verifiedCommunity": "Deaf Community in Algeria",
-    "healthcarePartner": "Healthcare Professional"
+    "title": "Usage Scenarios",
+    "subtitle": "These scenarios are illustrative and are not real testimonials. They demonstrate BridgeSign's intended use cases in healthcare and daily settings in Algeria.",
+    "transparencyNotice": "These scenarios are illustrative and are not real testimonials. Authentic testimonials will be published once collected with explicit prior consent.",
+    "shareCta": "Save local feedback note",
+    "feedbackTitle": "Feedback & Suggestions (Local Draft)",
+    "feedbackDesc": "Your notes are stored on this device only for your own records. No data is transmitted to a remote server.",
+    "verifiedCommunity": "Illustrative Scenario — Deaf Community",
+    "healthcarePartner": "Illustrative Scenario — Healthcare Professional"
   },
   "err": {
     "outOfVocab": "This phrase is outside the current MVP vocabulary.",
@@ -382,7 +382,11 @@
     "ttsUnavailable": "No speech voice is available for this language on this device.",
     "aiTimeout": "Sign recognition timed out. Please repeat the sign.",
     "aiUnavailable": "Unable to connect to the AI recognition server.",
-    "dbError": "Unable to access local database storage."
+    "dbError": "Unable to access local database storage.",
+    "notFoundTitle": "We couldn't find this page.",
+    "notFoundDesc": "The page may have moved, or the link may be incorrect.",
+    "backToHome": "Back to Home",
+    "goBack": "Go Back"
   },
   "badge": {
     "demo": "Demo mode",
