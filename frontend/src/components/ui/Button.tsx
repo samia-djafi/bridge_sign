@@ -6,6 +6,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   loading?: boolean;
   iconStart?: React.ReactNode;
   iconEnd?: React.ReactNode;
+  mirrorIconInRtl?: boolean;
   fullWidth?: boolean;
 }
 
@@ -18,6 +19,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       loading = false,
       iconStart,
       iconEnd,
+      mirrorIconInRtl = false,
       fullWidth = false,
       disabled,
       className = '',
@@ -78,11 +80,21 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             ></path>
           </svg>
         ) : (
-          iconStart && <span className="inline-flex shrink-0 rtl:-scale-x-100">{iconStart}</span>
+          iconStart && (
+            <span
+              className={`inline-flex shrink-0 ${mirrorIconInRtl ? 'rtl:-scale-x-100' : ''}`}
+            >
+              {iconStart}
+            </span>
+          )
         )}
-        <span>{children}</span>
+        {children !== undefined && children !== null && <span>{children}</span>}
         {!loading && iconEnd && (
-          <span className="inline-flex shrink-0 rtl:-scale-x-100">{iconEnd}</span>
+          <span
+            className={`inline-flex shrink-0 ${mirrorIconInRtl ? 'rtl:-scale-x-100' : ''}`}
+          >
+            {iconEnd}
+          </span>
         )}
       </button>
     );
