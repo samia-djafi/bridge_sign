@@ -98,6 +98,18 @@ class DexieSessionRepository implements SessionRepository {
     await db.messages.update(id, changes);
   }
 
+  async clearSessionMessages(sessionId: string): Promise<void> {
+    await db.transaction('rw', db.sessions, db.messages, async () => {
+      await db.messages.where('sessionId').equals(sessionId).delete();
+      const session = await db.sessions.get(sessionId);
+      if (session) {
+        await db.sessions.update(sessionId, {
+          messageCount: 0,
+        });
+      }
+    });
+  }
+
   async clearAll(): Promise<void> {
     await db.transaction('rw', db.sessions, db.messages, db.favorites, async () => {
       await db.messages.clear();
