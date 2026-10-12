@@ -56,9 +56,18 @@ export const PhrasebookPage: React.FC = () => {
   }, []);
 
   const handleToggleFavorite = async (id: string) => {
+    setFavorites((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    );
+
     await registry.phrasebook.toggleFavorite(id);
     const updated = await registry.phrasebook.getFavorites();
     setFavorites(updated);
+
+    if (selectedCategory === 'favorites') {
+      const refreshed = await registry.phrasebook.search(searchQuery, { category: 'favorites' });
+      setPhrases(refreshed);
+    }
   };
 
   const handleSendToConversation = async (phrase: Phrase) => {
