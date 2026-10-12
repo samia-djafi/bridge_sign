@@ -14,7 +14,7 @@
     "signToLang": "LSA → Langue",
     "langToSign": "Langue → LSA",
     "phrasebook": "Phrases rapides",
-    "realStories": "Témoignages",
+    "realStories": "Scénarios d’usage",
     "history": "Historique",
     "diagnostics": "Diagnostic IA",
     "settings": "Paramètres",
@@ -359,14 +359,14 @@
     "disclaimer": "BridgeSign est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical."
   },
   "stories": {
-    "title": "Témoignages & Récits vécus",
-    "subtitle": "Récits authentiques partagés par des personnes sourdes, malentendantes et des professionnels de santé en Algérie.",
-    "transparencyNotice": "BridgeSign recueille et publie uniquement des retours d'expérience réels et vérifiés avec le consentement de leurs auteurs. Aucun témoignage fictif n'est toléré.",
-    "shareCta": "Vous utilisez BridgeSign ? Partagez votre expérience",
-    "feedbackTitle": "Proposer un retour ou un témoignage",
-    "feedbackDesc": "Vos retours nous aident à enrichir le vocabulaire LSA et à améliorer l'accueil en santé.",
-    "verifiedCommunity": "Communauté sourde d'Algérie",
-    "healthcarePartner": "Professionnel de santé"
+    "title": "Scénarios d’usage",
+    "subtitle": "Ces scénarios sont illustratifs et ne constituent pas des témoignages réels. Ils présentent les cas d’usage prévus de BridgeSign en milieu médical et quotidien en Algérie.",
+    "transparencyNotice": "Ces scénarios sont illustratifs et ne constituent pas des témoignages réels. Les témoignages authentiques seront publiés dès qu'ils auront été recueillis avec le consentement libre et éclairé de leurs participants.",
+    "shareCta": "Enregistrer une suggestion locale",
+    "feedbackTitle": "Retours & suggestions (brouillon local)",
+    "feedbackDesc": "Vos retours sont conservés uniquement sur cet appareil pour vos futures contributions. Aucune transmission à un serveur distant.",
+    "verifiedCommunity": "Cas illustratif — Communauté sourde",
+    "healthcarePartner": "Cas illustratif — Professionnel de santé"
   },
   "err": {
     "outOfVocab": "Cette phrase est en dehors du vocabulaire actuel du MVP.",
@@ -382,7 +382,11 @@
     "ttsUnavailable": "Aucune voix disponible pour cette langue sur cet appareil.",
     "aiTimeout": "Le délai de reconnaissance a expiré. Veuillez répéter le signe.",
     "aiUnavailable": "Le serveur d'intelligence artificielle est injoignable.",
-    "dbError": "Impossible d'accéder au stockage local des conversations."
+    "dbError": "Impossible d'accéder au stockage local des conversations.",
+    "notFoundTitle": "Nous n'avons pas pu trouver cette page.",
+    "notFoundDesc": "La page a peut-être été déplacée ou le lien est incorrect.",
+    "backToHome": "Retour à l'accueil",
+    "goBack": "Page précédente"
   },
   "badge": {
     "demo": "Mode démo",
