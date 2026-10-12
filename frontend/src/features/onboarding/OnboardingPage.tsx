@@ -2,18 +2,23 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { useProfileStore } from '@/stores/profileStore';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Camera, Mic, CheckCircle2, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Camera, Mic, CheckCircle2, ArrowRight, ArrowLeft, User } from 'lucide-react';
 import { SessionMode } from '@/types/domain';
 
 export const OnboardingPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { settings, updateSettings, setUiLanguage } = useSettingsStore();
+  const { preferredName: storedPreferredName, setPreferredName } = useProfileStore();
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [preferredNameInput, setPreferredNameInput] = useState(storedPreferredName || '');
+  const [nameError, setNameError] = useState<string | null>(null);
+
   const [selectedRole, setSelectedRole] = useState<'sign' | 'speech' | 'helper'>(settings.role);
   const [selectedMode, setSelectedMode] = useState<SessionMode>('two_way');
   const [cameraGranted, setCameraGranted] = useState(false);
@@ -21,6 +26,23 @@ export const OnboardingPage: React.FC = () => {
   const [limitsAck, setLimitsAck] = useState(false);
 
   const totalSteps = 5;
+
+  const handleSaveNameAndContinue = () => {
+    const trimmed = preferredNameInput.trim();
+    if (preferredNameInput.length > 0 && trimmed.length === 0) {
+      setNameError(t('onboarding.nameWhitespaceError', 'Veuillez entrer un nom valide ou ignorer cette étape.'));
+      return;
+    }
+    setNameError(null);
+    setPreferredName(trimmed.length > 0 ? trimmed : null);
+    setCurrentStep((prev) => prev + 1);
+  };
+
+  const handleSkipName = () => {
+    setNameError(null);
+    setPreferredName(null);
+    setCurrentStep((prev) => prev + 1);
+  };
 
   const handleFinish = () => {
     updateSettings({
@@ -81,8 +103,14 @@ export const OnboardingPage: React.FC = () => {
         {currentStep < totalSteps && (
           <button
             type="button"
-            onClick={() => setCurrentStep(totalSteps)}
-            className="text-xs font-semibold text-app-muted hover:text-app-text"
+            onClick={() => {
+              if (currentStep === 1) {
+                // If skipping from step 1, preserve anonymous profile
+                handleSkipName();
+              }
+              setCurrentStep(totalSteps);
+            }}
+            className="text-xs font-semibold text-app-muted hover:text-app-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong rounded px-1.5 py-0.5"
           >
             {t('onboarding.skip', 'Passer')}
           </button>
@@ -91,12 +119,12 @@ export const OnboardingPage: React.FC = () => {
 
       {/* Step Contents */}
       <main className="my-auto py-6">
-        {/* STEP 1: Welcome */}
+        {/* STEP 1: Welcome & Preferred Name */}
         {currentStep === 1 && (
-          <div className="flex flex-col items-center text-center space-y-6 animate-fade-in">
+          <div className="flex flex-col items-center text-center space-y-6 animate-fade-in max-w-lg mx-auto">
             {/* SVG Bridge Visual */}
-            <div className="w-48 h-32 flex items-center justify-center">
-              <svg viewBox="0 0 200 100" fill="none" className="w-full h-full">
+            <div className="w-48 h-28 flex items-center justify-center">
+              <svg viewBox="0 0 200 100" fill="none" className="w-full h-full" aria-hidden="true">
                 <circle cx="35" cy="50" r="14" stroke="#0F766E" strokeWidth="3" />
                 <path d="M20 85 C20 70, 50 70, 50 85" stroke="#0F766E" strokeWidth="3" />
                 <circle cx="165" cy="50" r="14" stroke="#0F766E" strokeWidth="3" />
@@ -112,16 +140,89 @@ export const OnboardingPage: React.FC = () => {
               </svg>
             </div>
 
-            <div className="space-y-2">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-app-text">
-                {t('onboarding.welcomeTitle', 'Bienvenue sur LSA Bridge')}
-              </h1>
-              <p className="text-base text-app-muted max-w-md">
-                {t(
-                  'onboarding.welcomeSubtitle',
-                  'Une passerelle de communication entre la Langue des Signes Algérienne et la parole.'
-                )}
+            {/* Product branding */}
+            <div className="space-y-1">
+              <span className="text-xs font-bold tracking-widest uppercase text-app-primary-strong">
+                BridgeSign
+              </span>
+              <p className="text-xs text-app-muted italic">
+                {t('app.tagline', 'Every hand has a voice.')}
               </p>
+            </div>
+
+            {/* Main content headings */}
+            <div className="space-y-2">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-app-text tracking-tight">
+                {t('onboarding.makeYoursHeading', "Let's make this yours.")}
+              </h1>
+              <p className="text-sm font-semibold text-app-primary-strong">
+                {t('onboarding.whatIsYourName', "What's your name?")}
+              </p>
+              <p className="text-xs sm:text-sm text-app-muted">
+                {t('onboarding.whatToCallYou', 'What would you like us to call you?')}
+              </p>
+            </div>
+
+            {/* Name Input with validation & keyboard submit */}
+            <div className="w-full space-y-2 text-start">
+              <label htmlFor="preferred-name-input" className="sr-only">
+                {t('onboarding.whatIsYourName', "What's your name?")}
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 start-0 ps-3.5 flex items-center pointer-events-none text-app-muted">
+                  <User className="w-4 h-4" aria-hidden="true" />
+                </div>
+                <input
+                  id="preferred-name-input"
+                  type="text"
+                  value={preferredNameInput}
+                  onChange={(e) => {
+                    setPreferredNameInput(e.target.value);
+                    if (nameError) setNameError(null);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleSaveNameAndContinue();
+                    }
+                  }}
+                  placeholder={t('onboarding.namePlaceholder', 'Enter your preferred name')}
+                  className={`w-full h-11 ps-10 pe-4 rounded-control bg-app-surface border text-sm text-app-text placeholder:text-app-muted focus-visible:outline-none focus-visible:ring-2 transition-all ${
+                    nameError
+                      ? 'border-app-error focus-visible:ring-app-error'
+                      : 'border-app-border focus-visible:ring-app-primary-strong'
+                  }`}
+                  aria-invalid={nameError ? 'true' : 'false'}
+                  aria-describedby={nameError ? 'name-error-message' : undefined}
+                  autoComplete="off"
+                />
+              </div>
+
+              {nameError && (
+                <p id="name-error-message" className="text-xs text-app-error font-medium" role="alert">
+                  {nameError}
+                </p>
+              )}
+
+              {/* Action buttons inside Step 1 */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center gap-3 w-full">
+                <Button
+                  variant="primary"
+                  size="md"
+                  fullWidth
+                  onClick={handleSaveNameAndContinue}
+                  iconEnd={<ArrowRight className="w-4 h-4 rtl:-scale-x-100" />}
+                >
+                  {t('onboarding.continue', 'Continue')}
+                </Button>
+                <button
+                  type="button"
+                  onClick={handleSkipName}
+                  className="w-full sm:w-auto px-4 py-2.5 text-xs font-semibold text-app-muted hover:text-app-text transition-colors rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong text-center"
+                >
+                  {t('onboarding.skipForNow', 'Skip for now')}
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -407,7 +508,7 @@ export const OnboardingPage: React.FC = () => {
                 <span className="text-xs text-app-text leading-relaxed font-medium">
                   {t(
                     'onboarding.limitationsAck',
-                    'Je comprends que LSA Bridge est un outil expérimental avec un vocabulaire défini et ne remplace pas un interprète humain certifié.'
+                    'Je comprends que BridgeSign est un outil expérimental avec un vocabulaire défini et ne remplace pas un interprète humain certifié.'
                   )}
                 </span>
               </label>
@@ -418,7 +519,17 @@ export const OnboardingPage: React.FC = () => {
 
       {/* Footer Navigation: Back / Continue / Finish */}
       <footer className="flex items-center justify-between border-t border-app-border pt-4">
-        {currentStep > 1 ? (
+        {currentStep === 1 ? (
+          <div>
+            <button
+              type="button"
+              onClick={handleSkipName}
+              className="text-xs font-semibold text-app-muted hover:text-app-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong rounded px-2 py-1"
+            >
+              {t('onboarding.skipForNow', 'Skip for now')}
+            </button>
+          </div>
+        ) : currentStep > 1 ? (
           <Button
             variant="ghost"
             onClick={() => setCurrentStep((prev) => prev - 1)}
@@ -430,7 +541,15 @@ export const OnboardingPage: React.FC = () => {
           <div />
         )}
 
-        {currentStep < totalSteps ? (
+        {currentStep === 1 ? (
+          <Button
+            variant="primary"
+            onClick={handleSaveNameAndContinue}
+            iconEnd={<ArrowRight className="w-4 h-4 rtl:-scale-x-100" />}
+          >
+            {t('onboarding.continue', 'Continue')}
+          </Button>
+        ) : currentStep < totalSteps ? (
           <Button
             variant="primary"
             onClick={() => setCurrentStep((prev) => prev + 1)}

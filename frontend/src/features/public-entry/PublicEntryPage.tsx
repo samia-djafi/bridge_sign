@@ -56,10 +56,10 @@ export const PublicEntryPage: React.FC = () => {
         {/* Headings */}
         <div className="space-y-2">
           <h1 className="text-3xl font-extrabold tracking-tight text-app-text">
-            {t('app.name', 'LSA Bridge')}
+            {t('app.name', 'BridgeSign')}
           </h1>
           <p className="text-base font-semibold text-app-primary-strong">
-            {t('app.tagline', 'Deux modalités. Une seule conversation.')}
+            {t('app.tagline', 'Every hand has a voice.')}
           </p>
         </div>
 

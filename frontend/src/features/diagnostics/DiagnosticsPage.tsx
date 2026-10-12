@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { registry } from '@/services/registry';
 import { ModelMetrics } from '@/types/domain';
-import { StatusBar } from '@/components/domain/StatusBar';
 import { MetricCard } from '@/components/domain/MetricCard';
 import { PipelineStep } from '@/components/domain/PipelineStep';
 import { Button } from '@/components/ui/Button';
@@ -59,8 +58,6 @@ export const DiagnosticsPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <StatusBar title={t('nav.diagnostics', 'Diagnostic IA')} />
-
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-8">
         {/* Top Banner: Demo vs Live data */}
         <div

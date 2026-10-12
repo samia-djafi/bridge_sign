@@ -8,7 +8,6 @@ import { LanguageSelector } from '@/components/domain/LanguageSelector';
 import { SegmentedControl } from '@/components/ui/SegmentedControl';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { StatusBar } from '@/components/domain/StatusBar';
 import { ContextId, SessionMode, SpokenLang } from '@/types/domain';
 import { ArrowLeftRight, Camera, Mic, Sparkles } from 'lucide-react';
 import { registry } from '@/services/registry';
@@ -60,8 +59,6 @@ export const NewConversationPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <StatusBar title={t('nav.newConversation', 'Nouvelle conversation')} />
-
       <div className="p-4 sm:p-6 lg:p-8 max-w-3xl w-full mx-auto">
         <form onSubmit={handleStart} className="space-y-6">
           <Card p={24} className="bg-app-surface border border-app-border shadow-2 space-y-6">

@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { registry } from '@/services/registry';
 import { ConversationMessage as MessageType, ConversationSession } from '@/types/domain';
-import { StatusBar } from '@/components/domain/StatusBar';
 import { ConversationMessage } from '@/components/domain/ConversationMessage';
 import { Button } from '@/components/ui/Button';
 import { ArrowLeft, Download, Printer } from 'lucide-react';
@@ -74,8 +73,6 @@ export const HistoryDetailPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <StatusBar title={session.title} />
-
       <div className="p-4 sm:p-6 lg:p-8 max-w-4xl w-full mx-auto space-y-6">
         {/* Detail Header & Action Toolbar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-app-border pb-4">

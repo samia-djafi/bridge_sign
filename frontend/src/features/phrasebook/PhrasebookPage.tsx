@@ -5,7 +5,6 @@ import { registry } from '@/services/registry';
 import { Phrase, SignClip } from '@/types/domain';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { StatusBar } from '@/components/domain/StatusBar';
 import { PhraseCard } from '@/components/domain/PhraseCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Sheet } from '@/components/ui/Sheet';
@@ -94,8 +93,6 @@ export const PhrasebookPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <StatusBar title={t('nav.phrasebook', 'Phrases rapides')} />
-
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-6">
         {/* Header Block */}
         <div>

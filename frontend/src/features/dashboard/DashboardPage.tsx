@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { useProfileStore } from '@/stores/profileStore';
 import { useDemoStore } from '@/stores/demoStore';
 import { registry } from '@/services/registry';
 import { ConversationSession, Phrase } from '@/types/domain';
-import { TopNavBar } from '@/components/domain/TopNavBar';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -32,6 +32,7 @@ export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const { currentSession, status, endSession, startSession } = useSessionStore();
   const { settings } = useSettingsStore();
+  const { preferredName } = useProfileStore();
   const { startDemo } = useDemoStore();
 
   const [recentSessions, setRecentSessions] = useState<ConversationSession[]>([]);
@@ -99,30 +100,36 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full bg-app-bg text-app-text">
-      {/* Top Application Header */}
-      <TopNavBar />
-
       {/* Main Content Layout */}
       <div className="p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto space-y-8">
-        {/* Welcome Hero Section */}
-        <section aria-labelledby="welcome-heading" className="space-y-2">
-          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-            <h1 id="welcome-heading" className="text-2xl sm:text-3xl font-extrabold tracking-tight text-app-text">
-              {greetingText},
-            </h1>
-            <span className="text-xs text-app-muted font-medium">
-              Algerian Sign Language (LSA) ↔ Français / العربية
-            </span>
-          </div>
-          <div className="p-4 rounded-card bg-app-surface border border-app-border-strong/60 shadow-1 flex items-start gap-3">
-            <div className="w-1.5 h-12 rounded-full bg-app-primary-strong shrink-0" />
-            <div className="space-y-0.5">
+        {/* Welcome Hero Section with Hands Illustration */}
+        <section aria-labelledby="welcome-heading">
+          <div className="relative overflow-hidden rounded-card bg-app-surface border border-app-border-strong/60 shadow-1 p-5 sm:p-6">
+            <div className="relative z-10 max-w-lg space-y-1.5">
+              <h1 id="welcome-heading" className="text-2xl sm:text-3xl font-extrabold tracking-tight text-app-text">
+                {preferredName ? (
+                  <>
+                    {greetingText}, <span className="text-app-primary-strong">{preferredName}</span>
+                  </>
+                ) : (
+                  <span>{t('dash.welcomeGeneric', 'Welcome to BridgeSign.')}</span>
+                )}
+              </h1>
               <p className="text-xs sm:text-sm font-semibold text-app-text">
                 Communication is a right, not a barrier.
               </p>
               <p className="text-xs text-app-muted">
-                We're here to help you bridge the gap between deaf signers and hearing people.
+                We're here to help you bridge the gap.
               </p>
+            </div>
+
+            {/* Illustration 1: Hands silhouette graphic */}
+            <div className="pointer-events-none absolute end-0 inset-y-0 flex items-center justify-end overflow-hidden opacity-90 sm:opacity-100">
+              <img
+                src="/illustrations/welcome-hands.png"
+                alt=""
+                className="h-full max-h-36 sm:max-h-44 w-auto object-contain object-right"
+              />
             </div>
           </div>
         </section>
@@ -573,6 +580,15 @@ export const DashboardPage: React.FC = () => {
                   {t('dash.noStoriesYet', 'Be the first to share your experience with BridgeSign.')}
                 </p>
               )}
+            </div>
+
+            {/* Illustration 2: "Every hand has a voice" wave banner */}
+            <div className="rounded-card overflow-hidden border border-app-border-strong/40 bg-app-surface shadow-1">
+              <img
+                src="/illustrations/slogan-wave.png"
+                alt="Every hand has a voice."
+                className="w-full h-auto object-cover"
+              />
             </div>
           </aside>
         </div>

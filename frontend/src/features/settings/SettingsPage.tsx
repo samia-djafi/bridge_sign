@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useUiStore } from '@/stores/uiStore';
 import { registry } from '@/services/registry';
-import { StatusBar } from '@/components/domain/StatusBar';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Toggle } from '@/components/ui/Toggle';
@@ -21,16 +20,21 @@ import {
   Download,
   Trash2,
   AlertTriangle,
+  User,
 } from 'lucide-react';
+import { useProfileStore } from '@/stores/profileStore';
 
 export const SettingsPage: React.FC = () => {
   const { t } = useTranslation();
   const { settings, updateSettings, setUiLanguage, resetSettings } = useSettingsStore();
   const { addToast } = useUiStore();
+  const { preferredName, setPreferredName } = useProfileStore();
+
+  const [nameInput, setNameInput] = useState(preferredName || '');
 
   const [activeTab, setActiveTab] = useState<
-    'language' | 'appearance' | 'a11y' | 'camera' | 'audio' | 'ai' | 'privacy'
-  >('language');
+    'profile' | 'language' | 'appearance' | 'a11y' | 'camera' | 'audio' | 'ai' | 'privacy'
+  >('profile');
 
   const [savedIndicator, setSavedIndicator] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -80,8 +84,6 @@ export const SettingsPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <StatusBar title={t('nav.settings', 'Paramètres')} />
-
       <div className="p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto space-y-6">
         <div className="flex items-center justify-between border-b border-app-border pb-4">
           <div>
@@ -106,6 +108,7 @@ export const SettingsPage: React.FC = () => {
           {/* Tab Navigation */}
           <nav aria-label="Catégories des paramètres" className="flex md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0">
             {[
+              { id: 'profile', label: t('settings.tabs.profile', 'Profil'), icon: <User className="w-4 h-4" /> },
               { id: 'language', label: t('settings.tabs.language', 'Langue'), icon: <Globe className="w-4 h-4" /> },
               { id: 'appearance', label: t('settings.tabs.appearance', 'Apparence'), icon: <Palette className="w-4 h-4" /> },
               { id: 'a11y', label: t('settings.tabs.a11y', 'Accessibilité'), icon: <Eye className="w-4 h-4" /> },
@@ -132,6 +135,40 @@ export const SettingsPage: React.FC = () => {
 
           {/* Settings Content Area */}
           <div className="md:col-span-3 space-y-6">
+            {/* TAB: Profile */}
+            {activeTab === 'profile' && (
+              <Card p={24} className="space-y-6">
+                <div>
+                  <h3 className="text-base font-bold text-app-text">{t('settings.preferredNameLabel', 'Nom préféré')}</h3>
+                  <p className="text-xs text-app-muted mt-1">
+                    {t('settings.preferredNameHelp', 'Ce nom est enregistré uniquement sur cet appareil et utilisé pour votre message d\'accueil.')}
+                  </p>
+                  <div className="mt-4 flex flex-col sm:flex-row gap-3 max-w-md">
+                    <input
+                      type="text"
+                      value={nameInput}
+                      onChange={(e) => setNameInput(e.target.value)}
+                      placeholder={t('onboarding.namePlaceholder', 'Enter your preferred name')}
+                      maxLength={40}
+                      className="flex-1 h-10 px-3.5 rounded-control bg-app-surface-2 border border-app-border text-sm text-app-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong transition-all"
+                    />
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={async () => {
+                        const trimmed = nameInput.trim();
+                        await setPreferredName(trimmed ? trimmed : null);
+                        triggerSaved();
+                        addToast({ message: t('settings.saved', 'Paramètres enregistrés ✓'), type: 'status' });
+                      }}
+                    >
+                      {t('settings.saveName', 'Enregistrer le nom')}
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
+
             {/* TAB: Language */}
             {activeTab === 'language' && (
               <Card p={24} className="space-y-6">

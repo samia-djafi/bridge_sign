@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StatusBar } from '@/components/domain/StatusBar';
 import { Card } from '@/components/ui/Card';
 import { ShieldCheck, Info, HeartHandshake } from 'lucide-react';
 import { VOCAB_SIZE } from '@/data/vocabulary.config';
@@ -10,8 +9,6 @@ export const AboutPage: React.FC = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <StatusBar title={t('nav.about', 'À propos')} />
-
       <div className="p-4 sm:p-6 lg:p-8 max-w-4xl w-full mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
