@@ -70,9 +70,11 @@ export const AppShell: React.FC = () => {
             to="/app"
             className="flex items-center gap-3 py-2 px-1 rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong mb-6"
           >
-            <div className="w-10 h-10 rounded-control bg-app-primary-strong flex items-center justify-center shrink-0 shadow-1">
-              <img src="/icons/logo-mark.svg" alt="" className="w-6 h-6 invert" />
-            </div>
+            <img
+              src="/icons/logo-mark.svg"
+              alt="BridgeSign Logo"
+              className="w-10 h-10 rounded-control shrink-0 shadow-1"
+            />
             <div className="hidden lg:flex flex-col">
               <span className="font-bold text-base tracking-tight text-app-text">BridgeSign</span>
               <span className="text-[10px] text-app-muted leading-tight truncate">
