@@ -101,7 +101,7 @@ export const PublicEntryPage: React.FC = () => {
           <p className="text-xs text-app-muted leading-relaxed">
             {t(
               'disclaimer',
-              "LSA Bridge est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical."
+              "BridgeSign est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical."
             )}
           </p>
         </div>
