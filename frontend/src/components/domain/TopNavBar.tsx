@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useProfileStore } from '@/stores/profileStore';
 import { registry } from '@/services/registry';
@@ -8,8 +8,6 @@ import { Phrase, ConversationSession } from '@/types/domain';
 import { Search, Bell, X, Clock, BookOpen, User } from 'lucide-react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { Modal } from '@/components/ui/Modal';
-
-import { Link } from 'react-router-dom';
 
 export interface TopNavBarProps {
   title?: string;
@@ -79,7 +77,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = ({ title }) => {
     <header className="h-16 bg-app-surface border-b border-app-border px-4 sm:px-6 flex items-center justify-between gap-3 sticky top-0 z-30 select-none">
 
       {/* Search Input Bar (Center) */}
-      <div className="relative flex-1 max-w-md lg:max-w-lg">
+      <div className="relative flex-1 max-w-xs sm:max-w-md lg:max-w-lg">
         <div className="relative flex items-center">
           <Search className="w-4 h-4 text-app-muted absolute start-3.5 pointer-events-none" />
           <input
