@@ -6,14 +6,16 @@ import { Sheet } from '@/components/ui/Sheet';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { triggerHaptic } from '@/lib/a11y';
-import { Siren, AlertTriangle, Ambulance, Wind, ShieldAlert, HeartCrack, Stethoscope } from 'lucide-react';
+import { Siren, AlertTriangle, Ambulance, Wind, ShieldAlert, HeartCrack, Stethoscope, PhoneCall, Pill } from 'lucide-react';
 import { SEED_PHRASES } from '@/data/phrasebook';
-import { Phrase } from '@/types/domain';
+import { Phrase, UiLang } from '@/types/domain';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 export const EmergencySheet: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { emergencySheetOpen, setEmergencySheetOpen } = useUiStore();
   const { currentSession, addMessage } = useSessionStore();
+  const { settings } = useSettingsStore();
 
   const [selectedEmergencyPhrase, setSelectedEmergencyPhrase] = useState<Phrase | null>(null);
 
@@ -38,8 +40,14 @@ export const EmergencySheet: React.FC = () => {
     }
   };
 
-  const getEmergencyIcon = (gloss: string[]) => {
-    const key = gloss[0];
+  const getEmergencyIcon = (phrase: Phrase) => {
+    if (phrase.id === 'ph_emergency_contact') {
+      return <PhoneCall className="w-8 h-8 text-app-warning" />;
+    }
+    if (phrase.id === 'ph_allergy_emergency') {
+      return <Pill className="w-8 h-8 text-app-error" />;
+    }
+    const key = phrase.gloss[0];
     switch (key) {
       case 'HELP':
         return <ShieldAlert className="w-8 h-8 text-app-warning" />;
@@ -58,7 +66,7 @@ export const EmergencySheet: React.FC = () => {
     }
   };
 
-  const activeLang = currentSession ? currentSession.spokenLang : 'fr';
+  const activeLang: UiLang = (currentSession?.spokenLang || settings.uiLang || (i18n.language as UiLang) || 'en');
 
   return (
     <>
@@ -71,25 +79,34 @@ export const EmergencySheet: React.FC = () => {
             <span>{t('emergency.title', "Phrases d'urgence")}</span>
           </div>
         }
-        subtitle={t('emergency.subtitle', 'Touchez une phrase pour l’afficher en grand à votre interlocuteur.')}
-        maxWidth="lg"
+        subtitle={t('emergency.subtitle', 'Tap a phrase to show it large to your interlocutor.')}
+        maxWidth="4xl"
       >
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {emergencyPhrases.map((phrase) => {
-            return (
-              <button
-                key={phrase.id}
-                type="button"
-                onClick={() => handlePhraseSelect(phrase)}
-                className="flex flex-col items-center justify-center p-4 min-h-[96px] rounded-card border-2 border-app-warning/50 dark:border-app-warning/40 bg-app-surface hover:bg-amber-500/10 dark:hover:bg-amber-500/15 hover:border-app-warning focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong active:scale-95 transition-all text-center gap-2 shadow-1"
-              >
-                {getEmergencyIcon(phrase.gloss)}
-                <span className="text-sm font-bold text-app-text leading-tight">
-                  {phrase.text[activeLang]}
-                </span>
-              </button>
-            );
-          })}
+        <div className="space-y-3">
+          <div className="px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-control text-xs text-app-muted leading-relaxed flex items-center gap-2">
+            <span className="font-bold text-app-text shrink-0">Medical Essentials:</span>
+            <span>Pre-verified offline cards available immediately without requiring AI processing.</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
+            {emergencyPhrases.map((phrase) => {
+              return (
+                <button
+                  key={phrase.id}
+                  type="button"
+                  onClick={() => handlePhraseSelect(phrase)}
+                  className="flex flex-col items-center justify-center p-3 sm:p-3.5 min-h-[82px] sm:min-h-[88px] rounded-card border-2 border-app-warning/50 dark:border-app-warning/40 bg-app-surface hover:bg-amber-500/10 dark:hover:bg-amber-500/15 hover:border-app-warning focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong active:scale-95 transition-all text-center gap-1.5 shadow-1"
+                >
+                  <div className="shrink-0 scale-90 sm:scale-100">
+                    {getEmergencyIcon(phrase)}
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-app-text leading-snug">
+                    {phrase.text[activeLang] || phrase.text.en}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </Sheet>
 
@@ -97,43 +114,46 @@ export const EmergencySheet: React.FC = () => {
       <Modal
         isOpen={selectedEmergencyPhrase !== null}
         onClose={() => setSelectedEmergencyPhrase(null)}
-        title={t('emergency.showToOther', "Montrer à l'autre personne")}
-        maxWidth="lg"
+        title={t('emergency.showToOther', "Show to the other person")}
+        maxWidth="xl"
       >
         {selectedEmergencyPhrase && (
-          <div className="flex flex-col items-center justify-center text-center py-6 px-4 space-y-6">
-            <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/40 text-app-warning flex items-center justify-center">
-              {getEmergencyIcon(selectedEmergencyPhrase.gloss)}
+          <div className="flex flex-col items-center justify-center text-center py-2 sm:py-3 px-1 sm:px-4 space-y-4 sm:space-y-5">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-amber-100 dark:bg-amber-900/40 text-app-warning flex items-center justify-center shrink-0">
+              {getEmergencyIcon(selectedEmergencyPhrase)}
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-2 w-full max-w-xl mx-auto">
               <h2
                 dir="auto"
-                className="text-3xl sm:text-4xl md:text-5xl font-black text-app-text tracking-tight leading-snug"
+                className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-app-text tracking-tight leading-snug px-1"
               >
-                {selectedEmergencyPhrase.text[activeLang]}
+                {selectedEmergencyPhrase.text[activeLang] || selectedEmergencyPhrase.text.en}
               </h2>
 
-              <p className="text-base text-app-muted">
-                {activeLang !== 'fr' && (
+              <div className="text-xs sm:text-sm text-app-muted space-y-0.5">
+                {activeLang !== 'en' && selectedEmergencyPhrase.text.en && (
+                  <span className="block font-medium">{selectedEmergencyPhrase.text.en}</span>
+                )}
+                {activeLang !== 'fr' && selectedEmergencyPhrase.text.fr && (
                   <span className="block">{selectedEmergencyPhrase.text.fr}</span>
                 )}
-                {activeLang !== 'ar' && (
+                {activeLang !== 'ar' && selectedEmergencyPhrase.text.ar && (
                   <span className="block font-arabic" dir="rtl">
                     {selectedEmergencyPhrase.text.ar}
                   </span>
                 )}
-              </p>
+              </div>
             </div>
 
-            <div className="p-3 bg-app-surface-2 rounded-control border border-app-border text-xs text-app-muted flex items-center gap-2">
+            <div className="p-2 sm:p-2.5 bg-app-surface-2 rounded-control border border-app-border text-xs text-app-muted flex items-center gap-2">
               <span className="font-semibold text-app-text">LSA Gloss:</span>
               <span className="font-mono">{selectedEmergencyPhrase.gloss.join(' · ')}</span>
             </div>
 
             <Button
               variant="primary"
-              size="lg"
+              size="md"
               fullWidth
               onClick={() => {
                 setSelectedEmergencyPhrase(null);
