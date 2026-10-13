@@ -30,7 +30,9 @@ export const ConversationMessage: React.FC<ConversationMessageProps> = ({
 
   const isSign = message.direction === 'sign_to_language';
   const isRtl = displayLang === 'ar';
-  const textContent = isEditing ? editText : message.outputs[displayLang] || '';
+  const textContent = isEditing
+    ? editText
+    : (message.outputs[displayLang] || message.outputs.en || message.outputs.fr || message.outputs.ar || '');
 
   const handleCopy = () => {
     if (typeof navigator !== 'undefined' && navigator.clipboard) {
