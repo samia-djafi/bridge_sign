@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ErrorBoundary } from './ErrorBoundary';
 import { useUiStore } from '@/stores/uiStore';
+import { Analytics } from '@vercel/analytics/react';
 
 export const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
@@ -22,5 +23,10 @@ export const AppProviders: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  return <ErrorBoundary>{children}</ErrorBoundary>;
+  return (
+    <ErrorBoundary>
+      {children}
+      <Analytics />
+    </ErrorBoundary>
+  );
 };
