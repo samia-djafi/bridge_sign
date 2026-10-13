@@ -29,10 +29,10 @@ const LOCAL_FEEDBACK_KEY = 'bridgesign-local-feedback';
 
 export const StoriesPage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const currentLang = (['fr', 'ar', 'en'].includes(i18n.language) ? i18n.language : 'fr') as
+  const currentLang = (['en', 'fr', 'ar'].includes(i18n.language) ? i18n.language : 'en') as
+    | 'en'
     | 'fr'
-    | 'ar'
-    | 'en';
+    | 'ar';
 
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState<'form' | 'list'>('form');
