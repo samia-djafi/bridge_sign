@@ -161,9 +161,9 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
                     </span>
                     <div className="space-y-0.5">
                       {searchResults.phrases.map((p) => {
-                        const currentLang = (['fr', 'ar', 'en'].includes(i18n.language)
+                        const currentLang = (['en', 'fr', 'ar'].includes(i18n.language)
                           ? i18n.language
-                          : 'fr') as 'fr' | 'ar' | 'en';
+                          : 'en') as 'en' | 'fr' | 'ar';
                         return (
                           <button
                             key={p.id}
@@ -174,7 +174,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
                             <div className="flex items-center gap-2 truncate">
                               <BookOpen className="w-3.5 h-3.5 text-app-primary-strong shrink-0" />
                               <span className="text-xs font-medium text-app-text truncate">
-                                {p.text[currentLang] || p.text.fr}
+                                {p.text[currentLang] || p.text.en || p.text.fr}
                               </span>
                             </div>
                             <span className="text-[10px] text-app-muted font-mono shrink-0">
@@ -323,9 +323,9 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
                       </span>
                       <div className="space-y-0.5">
                         {searchResults.phrases.map((p) => {
-                          const currentLang = (['fr', 'ar', 'en'].includes(i18n.language)
+                          const currentLang = (['en', 'fr', 'ar'].includes(i18n.language)
                             ? i18n.language
-                            : 'fr') as 'fr' | 'ar' | 'en';
+                            : 'en') as 'en' | 'fr' | 'ar';
                           return (
                             <button
                               key={p.id}
@@ -336,7 +336,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
                               <div className="flex items-center gap-2 truncate">
                                 <BookOpen className="w-3.5 h-3.5 text-app-primary-strong shrink-0" />
                                 <span className="text-xs font-medium text-app-text truncate">
-                                  {p.text[currentLang] || p.text.fr}
+                                  {p.text[currentLang] || p.text.en || p.text.fr}
                                 </span>
                               </div>
                               <span className="text-[10px] text-app-muted font-mono shrink-0">
