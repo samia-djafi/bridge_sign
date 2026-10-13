@@ -426,6 +426,30 @@ export const SEED_PHRASES: Phrase[] = [
     gloss: ['DOCTOR', 'NOW'],
     contexts: ['healthcare', 'other'],
   },
+  {
+    id: 'ph_allergy_emergency',
+    category: 'emergency',
+    emergency: true,
+    text: {
+      fr: "J'ai une allergie sévère.",
+      ar: 'عندي حساسية شديدة.',
+      en: 'I have a severe allergy.',
+    },
+    gloss: ['ALLERGY', 'PAIN'],
+    contexts: ['healthcare', 'other'],
+  },
+  {
+    id: 'ph_emergency_contact',
+    category: 'emergency',
+    emergency: true,
+    text: {
+      fr: "Contactez mon contact d'urgence s'il vous plaît.",
+      ar: 'يرجى الاتصال بجهة الاتصال الخاصة بالطوارئ.',
+      en: 'Please contact my emergency contact.',
+    },
+    gloss: ['HELP', 'PLEASE'],
+    contexts: ['healthcare', 'everyday', 'other'],
+  },
 
   // --- EVERYDAY ---
   {
