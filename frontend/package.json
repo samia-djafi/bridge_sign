@@ -13,6 +13,7 @@
     "i18n:check": "node scripts/check-i18n.js"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "dexie": "^4.0.11",
     "i18next": "^23.16.8",
