@@ -39,10 +39,10 @@ export const DashboardPage: React.FC = () => {
   const [quickPhrases, setQuickPhrases] = useState<Phrase[]>([]);
   const [activeStoryIndex, setActiveStoryIndex] = useState(0);
 
-  const currentLang = (['fr', 'ar', 'en'].includes(i18n.language) ? i18n.language : 'fr') as
+  const currentLang = (['en', 'fr', 'ar'].includes(i18n.language) ? i18n.language : 'en') as
+    | 'en'
     | 'fr'
-    | 'ar'
-    | 'en';
+    | 'ar';
 
   useEffect(() => {
     document.title = `${t('nav.dashboard', 'Home')} | ${t('app.name', 'BridgeSign')}`;
