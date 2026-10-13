@@ -74,6 +74,7 @@ export const OnboardingPage: React.FC = () => {
     }
   };
 
+  // Move Language selection to Step 2 so users can explicitly set language right after welcome
   return (
     <div className="min-h-screen bg-app-bg text-app-text flex flex-col justify-between p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto selection:bg-teal-500/20">
       {/* Top Header: Stepper Dots & Skip */}
@@ -85,7 +86,7 @@ export const OnboardingPage: React.FC = () => {
             aria-valuenow={currentStep}
             aria-valuemin={1}
             aria-valuemax={totalSteps}
-            aria-label={`Étape ${currentStep} sur ${totalSteps}`}
+            aria-label={t('onboarding.step', { current: currentStep, total: totalSteps })}
           >
             {[1, 2, 3, 4, 5].map((s) => (
               <div
@@ -117,7 +118,7 @@ export const OnboardingPage: React.FC = () => {
             }}
             className="text-xs font-semibold text-app-muted hover:text-app-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0D9488] rounded px-2.5 py-1 transition-colors"
           >
-            {t('onboarding.skip', 'Passer')}
+            {t('onboarding.skip', 'Skip')}
           </button>
         )}
       </header>
@@ -225,127 +226,27 @@ export const OnboardingPage: React.FC = () => {
           </div>
         )}
 
-        {/* STEP 2: Role */}
+        {/* STEP 2: Language Selection (Promoted early so whole onboarding is personalized) */}
         {currentStep === 2 && (
           <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
             <div className="text-center sm:text-start space-y-1.5">
               <span className="text-xs font-bold uppercase tracking-wider text-[#0D9488]">
-                Étape 2 sur 5
+                {t('onboarding.step', { current: 2, total: totalSteps })}
               </span>
               <h1 className="text-2xl font-bold text-app-text tracking-tight">
-                {t('onboarding.roleTitle', 'Comment participez-vous à la conversation ?')}
+                {t('onboarding.langTitle', 'Choose your language')}
               </h1>
               <p className="text-sm text-app-muted leading-relaxed">
-                Votre choix adapte la disposition des commandes de l’interface.
-              </p>
-            </div>
-
-            <div className="space-y-3" role="radiogroup" aria-label="Rôle dans la conversation">
-              <Card
-                asButton
-                interactive
-                selected={selectedRole === 'sign'}
-                onClick={() => setSelectedRole('sign')}
-                className={`flex items-start gap-4 p-4.5 rounded-card border transition-all ${
-                  selectedRole === 'sign'
-                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
-                    : 'border-app-border hover:border-app-border-strong'
-                }`}
-              >
-                <div className="w-11 h-11 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-2xl" aria-hidden="true">
-                  🤟
-                </div>
-                <div className="space-y-1">
-                  <h3 className="font-bold text-sm text-app-text">
-                    {t('onboarding.roleSign', "J'utilise la langue des signes")}
-                  </h3>
-                  <p className="text-xs text-app-muted leading-relaxed">
-                    {t(
-                      'onboarding.roleSignDesc',
-                      'Interface adaptée avec priorité à la caméra et aux signes'
-                    )}
-                  </p>
-                </div>
-              </Card>
-
-              <Card
-                asButton
-                interactive
-                selected={selectedRole === 'speech'}
-                onClick={() => setSelectedRole('speech')}
-                className={`flex items-start gap-4 p-4.5 rounded-card border transition-all ${
-                  selectedRole === 'speech'
-                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
-                    : 'border-app-border hover:border-app-border-strong'
-                }`}
-              >
-                <div className="w-11 h-11 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-2xl" aria-hidden="true">
-                  🗣️
-                </div>
-                <div className="space-y-1">
-                  <h3 className="font-bold text-sm text-app-text">
-                    {t('onboarding.roleSpeech', 'Je communique par la parole ou le texte')}
-                  </h3>
-                  <p className="text-xs text-app-muted leading-relaxed">
-                    {t(
-                      'onboarding.roleSpeechDesc',
-                      'Interface adaptée avec priorité à la saisie et au retour vocal'
-                    )}
-                  </p>
-                </div>
-              </Card>
-
-              <Card
-                asButton
-                interactive
-                selected={selectedRole === 'helper'}
-                onClick={() => setSelectedRole('helper')}
-                className={`flex items-start gap-4 p-4.5 rounded-card border transition-all ${
-                  selectedRole === 'helper'
-                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
-                    : 'border-app-border hover:border-app-border-strong'
-                }`}
-              >
-                <div className="w-11 h-11 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-2xl" aria-hidden="true">
-                  ↔️
-                </div>
-                <div className="space-y-1">
-                  <h3 className="font-bold text-sm text-app-text">
-                    {t('onboarding.roleHelper', 'J’aide deux personnes à communiquer')}
-                  </h3>
-                  <p className="text-xs text-app-muted leading-relaxed">
-                    {t(
-                      'onboarding.roleHelperDesc',
-                      'Interface équilibrée pour manipuler l’appareil pour les deux'
-                    )}
-                  </p>
-                </div>
-              </Card>
-            </div>
-          </div>
-        )}
-
-        {/* STEP 3: Language */}
-        {currentStep === 3 && (
-          <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
-            <div className="text-center sm:text-start space-y-1.5">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#0D9488]">
-                Étape 3 sur 5
-              </span>
-              <h1 className="text-2xl font-bold text-app-text tracking-tight">
-                {t('onboarding.langTitle', 'Choisissez votre langue')}
-              </h1>
-              <p className="text-sm text-app-muted leading-relaxed">
-                La sélection met à jour instantanément la direction de l’interface (RTL / LTR).
+                {t('onboarding.langSubtitle', 'Selection immediately updates layout direction (RTL / LTR).')}
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               {(
                 [
+                  { code: 'en', flag: '🇬🇧', name: 'English', sub: 'English' },
                   { code: 'fr', flag: '🇫🇷', name: 'Français', sub: 'French' },
                   { code: 'ar', flag: '🇩🇿', name: 'العربية', sub: 'Arabic' },
-                  { code: 'en', flag: '🇬🇧', name: 'English', sub: 'Anglais' },
                 ] as const
               ).map((lang) => {
                 const isSelected = settings.uiLang === lang.code;
@@ -374,18 +275,118 @@ export const OnboardingPage: React.FC = () => {
           </div>
         )}
 
+        {/* STEP 3: Role */}
+        {currentStep === 3 && (
+          <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
+            <div className="text-center sm:text-start space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0D9488]">
+                {t('onboarding.step', { current: 3, total: totalSteps })}
+              </span>
+              <h1 className="text-2xl font-bold text-app-text tracking-tight">
+                {t('onboarding.roleTitle', 'How do you participate in the conversation?')}
+              </h1>
+              <p className="text-sm text-app-muted leading-relaxed">
+                {t('onboarding.whatToCallYou', 'Your choice adapts the workspace layout.')}
+              </p>
+            </div>
+
+            <div className="space-y-3" role="radiogroup" aria-label={t('onboarding.roleTitle', 'Role in conversation')}>
+              <Card
+                asButton
+                interactive
+                selected={selectedRole === 'sign'}
+                onClick={() => setSelectedRole('sign')}
+                className={`flex items-start gap-4 p-4.5 rounded-card border transition-all ${
+                  selectedRole === 'sign'
+                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                    : 'border-app-border hover:border-app-border-strong'
+                }`}
+              >
+                <div className="w-11 h-11 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-2xl" aria-hidden="true">
+                  🤟
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sm text-app-text">
+                    {t('onboarding.roleSign', "I use sign language")}
+                  </h3>
+                  <p className="text-xs text-app-muted leading-relaxed">
+                    {t(
+                      'onboarding.roleSignDesc',
+                      'Customized interface prioritizing camera and sign detection'
+                    )}
+                  </p>
+                </div>
+              </Card>
+
+              <Card
+                asButton
+                interactive
+                selected={selectedRole === 'speech'}
+                onClick={() => setSelectedRole('speech')}
+                className={`flex items-start gap-4 p-4.5 rounded-card border transition-all ${
+                  selectedRole === 'speech'
+                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                    : 'border-app-border hover:border-app-border-strong'
+                }`}
+              >
+                <div className="w-11 h-11 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-2xl" aria-hidden="true">
+                  🗣️
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sm text-app-text">
+                    {t('onboarding.roleSpeech', 'I communicate through speech or text')}
+                  </h3>
+                  <p className="text-xs text-app-muted leading-relaxed">
+                    {t(
+                      'onboarding.roleSpeechDesc',
+                      'Customized interface prioritizing typing and audio output'
+                    )}
+                  </p>
+                </div>
+              </Card>
+
+              <Card
+                asButton
+                interactive
+                selected={selectedRole === 'helper'}
+                onClick={() => setSelectedRole('helper')}
+                className={`flex items-start gap-4 p-4.5 rounded-card border transition-all ${
+                  selectedRole === 'helper'
+                    ? 'border-[#0D9488] ring-1 ring-[#0D9488] bg-teal-500/5'
+                    : 'border-app-border hover:border-app-border-strong'
+                }`}
+              >
+                <div className="w-11 h-11 rounded-control bg-app-surface-2 flex items-center justify-center shrink-0 text-2xl" aria-hidden="true">
+                  ↔️
+                </div>
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sm text-app-text">
+                    {t('onboarding.roleHelper', 'I am helping two people communicate')}
+                  </h3>
+                  <p className="text-xs text-app-muted leading-relaxed">
+                    {t(
+                      'onboarding.roleHelperDesc',
+                      'Balanced interface to operate the device for both'
+                    )}
+                  </p>
+                </div>
+              </Card>
+            </div>
+          </div>
+        )}
+
         {/* STEP 4: Mode */}
         {currentStep === 4 && (
           <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
             <div className="text-center sm:text-start space-y-1.5">
               <span className="text-xs font-bold uppercase tracking-wider text-[#0D9488]">
-                Étape 4 sur 5
+                {t('onboarding.step', { current: 4, total: totalSteps })}
               </span>
               <h1 className="text-2xl font-bold text-app-text tracking-tight">
-                {t('onboarding.modeTitle', 'Mode de démarrage favori')}
+                {t('onboarding.modeTitle', 'Preferred starting mode')}
               </h1>
               <p className="text-sm text-app-muted leading-relaxed">
-                Vous pourrez toujours basculer ou démarrer un autre mode à tout moment.
+                {t('onboarding.modeSubtitle', 'You can always switch or start a different mode at any time.')}
               </p>
             </div>
 
@@ -403,16 +404,16 @@ export const OnboardingPage: React.FC = () => {
               >
                 <div className="flex items-center justify-between mb-1">
                   <h3 className="font-bold text-sm text-app-text">
-                    {t('mode.twoWay', 'Conversation à double sens')}
+                    {t('mode.twoWay', 'Two-way conversation')}
                   </h3>
                   <Badge variant="demo" size="sm">
-                    Recommandé
+                    {t('onboarding.granted', 'Recommended')}
                   </Badge>
                 </div>
                 <p className="text-xs text-app-muted leading-relaxed">
                   {t(
                     'onboarding.modeTwoWayDesc',
-                    'Échange complet bidirectionnel (Recommandé pour la clinique/pharmacie)'
+                    'Full bidirectional exchange (Recommended for clinic / pharmacy)'
                   )}
                 </p>
               </Card>
@@ -429,12 +430,12 @@ export const OnboardingPage: React.FC = () => {
                 }`}
               >
                 <h3 className="font-bold text-sm text-app-text mb-1">
-                  {t('mode.signToLang', 'LSA → Langue')}
+                  {t('mode.signToLang', 'Sign → Language')}
                 </h3>
                 <p className="text-xs text-app-muted leading-relaxed">
                   {t(
                     'onboarding.modeSignDesc',
-                    'Traduction directe de vos signes vers du texte ou de la parole'
+                    'Direct translation from your signs to text or speech'
                   )}
                 </p>
               </Card>
@@ -451,12 +452,12 @@ export const OnboardingPage: React.FC = () => {
                 }`}
               >
                 <h3 className="font-bold text-sm text-app-text mb-1">
-                  {t('mode.langToSign', 'Langue → LSA')}
+                  {t('mode.langToSign', 'Language → Sign')}
                 </h3>
                 <p className="text-xs text-app-muted leading-relaxed">
                   {t(
                     'onboarding.modeLangDesc',
-                    'Traduction de votre parole ou texte vers des clips LSA'
+                    'Translation from your speech or text to LSA sign clips'
                   )}
                 </p>
               </Card>
@@ -469,13 +470,13 @@ export const OnboardingPage: React.FC = () => {
           <div className="space-y-6 animate-fade-in max-w-xl mx-auto">
             <div className="text-center sm:text-start space-y-1.5">
               <span className="text-xs font-bold uppercase tracking-wider text-[#0D9488]">
-                Étape 5 sur 5
+                {t('onboarding.step', { current: 5, total: totalSteps })}
               </span>
               <h1 className="text-2xl font-bold text-app-text tracking-tight">
-                {t('onboarding.permissionsTitle', 'Autorisations & limites')}
+                {t('onboarding.permissionsTitle', 'Permissions & limitations')}
               </h1>
               <p className="text-sm text-app-muted leading-relaxed">
-                Vos autorisations permettent d'activer le suivi caméra et l'entrée vocale.
+                {t('onboarding.permissionsSubtitle', 'Your permissions enable camera tracking and voice input.')}
               </p>
             </div>
 
@@ -488,7 +489,9 @@ export const OnboardingPage: React.FC = () => {
                     <Camera className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-xs sm:text-sm text-app-text">Caméra</h3>
+                    <h3 className="font-bold text-xs sm:text-sm text-app-text">
+                      {t('onboarding.cameraTitle', 'Camera')}
+                    </h3>
                     <p className="text-xs text-app-muted mt-0.5 max-w-sm leading-relaxed">
                       {t('onboarding.cameraWhy')}
                     </p>
@@ -499,11 +502,11 @@ export const OnboardingPage: React.FC = () => {
                   {cameraGranted ? (
                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-pill">
                       <CheckCircle2 className="w-4 h-4" />
-                      {t('onboarding.granted', 'Autorisé')}
+                      {t('onboarding.granted', 'Granted')}
                     </span>
                   ) : (
                     <Button size="sm" variant="secondary" onClick={requestCamera}>
-                      {t('onboarding.allowCamera', 'Autoriser')}
+                      {t('onboarding.allowCamera', 'Allow camera')}
                     </Button>
                   )}
                 </div>
@@ -516,7 +519,9 @@ export const OnboardingPage: React.FC = () => {
                     <Mic className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-xs sm:text-sm text-app-text">Microphone</h3>
+                    <h3 className="font-bold text-xs sm:text-sm text-app-text">
+                      {t('onboarding.micTitle', 'Microphone')}
+                    </h3>
                     <p className="text-xs text-app-muted mt-0.5 max-w-sm leading-relaxed">
                       {t('onboarding.micWhy')}
                     </p>
@@ -527,11 +532,11 @@ export const OnboardingPage: React.FC = () => {
                   {micGranted ? (
                     <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-pill">
                       <CheckCircle2 className="w-4 h-4" />
-                      {t('onboarding.granted', 'Autorisé')}
+                      {t('onboarding.granted', 'Granted')}
                     </span>
                   ) : (
                     <Button size="sm" variant="secondary" onClick={requestMic}>
-                      {t('onboarding.allowMic', 'Autoriser')}
+                      {t('onboarding.allowMic', 'Allow microphone')}
                     </Button>
                   )}
                 </div>
@@ -550,7 +555,7 @@ export const OnboardingPage: React.FC = () => {
                 <span className="text-xs text-app-text leading-relaxed font-medium">
                   {t(
                     'onboarding.limitationsAck',
-                    'Je comprends que BridgeSign est un outil expérimental avec un vocabulaire défini et ne remplace pas un interprète humain certifié.'
+                    'I understand that BridgeSign is an experimental tool with a defined vocabulary and does not replace a certified human interpreter.'
                   )}
                 </span>
               </label>
@@ -577,7 +582,7 @@ export const OnboardingPage: React.FC = () => {
             onClick={() => setCurrentStep((prev) => prev - 1)}
             iconStart={<ArrowLeft className="w-4 h-4 rtl:-scale-x-100" />}
           >
-            {t('onboarding.back', 'Retour')}
+            {t('onboarding.back', 'Back')}
           </Button>
         ) : (
           <div />
@@ -597,7 +602,7 @@ export const OnboardingPage: React.FC = () => {
             onClick={() => setCurrentStep((prev) => prev + 1)}
             iconEnd={<ArrowRight className="w-4 h-4 rtl:-scale-x-100" />}
           >
-            {t('onboarding.continue', 'Continuer')}
+            {t('onboarding.continue', 'Continue')}
           </Button>
         ) : (
           <Button
@@ -606,7 +611,7 @@ export const OnboardingPage: React.FC = () => {
             onClick={handleFinish}
             iconEnd={<CheckCircle2 className="w-4 h-4" />}
           >
-            {t('onboarding.finish', 'Commencer')}
+            {t('onboarding.finish', 'Start')}
           </Button>
         )}
       </footer>
