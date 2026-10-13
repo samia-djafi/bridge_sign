@@ -607,9 +607,14 @@ export const WorkspacePage: React.FC = () => {
                   <span className="text-xl" aria-hidden="true">
                     🤟
                   </span>
-                  <h3 className="font-bold text-sm text-app-text">
-                    {t('mode.signToLang', 'LSA (Langue des Signes)')}
-                  </h3>
+                  <div>
+                    <h3 className="font-bold text-sm text-app-text">
+                      {t('mode.signToLang', 'Sign to Text (Algerian Sign Language)')}
+                    </h3>
+                    <span className="text-[10px] text-amber-700 dark:text-amber-400 font-medium">
+                      AI Model in Active Development · Research Prototype
+                    </span>
+                  </div>
                 </div>
                 <RecognitionStatus
                   state={
@@ -622,8 +627,8 @@ export const WorkspacePage: React.FC = () => {
                   errorMessage={
                     camera.status === 'error'
                       ? camera.errorCode === 'CAM-001'
-                        ? "Accès caméra refusé. Activez la caméra dans votre navigateur."
-                        : "Erreur matérielle caméra."
+                        ? t('err.camBlocked', 'Camera access blocked. Please enable camera permissions.')
+                        : t('err.camGeneric', 'Camera hardware error.')
                       : recognition.errorMessage
                   }
                 />
