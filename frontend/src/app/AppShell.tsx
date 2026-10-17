@@ -44,7 +44,7 @@ export const AppShell: React.FC = () => {
     }`;
 
   const mobileTabClass = ({ isActive }: { isActive: boolean }) =>
-    `flex flex-col items-center justify-center flex-1 py-1 text-[11px] font-medium transition-colors ${
+    `flex flex-col items-center justify-center flex-1 min-h-[44px] min-w-[44px] py-1 text-[11px] font-medium transition-colors ${
       isActive ? 'text-app-primary-strong font-bold' : 'text-app-muted hover:text-app-text'
     }`;
 
@@ -168,7 +168,7 @@ export const AppShell: React.FC = () => {
                 {t('nav.privacyHelp', 'Accessibilité & Aide')}
               </span>
               <span className="text-[10px] text-app-muted truncate">
-                Support & confidentialité locale
+                {t('nav.localPrivacySubtitle', 'Support & confidentialité locale')}
               </span>
             </div>
           </button>
@@ -183,19 +183,19 @@ export const AppShell: React.FC = () => {
         {/* Global Standardized Top Bar across website (except specialized full-bleed workspace) */}
         {!isWorkspace && <TopNavBar />}
 
-        {/* Route views rendered inside scrollable main container */}
+        {/* Route views rendered inside scrollable main container with safe area inset */}
         <main
           id="main-content"
           tabIndex={-1}
-          className="flex-1 overflow-y-auto outline-none pb-20 md:pb-0"
+          className="flex-1 overflow-y-auto outline-none pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0"
         >
           <Outlet />
         </main>
 
-        {/* Mobile Bottom Tab Bar (fixed on screen bottom for mobile < 768) */}
+        {/* Mobile Bottom Tab Bar (fixed on screen bottom with safe area insets) */}
         <nav
           aria-label="Navigation mobile"
-          className="md:hidden fixed bottom-0 inset-x-0 h-16 bg-app-surface border-t border-app-border flex items-center justify-around z-30 px-2 select-none"
+          className="md:hidden fixed bottom-0 inset-x-0 h-[calc(4rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] bg-app-surface border-t border-app-border flex items-center justify-around z-30 px-2 select-none"
         >
           {/* Home */}
           <NavLink to="/app" end className={mobileTabClass}>
@@ -219,7 +219,8 @@ export const AppShell: React.FC = () => {
                 navigate('/app/new');
               }
             }}
-            className="flex flex-col items-center justify-center -mt-5"
+            className="flex flex-col items-center justify-center -mt-5 min-w-[44px] min-h-[44px]"
+            aria-label={hasActiveSession ? t('dash.resume', 'Reprendre') : t('dash.start', 'Parler')}
           >
             <div className="w-12 h-12 rounded-full bg-app-primary-strong text-white shadow-2 flex items-center justify-center hover:bg-app-primary-hover active:scale-95 transition-all">
               <ArrowLeftRight className="w-6 h-6" />
@@ -239,10 +240,11 @@ export const AppShell: React.FC = () => {
           <button
             type="button"
             onClick={() => setMobileMoreOpen(true)}
-            className="flex flex-col items-center justify-center flex-1 py-1 text-[11px] font-medium text-app-muted hover:text-app-text"
+            className="flex flex-col items-center justify-center flex-1 min-h-[44px] min-w-[44px] py-1 text-[11px] font-medium text-app-muted hover:text-app-text"
+            aria-label={t('nav.menu', 'Menu')}
           >
             <MoreHorizontal className="w-5 h-5" />
-            <span>Menu</span>
+            <span>{t('nav.menu', 'Menu')}</span>
           </button>
         </nav>
       </div>
@@ -251,7 +253,7 @@ export const AppShell: React.FC = () => {
       <Sheet
         isOpen={mobileMoreOpen}
         onClose={() => setMobileMoreOpen(false)}
-        title="Menu & Outils"
+        title={t('nav.menuAndTools', 'Menu & Outils')}
         maxWidth="sm"
       >
         <div className="space-y-2 text-sm">
