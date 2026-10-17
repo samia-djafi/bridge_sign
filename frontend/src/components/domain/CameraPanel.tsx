@@ -1,8 +1,8 @@
 import React from 'react';
-import { Camera, FlipHorizontal, Eye, EyeOff } from 'lucide-react';
+import { Camera, FlipHorizontal, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { LandmarkOverlay } from './LandmarkOverlay';
 import { LandmarkFrame } from '@/types/domain';
-import { CameraStatus } from '@/hooks/useCamera';
+import { CameraStatus, CameraFacingMode } from '@/hooks/useCamera';
 import { ErrorState } from '@/components/ui/ErrorState';
 import { Button } from '@/components/ui/Button';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,8 @@ export interface CameraPanelProps {
   onToggleMirror: () => void;
   showTracking: boolean;
   onToggleTracking: () => void;
+  facingMode?: CameraFacingMode;
+  onToggleFacingMode?: () => void;
   currentFrame?: LandmarkFrame;
   isRecognizing?: boolean;
   className?: string;
@@ -31,6 +33,8 @@ export const CameraPanel: React.FC<CameraPanelProps> = ({
   onToggleMirror,
   showTracking,
   onToggleTracking,
+  facingMode = 'user',
+  onToggleFacingMode,
   currentFrame,
   isRecognizing = false,
   className = '',
@@ -67,7 +71,7 @@ export const CameraPanel: React.FC<CameraPanelProps> = ({
             className="absolute inset-8 sm:inset-12 border-2 border-dashed border-app-primary-strong/40 rounded-xl pointer-events-none flex items-end justify-center pb-3"
           >
             <span className="bg-black/60 text-white/90 text-[11px] font-medium px-2.5 py-1 rounded-pill backdrop-blur-sm">
-              Placez vos mains dans ce cadre
+              {t('rec.placeHandsGuide', 'Placez vos mains dans ce cadre')}
             </span>
           </div>
         )}
@@ -89,7 +93,7 @@ export const CameraPanel: React.FC<CameraPanelProps> = ({
         {cameraStatus === 'requesting' && (
           <div className="absolute inset-0 bg-neutral-900/90 flex flex-col items-center justify-center text-center p-6 text-white space-y-3">
             <div className="w-8 h-8 rounded-full border-2 border-app-primary-strong border-t-transparent animate-spin" />
-            <p className="text-sm font-medium">Connexion à la caméra…</p>
+            <p className="text-sm font-medium">{t('rec.connecting', 'Connexion à la caméra…')}</p>
           </div>
         )}
 
@@ -107,20 +111,40 @@ export const CameraPanel: React.FC<CameraPanelProps> = ({
       </div>
 
       {/* Compact Toolbar Under Video */}
-      <div className="flex items-center justify-between px-1 py-1 text-xs">
-        {/* Mirror Toggle */}
-        <button
-          type="button"
-          onClick={onToggleMirror}
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-control transition-colors ${
-            mirror
-              ? 'bg-app-primary-soft text-app-primary-strong font-semibold'
-              : 'text-app-muted hover:text-app-text bg-app-surface-2'
-          }`}
-        >
-          <FlipHorizontal className="w-3.5 h-3.5" />
-          <span>{t('rec.mirrorPreview', 'Miroir')}</span>
-        </button>
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1 py-1 text-xs">
+        <div className="flex items-center gap-1.5">
+          {/* Mirror Toggle */}
+          <button
+            type="button"
+            onClick={onToggleMirror}
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-control transition-colors ${
+              mirror
+                ? 'bg-app-primary-soft text-app-primary-strong font-semibold'
+                : 'text-app-muted hover:text-app-text bg-app-surface-2'
+            }`}
+          >
+            <FlipHorizontal className="w-3.5 h-3.5" />
+            <span>{t('rec.mirrorPreview', 'Miroir')}</span>
+          </button>
+
+          {/* Front / Rear Camera Flip Button */}
+          {onToggleFacingMode && (
+            <button
+              type="button"
+              onClick={onToggleFacingMode}
+              title={t('rec.switchCamera', 'Changer de caméra (avant/arrière)')}
+              aria-label={t('rec.switchCamera', 'Changer de caméra (avant/arrière)')}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-control bg-app-surface-2 hover:bg-app-border text-app-muted hover:text-app-text transition-colors"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>
+                {facingMode === 'environment'
+                  ? t('rec.rearCamera', 'Caméra arrière')
+                  : t('rec.frontCamera', 'Caméra avant')}
+              </span>
+            </button>
+          )}
+        </div>
 
         {/* Show AI Tracking Toggle */}
         <div className="flex items-center gap-2">
