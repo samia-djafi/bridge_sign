@@ -3,25 +3,30 @@ import { logger } from '@/lib/logger';
 import { registry } from '@/services/registry';
 
 export type CameraStatus = 'idle' | 'requesting' | 'ready' | 'active' | 'paused' | 'error';
+export type CameraFacingMode = 'user' | 'environment';
 
 export interface UseCameraReturn {
   videoRef: React.RefObject<HTMLVideoElement>;
   status: CameraStatus;
   errorCode: string | null;
   fps: number;
-  startCamera: () => Promise<boolean>;
+  facingMode: CameraFacingMode;
+  startCamera: (preferredFacingMode?: CameraFacingMode) => Promise<boolean>;
   stopCamera: () => void;
   pauseCamera: () => void;
   resumeCamera: () => void;
   switchDevice: (deviceId: string) => Promise<void>;
+  switchFacingMode: (mode: CameraFacingMode) => Promise<boolean>;
+  toggleFacingMode: () => Promise<boolean>;
 }
 
-export function useCamera(): UseCameraReturn {
+export function useCamera(defaultFacingMode: CameraFacingMode = 'user'): UseCameraReturn {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [status, setStatus] = useState<CameraStatus>('idle');
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [fps, setFps] = useState(0);
+  const [facingMode, setFacingMode] = useState<CameraFacingMode>(defaultFacingMode);
 
   const wakeLockRef = useRef<any>(null);
   const fpsFrameCountRef = useRef(0);
@@ -68,71 +73,89 @@ export function useCamera(): UseCameraReturn {
     rAFRef.current = requestAnimationFrame(measureFpsLoop);
   }, []);
 
-  const startCamera = useCallback(async (): Promise<boolean> => {
-    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-      setErrorCode('CAM-004');
-      setStatus('error');
-      logger.error('Camera API unavailable or insecure context', 'CAM-004');
-      return false;
-    }
-
-    setStatus('requesting');
-    setErrorCode(null);
-
-    try {
-      const constraints: MediaStreamConstraints = {
-        video: {
-          facingMode: 'user',
-          width: { ideal: 960 },
-          height: { ideal: 540 },
-          frameRate: { ideal: 30, max: 30 },
-        },
-      };
-
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      streamRef.current = stream;
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+  const startCamera = useCallback(
+    async (preferredFacingMode?: CameraFacingMode): Promise<boolean> => {
+      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+        setErrorCode('CAM-004');
+        setStatus('error');
+        logger.error('Camera API unavailable or insecure context', 'CAM-004');
+        return false;
       }
 
-      setStatus('ready');
-      logger.info('Camera stream started successfully');
+      const targetFacing = preferredFacingMode || facingMode;
+      setStatus('requesting');
+      setErrorCode(null);
 
-      // Request wake lock if available
-      if ('wakeLock' in navigator) {
-        try {
-          wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
-        } catch {
-          // ignore
+      try {
+        const constraints: MediaStreamConstraints = {
+          video: {
+            facingMode: targetFacing,
+            width: { ideal: 960 },
+            height: { ideal: 540 },
+            frameRate: { ideal: 30, max: 30 },
+          },
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamRef.current = stream;
+        setFacingMode(targetFacing);
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play();
         }
+
+        setStatus('ready');
+        logger.info(`Camera stream started successfully (${targetFacing})`);
+
+        // Request wake lock if available
+        if ('wakeLock' in navigator) {
+          try {
+            wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
+          } catch {
+            // ignore
+          }
+        }
+
+        // Start FPS measurement
+        fpsLastTimeRef.current = performance.now();
+        fpsFrameCountRef.current = 0;
+        rAFRef.current = requestAnimationFrame(measureFpsLoop);
+
+        return true;
+      } catch (err: any) {
+        let code = 'CAM-099';
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          code = 'CAM-001';
+        } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+          code = 'CAM-002';
+        } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+          code = 'CAM-003';
+        } else if (err.name === 'OverconstrainedError') {
+          code = 'CAM-005';
+        }
+
+        setErrorCode(code);
+        setStatus('error');
+        logger.error(`Camera error: ${err.message}`, code, { name: err.name });
+        return false;
       }
+    },
+    [facingMode, measureFpsLoop]
+  );
 
-      // Start FPS measurement
-      fpsLastTimeRef.current = performance.now();
-      fpsFrameCountRef.current = 0;
-      rAFRef.current = requestAnimationFrame(measureFpsLoop);
+  const switchFacingMode = useCallback(
+    async (mode: CameraFacingMode): Promise<boolean> => {
+      stopCamera();
+      return await startCamera(mode);
+    },
+    [stopCamera, startCamera]
+  );
 
-      return true;
-    } catch (err: any) {
-      let code = 'CAM-099';
-      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        code = 'CAM-001';
-      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-        code = 'CAM-002';
-      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
-        code = 'CAM-003';
-      } else if (err.name === 'OverconstrainedError') {
-        code = 'CAM-005';
-      }
-
-      setErrorCode(code);
-      setStatus('error');
-      logger.error(`Camera error: ${err.message}`, code, { name: err.name });
-      return false;
-    }
-  }, [measureFpsLoop]);
+  const toggleFacingMode = useCallback(async (): Promise<boolean> => {
+    const nextMode: CameraFacingMode = facingMode === 'user' ? 'environment' : 'user';
+    return await switchFacingMode(nextMode);
+  }, [facingMode, switchFacingMode]);
 
   const pauseCamera = useCallback(() => {
     if (streamRef.current) {
@@ -194,10 +217,13 @@ export function useCamera(): UseCameraReturn {
     status,
     errorCode,
     fps,
+    facingMode,
     startCamera,
     stopCamera,
     pauseCamera,
     resumeCamera,
     switchDevice,
+    switchFacingMode,
+    toggleFacingMode,
   };
 }

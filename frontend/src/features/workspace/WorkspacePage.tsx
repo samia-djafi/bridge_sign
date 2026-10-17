@@ -211,6 +211,16 @@ export const WorkspacePage: React.FC = () => {
     if (!currentSession) return;
     const speech = registry.speech;
 
+    if (!speech.stt.isSupported()) {
+      addToast({
+        message: t('err.micUnsupported', 'La saisie vocale n’est pas disponible sur ce navigateur. Veuillez écrire.'),
+        type: 'alert',
+      });
+      setComposerMode('type');
+      setTimeout(() => composerTextareaRef.current?.focus(), 50);
+      return;
+    }
+
     if (sttListening) {
       speech.stt.stop();
       setSttListening(false);
@@ -224,9 +234,17 @@ export const WorkspacePage: React.FC = () => {
           setSttListening(false);
           handleTranslateToLsa(text);
         },
-        onError: () => {
+        onError: (errCode) => {
           setSttListening(false);
-          addToast({ message: t('err.mic', 'Erreur microphone'), type: 'alert' });
+          let msg = t('err.mic', 'Erreur microphone');
+          if (errCode === 'MIC-001') {
+            msg = t('err.micDenied', 'Accès micro refusé. Veuillez autoriser le microphone dans les paramètres de votre navigateur.');
+          } else if (errCode === 'MIC-002') {
+            msg = t('err.micUnsupported', 'La saisie vocale n’est pas disponible sur ce navigateur. Veuillez écrire.');
+          }
+          addToast({ message: msg, type: 'alert' });
+          setComposerMode('type');
+          setTimeout(() => composerTextareaRef.current?.focus(), 50);
         },
       });
     }
@@ -640,6 +658,8 @@ export const WorkspacePage: React.FC = () => {
                 cameraStatus={camera.status}
                 errorCode={camera.errorCode}
                 onStartCamera={camera.startCamera}
+                facingMode={camera.facingMode}
+                onToggleFacingMode={camera.toggleFacingMode}
                 mirror={settings.camera.mirror}
                 onToggleMirror={() =>
                   updateSettings({
