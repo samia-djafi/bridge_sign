@@ -125,7 +125,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
               'Search a conversation, phrase or topic...'
             )}
             className="w-full h-10 ps-10 pe-9 rounded-control bg-app-surface-2 border border-app-border text-xs sm:text-sm text-app-text placeholder:text-app-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong transition-all"
-            aria-label="Recherche"
+            aria-label={t('topNav.searchAria', 'Recherche')}
           />
           {searchQuery && (
             <button
@@ -135,7 +135,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
                 setIsSearchOpen(false);
               }}
               className="absolute end-3 p-0.5 text-app-muted hover:text-app-text"
-              aria-label="Effacer"
+              aria-label={t('topNav.clearAria', 'Effacer')}
             >
               <X className="w-4 h-4" />
             </button>
@@ -150,14 +150,14 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
           >
             {searchResults.phrases.length === 0 && searchResults.sessions.length === 0 ? (
               <div className="p-4 text-center text-xs text-app-muted">
-                Aucun résultat pour « {searchQuery} »
+                {t('topNav.noResults', { query: searchQuery, defaultValue: `Aucun résultat pour « ${searchQuery} »` })}
               </div>
             ) : (
               <>
                 {searchResults.phrases.length > 0 && (
                   <div>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-app-muted px-2 block mb-1">
-                      Phrases utiles
+                      {t('topNav.usefulPhrases', 'Phrases utiles')}
                     </span>
                     <div className="space-y-0.5">
                       {searchResults.phrases.map((p) => {
@@ -190,7 +190,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
                 {searchResults.sessions.length > 0 && (
                   <div className="pt-2 border-t border-app-border">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-app-muted px-2 block mb-1">
-                      Conversations
+                      {t('topNav.conversations', 'Conversations')}
                     </span>
                     <div className="space-y-0.5">
                       {searchResults.sessions.map((s) => (
@@ -230,8 +230,8 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
             setTimeout(() => mobileSearchInputRef.current?.focus(), 60);
           }}
           className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-control bg-app-surface-2 hover:bg-app-border text-app-text transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
-          aria-label="Open search"
-          title="Rechercher"
+          aria-label={t('topNav.openSearch', 'Open search')}
+          title={t('topNav.searchAria', 'Rechercher')}
         >
           <Search className="w-4 h-4 text-app-muted" />
         </button>
@@ -241,8 +241,8 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
           type="button"
           onClick={() => setNotificationModalOpen(true)}
           className="relative inline-flex items-center justify-center w-9 h-9 rounded-control bg-app-surface-2 hover:bg-app-border text-app-text transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
-          aria-label="Notifications et annonces"
-          title="Notifications"
+          aria-label={t('topNav.notificationsTitle', 'Notifications et annonces')}
+          title={t('topNav.notificationsTitle', 'Notifications')}
         >
           <Bell className="w-4 h-4 text-app-muted" />
           <span className="absolute top-2 end-2 w-2 h-2 rounded-full bg-app-primary-strong" />
@@ -255,8 +255,8 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
         <button
           type="button"
           onClick={() => navigate('/app/settings')}
-          aria-label={preferredName ? `Profil : ${preferredName}` : 'Paramètres du profil'}
-          title="Modifier le profil"
+          aria-label={preferredName ? t('topNav.profileAria', { name: preferredName, defaultValue: `Profil : ${preferredName}` }) : t('topNav.profileSettingsAria', 'Paramètres du profil')}
+          title={t('topNav.profileSettingsAria', 'Modifier le profil')}
           className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-control bg-app-surface-2 hover:bg-app-border border border-app-border text-xs text-app-text font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong select-none"
         >
           <div className="w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-emerald-500/20" />
@@ -279,14 +279,14 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('dash.searchPlaceholder', 'Search a conversation, phrase or topic...')}
               className="w-full h-10 ps-9 pe-9 rounded-control bg-app-surface-2 border border-app-border text-sm text-app-text placeholder:text-app-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
-              aria-label="Recherche"
+              aria-label={t('topNav.searchAria', 'Recherche')}
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
                 className="absolute end-2.5 p-1 text-app-muted hover:text-app-text"
-                aria-label="Effacer la recherche"
+                aria-label={t('topNav.clearAria', 'Effacer la recherche')}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -299,7 +299,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
               setSearchQuery('');
             }}
             className="p-2 rounded-control text-app-muted hover:text-app-text hover:bg-app-surface-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong shrink-0"
-            aria-label="Close search"
+            aria-label={t('common.close', 'Fermer')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -312,14 +312,14 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
             >
               {searchResults.phrases.length === 0 && searchResults.sessions.length === 0 ? (
                 <div className="p-4 text-center text-xs text-app-muted">
-                  Aucun résultat pour « {searchQuery} »
+                  {t('topNav.noResults', { query: searchQuery, defaultValue: `Aucun résultat pour « ${searchQuery} »` })}
                 </div>
               ) : (
                 <>
                   {searchResults.phrases.length > 0 && (
                     <div>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-app-muted px-2 block mb-1">
-                        Phrases utiles
+                        {t('topNav.usefulPhrases', 'Phrases utiles')}
                       </span>
                       <div className="space-y-0.5">
                         {searchResults.phrases.map((p) => {
@@ -352,7 +352,7 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
                   {searchResults.sessions.length > 0 && (
                     <div className="pt-2 border-t border-app-border">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-app-muted px-2 block mb-1">
-                        Conversations
+                        {t('topNav.conversations', 'Conversations')}
                       </span>
                       <div className="space-y-0.5">
                         {searchResults.sessions.map((s) => (
@@ -387,21 +387,20 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
       <Modal
         isOpen={notificationModalOpen}
         onClose={() => setNotificationModalOpen(false)}
-        title="Notifications & Statut"
+        title={t('topNav.notificationsTitle', 'Notifications & Statut')}
         maxWidth="sm"
       >
         <div className="space-y-3 text-xs sm:text-sm text-app-text">
           <div className="p-3 rounded-control bg-app-primary-soft border border-app-primary-strong/30 space-y-1">
-            <p className="font-bold text-app-primary-strong">Prêt pour le déploiement local</p>
+            <p className="font-bold text-app-primary-strong">{t('topNav.notifLocalReady', 'Prêt pour le déploiement local')}</p>
             <p className="text-xs text-app-muted">
-              Le dictionnaire et le dialogue LSA fonctionnent en mode local autonome (Démo / Simulation). Le modèle IA distant peut être connecté ultérieurement via les Paramètres.
+              {t('topNav.notifLocalReadyDesc', 'Le dictionnaire et le dialogue LSA fonctionnent en mode local autonome (Démo / Simulation). Le modèle IA distant peut être connecté ultérieurement via les Paramètres.')}
             </p>
           </div>
           <div className="p-3 rounded-control bg-app-surface-2 border border-app-border space-y-1">
-            <p className="font-semibold text-app-text">Confidentialité locale active</p>
+            <p className="font-semibold text-app-text">{t('topNav.notifPrivacyActive', 'Confidentialité locale active')}</p>
             <p className="text-xs text-app-muted">
-              Toutes les conversations et données de reconnaissance restent stockées sur votre
-              appareil.
+              {t('topNav.notifPrivacyActiveDesc', 'Toutes les conversations et données de reconnaissance restent stockées sur votre appareil.')}
             </p>
           </div>
         </div>

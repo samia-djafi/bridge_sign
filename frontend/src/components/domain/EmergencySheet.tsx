@@ -84,8 +84,8 @@ export const EmergencySheet: React.FC = () => {
       >
         <div className="space-y-3">
           <div className="px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-control text-xs text-app-muted leading-relaxed flex items-center gap-2">
-            <span className="font-bold text-app-text shrink-0">Medical Essentials:</span>
-            <span>Pre-verified offline cards available immediately without requiring AI processing.</span>
+            <span className="font-bold text-app-text shrink-0">{t('emergency.essentialsTitle', 'Medical Essentials')}:</span>
+            <span>{t('emergency.essentialsDesc', 'Pre-verified offline cards available immediately without requiring AI processing.')}</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
@@ -147,7 +147,7 @@ export const EmergencySheet: React.FC = () => {
             </div>
 
             <div className="p-2 sm:p-2.5 bg-app-surface-2 rounded-control border border-app-border text-xs text-app-muted flex items-center gap-2">
-              <span className="font-semibold text-app-text">LSA Gloss:</span>
+              <span className="font-semibold text-app-text">{t('emergency.glossLabel', 'LSA Gloss:')}</span>
               <span className="font-mono">{selectedEmergencyPhrase.gloss.join(' · ')}</span>
             </div>
 

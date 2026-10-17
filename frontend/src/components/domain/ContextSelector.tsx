@@ -59,7 +59,7 @@ export const ContextSelector: React.FC<ContextSelectorProps> = ({
 
               <div>
                 <p className="text-xs font-bold text-app-text mt-2">{t(ctx.nameKey)}</p>
-                <p className="text-[10px] text-app-muted truncate mt-0.5">{ctx.descriptionKey}</p>
+                <p className="text-[10px] text-app-muted truncate mt-0.5">{t(ctx.descriptionKey)}</p>
               </div>
             </button>
           );
