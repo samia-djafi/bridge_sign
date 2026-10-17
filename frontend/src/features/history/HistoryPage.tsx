@@ -109,7 +109,7 @@ export const HistoryPage: React.FC = () => {
               onClick={() => setStorageBannerDismissed(true)}
               className="text-xs font-semibold text-app-muted hover:text-app-text"
             >
-              Masquer
+              {t('common.hide', 'Masquer')}
             </button>
           </div>
         )}
@@ -131,10 +131,10 @@ export const HistoryPage: React.FC = () => {
           <EmptyState
             icon={<History className="w-6 h-6" />}
             title={t('history.empty', 'Aucune conversation enregistrée.')}
-            description="Démarrez un premier échange pour le retrouver ici."
+            description={t('dash.startFirstConv', 'Démarrez un premier échange pour le retrouver ici.')}
             action={
               <Button variant="primary" size="md" onClick={() => navigate('/app/new')}>
-                Démarrer une conversation
+                {t('dash.startFirstConv', 'Démarrer une conversation')}
               </Button>
             }
           />
@@ -184,13 +184,13 @@ export const HistoryPage: React.FC = () => {
                       onClick={() => navigate(`/app/history/${s.id}`)}
                       iconEnd={<ArrowRight className="w-3.5 h-3.5 rtl:-scale-x-100" />}
                     >
-                      Détails
+                      {t('common.details', 'Détails')}
                     </Button>
                   )}
 
                   <button
                     type="button"
-                    aria-label="Supprimer la conversation"
+                    aria-label={t('common.delete', 'Supprimer')}
                     onClick={() => setSessionToDelete(s)}
                     className="p-2 text-app-muted hover:text-app-error rounded-control hover:bg-app-surface-2 transition-colors"
                   >
@@ -212,7 +212,7 @@ export const HistoryPage: React.FC = () => {
         footer={
           <>
             <Button variant="ghost" onClick={() => setSessionToDelete(null)}>
-              Annuler
+              {t('common.cancel', 'Annuler')}
             </Button>
             <Button
               variant="destructive"
@@ -220,7 +220,7 @@ export const HistoryPage: React.FC = () => {
                 if (sessionToDelete) handleDeleteWithUndo(sessionToDelete);
               }}
             >
-              Supprimer
+              {t('common.delete', 'Supprimer')}
             </Button>
           </>
         }
@@ -242,7 +242,7 @@ export const HistoryPage: React.FC = () => {
         footer={
           <>
             <Button variant="ghost" onClick={() => setClearAllConfirmOpen(false)}>
-              Annuler
+              {t('common.cancel', 'Annuler')}
             </Button>
             <Button variant="destructive" onClick={handleClearAll}>
               {t('history.clearAll', 'Effacer l\'historique')}

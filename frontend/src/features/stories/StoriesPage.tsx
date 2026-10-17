@@ -86,7 +86,7 @@ export const StoriesPage: React.FC = () => {
       setAuthorMessage('');
     } catch (err) {
       setSaveError(
-        'Impossible d’enregistrer la note localement (mémoire de stockage saturée ou désactivée).'
+        t('stories.saveLocalError', 'Impossible d’enregistrer la note localement (mémoire de stockage saturée ou désactivée).')
       );
     }
   };
@@ -141,13 +141,13 @@ export const StoriesPage: React.FC = () => {
         {/* Transparency Banner: Honest illustrative disclosure */}
         <div
           role="region"
-          aria-label="Avertissement d'authenticité"
+          aria-label={t('stories.transparencyBannerTitle', 'Engagement de transparence & d’honnêteté')}
           className="p-4 rounded-card bg-app-surface border border-app-border-strong flex items-start gap-3 shadow-1 text-xs text-app-muted leading-relaxed"
         >
           <ShieldCheck className="w-5 h-5 text-app-primary-strong shrink-0 mt-0.5" />
           <div className="space-y-1">
             <span className="font-bold text-app-text block">
-              Engagement de transparence & d’honnêteté
+              {t('stories.transparencyBannerTitle', 'Engagement de transparence & d’honnêteté')}
             </span>
             <p>
               {t(
@@ -229,11 +229,10 @@ export const StoriesPage: React.FC = () => {
           <div className="space-y-1 text-center sm:text-start">
             <h3 className="text-sm font-bold text-app-text flex items-center gap-2 justify-center sm:justify-start">
               <Sparkles className="w-4 h-4 text-app-primary-strong" />
-              <span>Vous souhaitez tester BridgeSign sur le terrain ?</span>
+              <span>{t('stories.fieldTrialTitle', 'Vous souhaitez tester BridgeSign sur le terrain ?')}</span>
             </h3>
             <p className="text-xs text-app-muted max-w-xl">
-              Participez à nos essais pour adapter le vocabulaire médical et quotidien de la LSA aux
-              besoins concrets des échanges en santé en Algérie.
+              {t('stories.fieldTrialDesc', 'Participez à nos essais pour adapter le vocabulaire médical et quotidien de la LSA aux besoins concrets des échanges en santé en Algérie.')}
             </p>
           </div>
           <Button
@@ -246,7 +245,7 @@ export const StoriesPage: React.FC = () => {
             }}
             className="shrink-0"
           >
-            Noter une suggestion
+            {t('stories.fieldTrialBtn', 'Noter une suggestion')}
           </Button>
         </div>
       </div>
@@ -263,7 +262,7 @@ export const StoriesPage: React.FC = () => {
           <div className="p-3 rounded-control bg-app-surface-2 border border-app-border flex items-start gap-2.5 text-xs text-app-muted leading-relaxed">
             <Info className="w-4 h-4 text-app-primary-strong shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-app-text">Enregistrement local sur cet appareil</p>
+              <p className="font-semibold text-app-text">{t('stories.saveLocalBanner', 'Enregistrement local sur cet appareil')}</p>
               <p className="mt-0.5">
                 {t(
                   'stories.feedbackDesc',
@@ -287,7 +286,7 @@ export const StoriesPage: React.FC = () => {
                   : 'border-transparent text-app-muted hover:text-app-text'
               }`}
             >
-              Nouvelle note
+              {t('stories.newNoteTab', 'Nouvelle note')}
             </button>
             <button
               type="button"
@@ -298,7 +297,7 @@ export const StoriesPage: React.FC = () => {
                   : 'border-transparent text-app-muted hover:text-app-text'
               }`}
             >
-              <span>Mes notes locales</span>
+              <span>{t('stories.myNotesTab', 'Mes notes locales')}</span>
               <span className="px-1.5 py-0.2 rounded-pill bg-app-surface-2 text-[10px] font-mono">
                 {savedFeedbacks.length}
               </span>
@@ -310,11 +309,10 @@ export const StoriesPage: React.FC = () => {
               <div className="p-6 text-center space-y-3">
                 <CheckCircle2 className="w-12 h-12 text-app-success mx-auto" />
                 <p className="font-bold text-base text-app-text">
-                  Note enregistrée localement avec succès !
+                  {t('stories.localSavedSuccess', 'Note enregistrée localement avec succès !')}
                 </p>
                 <p className="text-xs text-app-muted leading-relaxed">
-                  Votre brouillon est sauvegardé dans le stockage local de ce navigateur. Il n’a pas
-                  été transmis à un serveur et reste accessible depuis cet appareil.
+                  {t('stories.localSavedSuccessDesc', 'Votre brouillon est sauvegardé dans le stockage local de ce navigateur. Il n’a pas été transmis à un serveur et reste accessible depuis cet appareil.')}
                 </p>
                 <div className="pt-2 flex justify-center gap-2">
                   <Button
@@ -325,7 +323,7 @@ export const StoriesPage: React.FC = () => {
                       setModalTab('list');
                     }}
                   >
-                    Voir mes notes ({savedFeedbacks.length})
+                    {t('stories.viewNotesBtn', { count: savedFeedbacks.length, defaultValue: `Voir mes notes (${savedFeedbacks.length})` })}
                   </Button>
                   <Button
                     variant="primary"
@@ -334,7 +332,7 @@ export const StoriesPage: React.FC = () => {
                       setSaveSuccess(false);
                     }}
                   >
-                    Ajouter une autre note
+                    {t('stories.addAnotherNoteBtn', 'Ajouter une autre note')}
                   </Button>
                 </div>
               </div>
@@ -348,21 +346,21 @@ export const StoriesPage: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label htmlFor="author-name" className="block text-xs font-semibold text-app-text">
-                    Nom ou référence (facultatif)
+                    {t('stories.authorNameLabel', 'Nom ou référence (facultatif)')}
                   </label>
                   <input
                     id="author-name"
                     type="text"
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    placeholder="Ex: Pharmacie El-Biar, Yasmine B."
+                    placeholder={t('stories.authorNamePlaceholder', 'Ex: Pharmacie El-Biar, Yasmine B.')}
                     className="w-full h-10 px-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
                   />
                 </div>
 
                 <div className="space-y-1.5">
                   <label htmlFor="author-role" className="block text-xs font-semibold text-app-text">
-                    Votre profil
+                    {t('stories.yourProfileLabel', 'Votre profil')}
                   </label>
                   <select
                     id="author-role"
@@ -370,11 +368,11 @@ export const StoriesPage: React.FC = () => {
                     onChange={(e) => setAuthorRole(e.target.value as any)}
                     className="w-full h-10 px-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
                   >
-                    <option value="deaf">Personne sourde ou malentendante</option>
+                    <option value="deaf">{t('stories.profileDeaf', 'Personne sourde ou malentendante')}</option>
                     <option value="healthcare">
-                      Professionnel de santé (pharmacien, médecin…)
+                      {t('stories.profileHealthcare', 'Professionnel de santé (pharmacien, médecin…)')}
                     </option>
-                    <option value="supporter">Proche aidant / Interprète</option>
+                    <option value="supporter">{t('stories.profileSupporter', 'Proche aidant / Interprète')}</option>
                   </select>
                 </div>
 
@@ -383,7 +381,7 @@ export const StoriesPage: React.FC = () => {
                     htmlFor="author-message"
                     className="block text-xs font-semibold text-app-text"
                   >
-                    Votre suggestion ou retour d'expérience *
+                    {t('stories.suggestionLabel', "Votre suggestion ou retour d'expérience *")}
                   </label>
                   <textarea
                     id="author-message"
@@ -391,7 +389,7 @@ export const StoriesPage: React.FC = () => {
                     rows={4}
                     value={authorMessage}
                     onChange={(e) => setAuthorMessage(e.target.value)}
-                    placeholder="Notez les signes manquants, les difficultés rencontrées ou les propositions d'amélioration…"
+                    placeholder={t('stories.suggestionPlaceholder', "Notez les signes manquants, les difficultés rencontrées ou les propositions d'amélioration…")}
                     className="w-full p-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong resize-none"
                   />
                 </div>
@@ -403,7 +401,7 @@ export const StoriesPage: React.FC = () => {
                     type="button"
                     onClick={() => setShareModalOpen(false)}
                   >
-                    Fermer
+                    {t('common.close', 'Fermer')}
                   </Button>
                   <Button
                     variant="primary"
@@ -411,7 +409,7 @@ export const StoriesPage: React.FC = () => {
                     type="submit"
                     iconStart={<Save className="w-3.5 h-3.5" />}
                   >
-                    Enregistrer localement
+                    {t('stories.saveLocallyBtn', 'Enregistrer localement')}
                   </Button>
                 </div>
               </form>
@@ -420,9 +418,9 @@ export const StoriesPage: React.FC = () => {
             <div className="space-y-3">
               {savedFeedbacks.length === 0 ? (
                 <div className="p-8 text-center text-xs text-app-muted space-y-2">
-                  <p>Aucune note enregistrée pour le moment.</p>
+                  <p>{t('stories.noNotesYet', 'Aucune note enregistrée pour le moment.')}</p>
                   <Button variant="secondary" size="sm" onClick={() => setModalTab('form')}>
-                    Créer une note
+                    {t('stories.createNoteBtn', 'Créer une note')}
                   </Button>
                 </div>
               ) : (
@@ -442,7 +440,7 @@ export const StoriesPage: React.FC = () => {
                             type="button"
                             onClick={() => handleDeleteFeedback(item.id)}
                             className="text-app-muted hover:text-app-error p-1 rounded transition-colors"
-                            aria-label="Supprimer cette note"
+                            aria-label={t('stories.deleteNoteAria', 'Supprimer cette note')}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>

@@ -13,7 +13,7 @@ import { useUiStore } from '@/stores/uiStore';
 export const HistoryDetailPage: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { addToast } = useUiStore();
 
   const [session, setSession] = useState<ConversationSession | null>(null);
@@ -68,7 +68,7 @@ export const HistoryDetailPage: React.FC = () => {
   };
 
   if (loading || !session) {
-    return <div className="p-8 text-center text-app-muted">Chargement…</div>;
+    return <div className="p-8 text-center text-app-muted">{t('common.loading', 'Chargement…')}</div>;
   }
 
   return (
@@ -83,13 +83,12 @@ export const HistoryDetailPage: React.FC = () => {
               onClick={() => navigate('/app/history')}
               iconStart={<ArrowLeft className="w-4 h-4 rtl:-scale-x-100" />}
             >
-              Retour
+              {t('common.back', 'Retour')}
             </Button>
             <div>
               <h2 className="text-xl font-bold text-app-text">{session.title}</h2>
               <p className="text-xs text-app-muted mt-0.5">
-                {formatDateFull(session.startedAt, i18n.resolvedLanguage)} · Durée :{' '}
-                {formatDuration(session.activeMs)} · {session.messageCount} messages
+                {formatDateFull(session.startedAt, i18n.resolvedLanguage)} · {t('history.duration', { duration: formatDuration(session.activeMs), defaultValue: `Durée : ${formatDuration(session.activeMs)}` })} · {session.messageCount} {t('history.messages', 'messages')}
               </p>
             </div>
           </div>
@@ -101,7 +100,7 @@ export const HistoryDetailPage: React.FC = () => {
               onClick={handlePrint}
               iconStart={<Printer className="w-4 h-4" />}
             >
-              Imprimer
+              {t('common.print', 'Imprimer')}
             </Button>
 
             <Button
@@ -110,7 +109,7 @@ export const HistoryDetailPage: React.FC = () => {
               onClick={() => handleExport('txt')}
               iconStart={<Download className="w-4 h-4" />}
             >
-              Exporter
+              {t('common.export', 'Exporter')}
             </Button>
 
             {session.status !== 'ended' && (
@@ -119,7 +118,7 @@ export const HistoryDetailPage: React.FC = () => {
                 size="sm"
                 onClick={() => navigate(`/app/workspace/${session.id}`)}
               >
-                Reprendre
+                {t('dash.resume', 'Reprendre')}
               </Button>
             )}
           </div>
@@ -129,7 +128,7 @@ export const HistoryDetailPage: React.FC = () => {
         <div className="space-y-3">
           {messages.length === 0 ? (
             <div className="p-8 text-center text-xs text-app-muted border border-dashed border-app-border rounded-card">
-              Aucun message dans cette conversation.
+              {t('history.noMessages', 'Aucun message dans cette conversation.')}
             </div>
           ) : (
             messages.map((msg) => (
@@ -137,7 +136,7 @@ export const HistoryDetailPage: React.FC = () => {
                 key={msg.id}
                 message={msg}
                 onReplaySigns={() => {
-                  addToast({ message: 'Mode lecture de signes', type: 'status' });
+                  addToast({ message: t('history.replayMode', 'Mode lecture de signes'), type: 'status' });
                 }}
               />
             ))
