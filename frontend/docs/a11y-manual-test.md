@@ -1,4 +1,4 @@
-# LSA Bridge — Manual Accessibility (A11y) Verification Protocol
+# BridgeSign — Manual Accessibility (A11y) Verification Protocol
 
 This protocol defines the manual verification procedure for WCAG 2.2 Level AA compliance across assistive technologies, input modalities, and visual presentation modes.
 

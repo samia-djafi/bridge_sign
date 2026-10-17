@@ -1,10 +1,10 @@
-# LSA Bridge (جسر لغة الإشارة الجزائرية)
+# BridgeSign (جسر لغة الإشارة الجزائرية)
 
 > **"Two modalities. One conversation."**  
 > *FR: "Deux modalités. Une seule conversation."*  
 > *AR: "طريقتان للتواصل. محادثة واحدة."*
 
-**LSA Bridge** is an installable, offline-first Progressive Web App (PWA) facilitating real-time bidirectional communication between Algerian Sign Language (LSA) and spoken/written French, Arabic, and English. Engineered specifically for critical frontline scenarios—such as a Deaf patient consulting a pharmacist or clinic triage desk without an in-person interpreter.
+**BridgeSign** is an installable, offline-first Progressive Web App (PWA) facilitating real-time bidirectional communication between Algerian Sign Language (LSA) and spoken/written French, Arabic, and English. Engineered specifically for critical frontline scenarios—such as a Deaf patient consulting a pharmacist or clinic triage desk without an in-person interpreter.
 
 ---
 
@@ -14,7 +14,7 @@
   - **Sign $\rightarrow$ Language:** Real-time upper-body and hand landmark extraction via MediaPipe, 48-frame temporal windowing, automatic 800ms rest-posture utterance segmentation, contextual French/Arabic sentence synthesis, and high-quality Text-to-Speech (TTS).
   - **Language $\rightarrow$ Sign:** Spoken voice recognition (STT) or text input, medical dosage and duration pattern extraction, fuzzy LSA gloss mapping, and synchronous visual playback via the high-definition `SignPlayer` with multilingual subtitles.
 - **Offline-First Resilience:** Built with Workbox Service Worker pre-caching all UI assets, fonts (`Inter`, `IBM Plex Sans Arabic`), and local sign clips. 100% of conversation history and phrasebook data is persisted locally in IndexedDB (Dexie).
-- **RTL-First Trilingual Support:** Instant zero-reload switching between **Français**, **العربية** (Native Right-to-Left with mirrored UI), and **English**. Fully validated parity across all 306 i18n keys.
+- **RTL-First Trilingual Support:** Instant zero-reload switching between **Français**, **العربية** (Native Right-to-Left with mirrored UI), and **English**. Fully validated parity across all i18n keys.
 - **Frontline Medical Utility:**
   - Specialized Healthcare & Pharmacy context models.
   - Interactive **Emergency Sheet** for rapid one-click medical distress signaling (asthma, severe bleeding, chest pain, allergic reactions).
@@ -28,7 +28,7 @@
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                              LSA BRIDGE PWA                            │
+│                              BRIDGESIGN PWA                            │
 │                                                                        │
 │   [Deaf User] ────▶  Webcam Ingestion (720p @ 30FPS)                   │
 │                              │                                         │
@@ -82,7 +82,7 @@ cp .env.example .env
 
 | Variable | Description | Default |
 |---|---|---|
-| `VITE_APP_NAME` | Application display name | `LSA Bridge` |
+| `VITE_APP_NAME` | Application display name | `BridgeSign` |
 | `VITE_AI_ADAPTER` | Active recognition adapter (`mock` \| `http`) | `mock` |
 | `VITE_API_BASE_URL` | Base endpoint for REST AI inference | `http://localhost:8000` |
 | `VITE_WS_URL` | WebSocket streaming endpoint | `ws://localhost:8000/ws/recognize` |
@@ -125,7 +125,7 @@ npm run preview
 
 ## 📱 Progressive Web App (PWA) Installation
 
-LSA Bridge is configured with `vite-plugin-pwa` for immediate standalone desktop and mobile installation:
+BridgeSign is configured with `vite-plugin-pwa` for immediate standalone desktop and mobile installation:
 - **Desktop (Chrome / Edge / Brave):** Click the install icon in the address bar or use the in-app "Installer l'application" banner.
 - **iOS (Safari):** Tap **Share** $\rightarrow$ **Add to Home Screen**.
 - **Android (Chrome):** Tap **Menu** $\rightarrow$ **Install App**.
@@ -148,6 +148,6 @@ Comprehensive engineering documents are located in the [`docs/`](file:///d:/Awal
 
 ## 🤝 Community & Ethical Statement
 
-LSA Bridge is developed in active partnership and consultation with the Algerian Deaf community. All sign assets, gloss definitions, and regional variants adhere to cultural consensus across Algerian wilayas.
+BridgeSign is developed in active partnership and consultation with the Algerian Deaf community. All sign assets, gloss definitions, and regional variants adhere to cultural consensus across Algerian wilayas.
 
-LSA Bridge is **not** a medical diagnostic tool or an interpreter replacement; it is an assistive communication bridge designed to ensure equity, privacy, and safety in healthcare encounters.
+BridgeSign is **not** a medical diagnostic tool or an interpreter replacement; it is an assistive communication bridge designed to ensure equity, privacy, and safety in healthcare encounters.
