@@ -1,6 +1,6 @@
-# LSA Bridge — Architecture Decision Records (ADRs)
+# BridgeSign — Architecture Decision Records (ADRs)
 
-This document formalizes key engineering, design, accessibility, and product decisions made during the construction of LSA Bridge.
+This document formalizes key engineering, design, accessibility, and product decisions made during the construction of BridgeSign.
 
 ---
 

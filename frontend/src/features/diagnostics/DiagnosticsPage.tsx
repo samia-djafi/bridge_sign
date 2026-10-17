@@ -44,7 +44,7 @@ export const DiagnosticsPage: React.FC = () => {
 
   const handleDownloadLogs = () => {
     downloadFile(
-      `lsa_diagnostics_${new Date().toISOString().slice(0, 10)}.json`,
+      `bridgesign_diagnostics_${new Date().toISOString().slice(0, 10)}.json`,
       logger.exportAsJson(),
       'application/json'
     );
