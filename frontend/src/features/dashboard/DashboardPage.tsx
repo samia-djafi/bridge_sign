@@ -117,7 +117,7 @@ export const DashboardPage: React.FC = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-full h-full text-[#0D9488] transition-transform duration-300 group-hover:scale-105"
                     role="img"
-                    aria-label="Symbole de communication en langue des signes à deux mains"
+                    aria-label={t('dash.motifAria', 'Symbole de communication en langue des signes à deux mains')}
                   >
                     {/* Background Soft Glow Disc */}
                     <circle cx="60" cy="60" r="48" className="fill-teal-500/10" />
@@ -152,7 +152,7 @@ export const DashboardPage: React.FC = () => {
               {/* Right Side: Welcome Content */}
               <div className="relative z-10 max-w-xl space-y-1.5 text-start">
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-pill bg-teal-500/10 text-[#0D9488] text-[11px] font-bold uppercase tracking-wider mb-1">
-                  <span>Pont de communication</span>
+                  <span>{t('dash.bridgePill', 'Pont de communication')}</span>
                 </div>
                 <h2 id="welcome-heading" className="text-xl sm:text-2xl font-extrabold tracking-tight text-app-text">
                   {preferredName ? (
@@ -183,13 +183,13 @@ export const DashboardPage: React.FC = () => {
               </div>
               <div className="truncate">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-app-primary-strong block">
-                  Conversation en cours
+                  {t('dash.conversationInProgress', 'Conversation en cours')}
                 </span>
                 <h2 className="font-bold text-sm sm:text-base text-app-text truncate">
                   {currentSession.title}
                 </h2>
                 <p className="text-xs text-app-muted">
-                  {currentSession.messageCount || 0} messages · {status === 'paused' ? 'En pause' : 'Active'}
+                  {currentSession.messageCount || 0} {t('history.messages', 'messages')} · {status === 'paused' ? t('dash.paused', 'En pause') : t('dash.active', 'Active')}
                 </p>
               </div>
             </div>
@@ -228,7 +228,7 @@ export const DashboardPage: React.FC = () => {
                     </div>
                     <div className="space-y-1">
                       <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-pill bg-app-primary-soft text-app-primary-strong text-[11px] font-bold uppercase tracking-wider">
-                        Recommandé
+                        {t('dash.recommended', 'Recommandé')}
                       </span>
                       <h2 id="primary-action-heading" className="text-xl sm:text-2xl font-extrabold text-app-text">
                         {t('dash.startTwoWay', 'Start a two-way conversation')}
@@ -279,7 +279,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 <div className="pt-3 mt-3 border-t border-app-border flex items-center justify-between text-xs text-app-primary-strong font-semibold">
-                  <span>Signer devant la caméra</span>
+                  <span>{t('dash.signToLangCta', 'Signer devant la caméra')}</span>
                   <ChevronRight className="w-4 h-4 rtl:-scale-x-100" />
                 </div>
               </Card>
@@ -311,7 +311,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 <div className="pt-3 mt-3 border-t border-app-border flex items-center justify-between text-xs text-app-primary-strong font-semibold">
-                  <span>Écrire ou dicter en LSA</span>
+                  <span>{t('dash.langToSignCta', 'Écrire ou dicter en LSA')}</span>
                   <ChevronRight className="w-4 h-4 rtl:-scale-x-100" />
                 </div>
               </Card>
@@ -320,7 +320,7 @@ export const DashboardPage: React.FC = () => {
             {/* 3. Quick-Access Feature Cards (Pharmacy, Phrasebook, Real Stories) */}
             <section aria-labelledby="quick-features-heading" className="space-y-3">
               <h2 id="quick-features-heading" className="text-xs font-bold uppercase tracking-wider text-app-muted">
-                Accès direct aux fonctionnalités
+                {t('dash.quickFeaturesTitle', 'Accès direct aux fonctionnalités')}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {/* Feature 1: Pharmacy & Healthcare */}
@@ -347,7 +347,7 @@ export const DashboardPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="pt-2 text-xs font-semibold text-app-primary-strong flex items-center gap-1">
-                    <span>Ouvrir</span>
+                    <span>{t('common.open', 'Ouvrir')}</span>
                     <ChevronRight className="w-3.5 h-3.5 rtl:-scale-x-100" />
                   </div>
                 </Card>
@@ -376,7 +376,7 @@ export const DashboardPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="pt-2 text-xs font-semibold text-app-primary-strong flex items-center gap-1">
-                    <span>Explorer</span>
+                    <span>{t('common.explore', 'Explorer')}</span>
                     <ChevronRight className="w-3.5 h-3.5 rtl:-scale-x-100" />
                   </div>
                 </Card>
@@ -405,7 +405,7 @@ export const DashboardPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="pt-2 text-xs font-semibold text-app-primary-strong flex items-center gap-1">
-                    <span>Lire les récits</span>
+                    <span>{t('common.readStories', 'Lire les récits')}</span>
                     <ChevronRight className="w-3.5 h-3.5 rtl:-scale-x-100" />
                   </div>
                 </Card>
@@ -551,7 +551,7 @@ export const DashboardPage: React.FC = () => {
                         type="button"
                         onClick={() => handleQuickPhraseSend(phrase)}
                         className="p-1.5 rounded-control bg-app-surface hover:bg-app-primary-soft text-app-primary-strong transition-colors shrink-0"
-                        title="Envoyer dans la conversation"
+                        title={t('dash.sendToConv', 'Envoyer dans la conversation')}
                         aria-label={`Envoyer phrase: ${text}`}
                       >
                         <Send className="w-3.5 h-3.5" />
@@ -578,7 +578,7 @@ export const DashboardPage: React.FC = () => {
                         )
                       }
                       className="p-1 rounded text-app-muted hover:text-app-text"
-                      aria-label="Témoignage précédent"
+                      aria-label={t('dash.prevStory', 'Témoignage précédent')}
                     >
                       <ChevronLeft className="w-4 h-4 rtl:-scale-x-100" />
                     </button>
@@ -590,7 +590,7 @@ export const DashboardPage: React.FC = () => {
                         )
                       }
                       className="p-1 rounded text-app-muted hover:text-app-text"
-                      aria-label="Témoignage suivant"
+                      aria-label={t('dash.nextStory', 'Témoignage suivant')}
                     >
                       <ChevronRight className="w-4 h-4 rtl:-scale-x-100" />
                     </button>

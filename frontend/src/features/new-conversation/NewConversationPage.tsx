@@ -121,7 +121,7 @@ export const NewConversationPage: React.FC = () => {
                 {t('newConv.title', 'Nouvelle conversation')}
               </h2>
               <p className="text-xs sm:text-sm text-app-muted">
-                Configurez l'environnement avant de commencer l'échange.
+                {t('newConv.subtitle', "Configurez l'environnement avant de commencer l'échange.")}
               </p>
             </div>
 
@@ -132,7 +132,7 @@ export const NewConversationPage: React.FC = () => {
                   {t('newConv.contextLabel', "Contexte de l'échange")}
                 </label>
                 <span className="text-[11px] text-app-muted">
-                  Adapte les suggestions rapides
+                  {t('newConv.contextHint', 'Adapte les suggestions rapides')}
                 </span>
               </div>
               <ContextSelector value={context} onChange={setContext} />
@@ -155,9 +155,9 @@ export const NewConversationPage: React.FC = () => {
                   value={mode}
                   onChange={setMode}
                   options={[
-                    { value: 'two_way', label: 'Double sens' },
-                    { value: 'sign_to_language', label: 'LSA → Langue' },
-                    { value: 'language_to_sign', label: 'Langue → LSA' },
+                    { value: 'two_way', label: t('mode.twoWay', 'Double sens') },
+                    { value: 'sign_to_language', label: t('mode.signToLang', 'LSA → Langue') },
+                    { value: 'language_to_sign', label: t('mode.langToSign', 'Langue → LSA') },
                   ]}
                   className="w-full"
                 />
@@ -186,9 +186,9 @@ export const NewConversationPage: React.FC = () => {
             <div className="p-3.5 rounded-control bg-app-surface-2 border border-app-border space-y-2 text-xs">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-app-muted uppercase tracking-wider">
-                  Capteurs requis au démarrage
+                  {t('newConv.sensorsRequired', 'Capteurs requis au démarrage')}
                 </span>
-                <span className="text-[11px] text-app-muted">Initialisation au lancement</span>
+                <span className="text-[11px] text-app-muted">{t('newConv.initAtLaunch', 'Initialisation au lancement')}</span>
               </div>
               <div className="flex flex-wrap items-center gap-4 text-app-text">
                 {/* Camera Status */}
@@ -202,14 +202,14 @@ export const NewConversationPage: React.FC = () => {
                   )}
                   <span className={camStatus === 'denied' ? 'text-app-error font-semibold' : ''}>
                     {camStatus === 'not_needed'
-                      ? 'Caméra : non requise pour ce mode'
+                      ? t('newConv.camNotNeeded', 'Caméra : non requise pour ce mode')
                       : camStatus === 'denied'
-                      ? 'Accès caméra bloqué (autoriser dans le navigateur)'
+                      ? t('newConv.camDenied', 'Accès caméra bloqué (autoriser dans le navigateur)')
                       : camStatus === 'unsupported'
-                      ? 'Caméra : non supportée sur cette connexion'
+                      ? t('newConv.camUnsupported', 'Caméra : non supportée sur cette connexion')
                       : camStatus === 'granted'
-                      ? 'Caméra : autorisation accordée'
-                      : 'Caméra requise au démarrage'}
+                      ? t('newConv.camGranted', 'Caméra : autorisation accordée')
+                      : t('newConv.camRequired', 'Caméra requise au démarrage')}
                   </span>
                 </span>
 
@@ -224,14 +224,14 @@ export const NewConversationPage: React.FC = () => {
                   )}
                   <span className={micStatus === 'denied' ? 'text-app-error font-semibold' : ''}>
                     {micStatus === 'not_needed'
-                      ? 'Microphone : non requis pour ce mode'
+                      ? t('newConv.micNotNeeded', 'Microphone : non requis pour ce mode')
                       : micStatus === 'denied'
-                      ? 'Accès micro bloqué (autoriser dans le navigateur)'
+                      ? t('newConv.micDenied', 'Accès micro bloqué (autoriser dans le navigateur)')
                       : micStatus === 'unsupported'
-                      ? 'Microphone : non supporté'
+                      ? t('newConv.micUnsupported', 'Microphone : non supporté')
                       : micStatus === 'granted'
-                      ? 'Microphone : autorisation accordée'
-                      : 'Microphone requis au démarrage'}
+                      ? t('newConv.micGranted', 'Microphone : autorisation accordée')
+                      : t('newConv.micRequired', 'Microphone requis au démarrage')}
                   </span>
                 </span>
 
@@ -239,7 +239,9 @@ export const NewConversationPage: React.FC = () => {
                 <span className="inline-flex items-center gap-1.5 font-medium">
                   <Sparkles className="w-4 h-4 text-app-primary-strong" />
                   <span>
-                    Modèle IA ({registry.ai.adapter === 'demo' ? 'Mode Démo' : 'Mode Direct'})
+                    {t('newConv.aiModelStatus', {
+                      mode: registry.ai.adapter === 'demo' ? t('newConv.demoMode', 'Mode Démo') : t('newConv.liveMode', 'Mode Direct'),
+                    })}
                   </span>
                 </span>
               </div>
