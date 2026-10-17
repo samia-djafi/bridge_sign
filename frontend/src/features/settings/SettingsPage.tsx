@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useUiStore } from '@/stores/uiStore';
@@ -21,6 +21,12 @@ import {
   Trash2,
   AlertTriangle,
   User,
+  RefreshCw,
+  Mic,
+  CheckCircle2,
+  Play,
+  Square,
+  Activity,
 } from 'lucide-react';
 import { useProfileStore } from '@/stores/profileStore';
 
@@ -35,6 +41,155 @@ export const SettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     'profile' | 'language' | 'appearance' | 'a11y' | 'camera' | 'audio' | 'ai' | 'privacy'
   >('profile');
+
+  // Interactive Camera Test State
+  const [isTestingCamera, setIsTestingCamera] = useState(false);
+  const [cameraFacingMode, setCameraFacingMode] = useState<'user' | 'environment'>('user');
+  const [cameraResolution, setCameraResolution] = useState<string | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const cameraVideoRef = useRef<HTMLVideoElement>(null);
+  const cameraStreamRef = useRef<MediaStream | null>(null);
+
+  // Interactive Mic Test State
+  const [isTestingMic, setIsTestingMic] = useState(false);
+  const [micVolume, setMicVolume] = useState<number>(0);
+  const [micError, setMicError] = useState<string | null>(null);
+  const micStreamRef = useRef<MediaStream | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const animFrameRef = useRef<number | null>(null);
+
+  const isSpeechSupported =
+    typeof window !== 'undefined' &&
+    !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
+
+  const stopCameraTest = () => {
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach((track) => track.stop());
+      cameraStreamRef.current = null;
+    }
+    if (cameraVideoRef.current) {
+      cameraVideoRef.current.srcObject = null;
+    }
+    setIsTestingCamera(false);
+    setCameraResolution(null);
+  };
+
+  const startCameraTest = async (facing: 'user' | 'environment' = cameraFacingMode) => {
+    stopCameraTest();
+    setCameraError(null);
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setCameraError(t('err.camNotFound', 'No camera found on this device.'));
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: facing,
+          width: { ideal: 1280 },
+          height: { ideal: 720 },
+        },
+      });
+      cameraStreamRef.current = stream;
+      if (cameraVideoRef.current) {
+        cameraVideoRef.current.srcObject = stream;
+        await cameraVideoRef.current.play().catch(() => {});
+      }
+      const track = stream.getVideoTracks()[0];
+      if (track) {
+        const settings = track.getSettings();
+        setCameraResolution(
+          `${settings.width || 1280} × ${settings.height || 720}${
+            settings.frameRate ? ` @ ${Math.round(settings.frameRate)}fps` : ''
+          }`
+        );
+      }
+      setIsTestingCamera(true);
+    } catch (err: any) {
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setCameraError(t('err.camDenied', 'Camera access was denied.'));
+      } else {
+        setCameraError(err.message || t('err.cam', 'Camera could not be accessed.'));
+      }
+      setIsTestingCamera(false);
+    }
+  };
+
+  const toggleTestFacingMode = () => {
+    const next = cameraFacingMode === 'user' ? 'environment' : 'user';
+    setCameraFacingMode(next);
+    if (isTestingCamera) {
+      startCameraTest(next);
+    }
+  };
+
+  const stopMicTest = () => {
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close().catch(() => {});
+      audioContextRef.current = null;
+    }
+    if (micStreamRef.current) {
+      micStreamRef.current.getTracks().forEach((track) => track.stop());
+      micStreamRef.current = null;
+    }
+    setIsTestingMic(false);
+    setMicVolume(0);
+  };
+
+  const startMicTest = async () => {
+    stopMicTest();
+    setMicError(null);
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setMicError(t('err.micUnsupported', 'Voice input is not supported in this browser.'));
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      micStreamRef.current = stream;
+
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const audioCtx = new AudioCtx();
+      audioContextRef.current = audioCtx;
+
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      const updateVolume = () => {
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          sum += dataArray[i] ?? 0;
+        }
+        const avg = sum / dataArray.length;
+        const normalized = Math.min(100, Math.round((avg / 64) * 100));
+        setMicVolume(normalized);
+        animFrameRef.current = requestAnimationFrame(updateVolume);
+      };
+      updateVolume();
+      setIsTestingMic(true);
+    } catch (err: any) {
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        setMicError(t('err.micDenied', 'Microphone access was denied.'));
+      } else {
+        setMicError(err.message || t('err.mic', 'Microphone could not be accessed.'));
+      }
+      setIsTestingMic(false);
+    }
+  };
+
+  // Cleanup on unmount or tab switch
+  useEffect(() => {
+    return () => {
+      stopCameraTest();
+      stopMicTest();
+    };
+  }, [activeTab]);
 
   useEffect(() => {
     document.title = `${t('nav.settings', 'Settings')} | ${t('app.name', 'BridgeSign')}`;
@@ -293,7 +448,7 @@ export const SettingsPage: React.FC = () => {
                     triggerSaved();
                   }}
                   label={t('settings.captionsLabel', 'Sous-titres sur les vidéos de signes')}
-                  description="Affiche la glose et la traduction sous chaque clip"
+                  description={t('settings.captionsDesc', 'Affiche la glose et la traduction sous chaque clip')}
                 />
 
                 <Toggle
@@ -303,7 +458,7 @@ export const SettingsPage: React.FC = () => {
                     triggerSaved();
                   }}
                   label={t('settings.showGlossLabel', 'Afficher les étiquettes de gloses')}
-                  description="Montre les identifiants de signes LSA (ex: MAL-DE-TÊTE)"
+                  description={t('settings.showGlossDesc', 'Montre les identifiants de signes LSA (ex: MAL-DE-TÊTE)')}
                 />
 
                 <Toggle
@@ -313,7 +468,7 @@ export const SettingsPage: React.FC = () => {
                     triggerSaved();
                   }}
                   label={t('settings.largeTargetsLabel', 'Grandes cibles tactiles (56px)')}
-                  description="Facilite la manipulation sur écran tactile"
+                  description={t('settings.largeTargetsDesc', 'Facilite la manipulation sur écran tactile')}
                 />
 
                 <Toggle
@@ -323,71 +478,215 @@ export const SettingsPage: React.FC = () => {
                     triggerSaved();
                   }}
                   label={t('settings.hapticsLabel', 'Retour haptique (vibrations)')}
-                  description="Vibre lors de la confirmation d’un signe ou d’une alerte"
+                  description={t('settings.hapticsDesc', 'Vibre lors de la confirmation d’un signe ou d’une alerte')}
                 />
               </Card>
             )}
 
-            {/* TAB: Camera */}
+            {/* TAB: Camera with Live Camera Test & Facing Mode Switching */}
             {activeTab === 'camera' && (
-              <Card p={24} className="space-y-5">
-                <Toggle
-                  checked={settings.camera.mirror}
-                  onChange={(mirror) => {
-                    updateSettings({ camera: { ...settings.camera, mirror } });
-                    triggerSaved();
-                  }}
-                  label={t('settings.cameraMirror', 'Effet miroir sur la prévisualisation')}
-                  description="Permet de voir ses gestes comme dans un miroir naturel"
-                />
+              <div className="space-y-6">
+                <Card p={24} className="space-y-5">
+                  <Toggle
+                    checked={settings.camera.mirror}
+                    onChange={(mirror) => {
+                      updateSettings({ camera: { ...settings.camera, mirror } });
+                      triggerSaved();
+                    }}
+                    label={t('settings.cameraMirror', 'Effet miroir sur la prévisualisation')}
+                    description={t('settings.cameraMirrorDesc', 'Permet de voir ses gestes comme dans un miroir naturel')}
+                  />
 
-                <Toggle
-                  checked={settings.camera.showTrackingByDefault}
-                  onChange={(showTrackingByDefault) => {
-                    updateSettings({
-                      camera: { ...settings.camera, showTrackingByDefault },
-                    });
-                    triggerSaved();
-                  }}
-                  label="Afficher le suivi IA par défaut"
-                  description="Dessine en direct les 21 points squelettiques des mains"
-                />
-              </Card>
-            )}
-
-            {/* TAB: Audio & Speech */}
-            {activeTab === 'audio' && (
-              <Card p={24} className="space-y-5">
-                <Toggle
-                  checked={settings.audio.voiceOutput}
-                  onChange={(voiceOutput) => {
-                    updateSettings({ audio: { ...settings.audio, voiceOutput } });
-                    triggerSaved();
-                  }}
-                  label={t('settings.voiceOutputLabel', 'Sortie vocale automatique')}
-                  description="Énonce vocalement les phrases traduites dès leur envoi"
-                />
-
-                <div className="pt-3 border-t border-app-border space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-app-muted">
-                    {t('settings.speechRateLabel', 'Vitesse d’élocution')} : {settings.audio.rate}×
-                  </label>
-                  <input
-                    type="range"
-                    min="0.7"
-                    max="1.3"
-                    step="0.1"
-                    value={settings.audio.rate}
-                    onChange={(e) => {
+                  <Toggle
+                    checked={settings.camera.showTrackingByDefault}
+                    onChange={(showTrackingByDefault) => {
                       updateSettings({
-                        audio: { ...settings.audio, rate: parseFloat(e.target.value) },
+                        camera: { ...settings.camera, showTrackingByDefault },
                       });
                       triggerSaved();
                     }}
-                    className="w-full accent-app-primary-strong"
+                    label={t('settings.cameraTrackingLabel', 'Afficher le suivi IA par défaut')}
+                    description={t('settings.cameraTrackingDesc', 'Dessine en direct les 21 points squelettiques des mains')}
                   />
-                </div>
-              </Card>
+                </Card>
+
+                {/* Interactive Camera Device Test Panel */}
+                <Card p={24} className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-bold text-sm text-app-text">{t('settings.cameraTest', 'Test camera')}</h4>
+                      <p className="text-xs text-app-muted mt-0.5">
+                        Vérifiez l'accès à la caméra et basculez entre capteur avant et arrière.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {isTestingCamera && (
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          iconStart={<RefreshCw className="w-3.5 h-3.5" />}
+                          onClick={toggleTestFacingMode}
+                        >
+                          {cameraFacingMode === 'user'
+                            ? t('rec.rearCamera', 'Caméra arrière')
+                            : t('rec.frontCamera', 'Caméra avant')}
+                        </Button>
+                      )}
+
+                      <Button
+                        variant={isTestingCamera ? 'destructive' : 'primary'}
+                        size="sm"
+                        iconStart={isTestingCamera ? <Square className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                        onClick={isTestingCamera ? stopCameraTest : () => startCameraTest()}
+                      >
+                        {isTestingCamera
+                          ? t('settings.stopCameraTestBtn', 'Arrêter le test caméra')
+                          : t('settings.testCameraBtn', 'Tester la caméra')}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {cameraError && (
+                    <div className="p-3 rounded-control bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-xs text-app-error flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 shrink-0" />
+                      <span>{cameraError}</span>
+                    </div>
+                  )}
+
+                  {isTestingCamera ? (
+                    <div className="space-y-2">
+                      <div className="relative aspect-video rounded-card overflow-hidden bg-black border border-app-border flex items-center justify-center">
+                        <video
+                          ref={cameraVideoRef}
+                          autoPlay
+                          playsInline
+                          muted
+                          className={`w-full h-full object-cover ${
+                            settings.camera.mirror && cameraFacingMode === 'user' ? '-scale-x-100' : ''
+                          }`}
+                        />
+                        {cameraResolution && (
+                          <div className="absolute top-2 start-2 px-2 py-0.5 rounded-pill bg-black/60 backdrop-blur-sm text-[10px] font-mono text-white">
+                            {t('settings.cameraResolution', 'Résolution')} : {cameraResolution}
+                          </div>
+                        )}
+                        <div className="absolute bottom-2 end-2 px-2.5 py-1 rounded-pill bg-emerald-500/80 backdrop-blur-sm text-[11px] font-bold text-white flex items-center gap-1.5 shadow-1">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>{t('settings.cameraActive', 'Caméra active')}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-6 rounded-card bg-app-surface-2 border border-dashed border-app-border text-center space-y-1">
+                      <Camera className="w-6 h-6 text-app-muted mx-auto" />
+                      <p className="text-xs text-app-muted">
+                        {t('settings.cameraNotActive', 'La prévisualisation de la caméra est inactive.')}
+                      </p>
+                    </div>
+                  )}
+                </Card>
+              </div>
+            )}
+
+            {/* TAB: Audio & Speech with Live Microphone Meter & Speech API Check */}
+            {activeTab === 'audio' && (
+              <div className="space-y-6">
+                <Card p={24} className="space-y-5">
+                  <Toggle
+                    checked={settings.audio.voiceOutput}
+                    onChange={(voiceOutput) => {
+                      updateSettings({ audio: { ...settings.audio, voiceOutput } });
+                      triggerSaved();
+                    }}
+                    label={t('settings.voiceOutputLabel', 'Sortie vocale automatique')}
+                    description={t('settings.voiceOutputDesc', 'Énonce vocalement les phrases traduites dès leur envoi')}
+                  />
+
+                  <div className="pt-3 border-t border-app-border space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-app-muted">
+                      {t('settings.speechRateLabel', 'Vitesse d’élocution')} : {settings.audio.rate}×
+                    </label>
+                    <input
+                      type="range"
+                      min="0.7"
+                      max="1.3"
+                      step="0.1"
+                      value={settings.audio.rate}
+                      onChange={(e) => {
+                        updateSettings({
+                          audio: { ...settings.audio, rate: parseFloat(e.target.value) },
+                        });
+                        triggerSaved();
+                      }}
+                      className="w-full accent-app-primary-strong"
+                    />
+                  </div>
+                </Card>
+
+                {/* Interactive Microphone Test Panel */}
+                <Card p={24} className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-bold text-sm text-app-text">{t('settings.micTest', 'Test microphone')}</h4>
+                      <p className="text-xs text-app-muted mt-0.5">
+                        Testez le microphone et observez le volume audio capté en direct.
+                      </p>
+                    </div>
+
+                    <Button
+                      variant={isTestingMic ? 'destructive' : 'primary'}
+                      size="sm"
+                      iconStart={isTestingMic ? <Square className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
+                      onClick={isTestingMic ? stopMicTest : startMicTest}
+                    >
+                      {isTestingMic
+                        ? t('settings.stopMicTestBtn', 'Arrêter le test micro')
+                        : t('settings.testMicBtn', 'Tester le micro')}
+                    </Button>
+                  </div>
+
+                  {micError && (
+                    <div className="p-3 rounded-control bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-xs text-app-error flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 shrink-0" />
+                      <span>{micError}</span>
+                    </div>
+                  )}
+
+                  {/* Audio Visualizer Level Bar */}
+                  <div className="space-y-2 p-3.5 rounded-card bg-app-surface-2 border border-app-border">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-medium text-app-text flex items-center gap-1.5">
+                        <Activity className="w-3.5 h-3.5 text-app-primary-strong" />
+                        <span>{t('settings.micVolumeLevel', "Niveau d'entrée audio")}</span>
+                      </span>
+                      <span className="font-mono text-app-muted">{micVolume}%</span>
+                    </div>
+
+                    <div className="w-full h-3 rounded-pill bg-app-surface border border-app-border overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-app-primary-strong transition-all duration-75"
+                        style={{ width: `${micVolume}%` }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-app-muted pt-1 border-t border-app-border">
+                      <span>
+                        {t('settings.micSpeechApiStatus', {
+                          status: isSpeechSupported
+                            ? t('settings.speechApiSupported', 'Supporté')
+                            : t('settings.speechApiUnsupported', 'Non supporté sur ce navigateur'),
+                        })}
+                      </span>
+                      {isTestingMic && (
+                        <span className="font-semibold text-emerald-600 animate-pulse">
+                          {t('settings.micActive', 'Microphone en écoute...')}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              </div>
             )}
 
             {/* TAB: AI Adapter */}
@@ -449,10 +748,9 @@ export const SettingsPage: React.FC = () => {
             {activeTab === 'privacy' && (
               <div className="space-y-6">
                 <Card p={24} className="space-y-4">
-                  <h3 className="text-base font-bold text-app-text">Stockage des données</h3>
+                  <h3 className="text-base font-bold text-app-text">{t('settings.storageTitle', 'Stockage des données')}</h3>
                   <p className="text-xs text-app-muted leading-relaxed">
-                    Toutes vos conversations et vos paramètres sont stockés localement sur cet appareil via
-                    IndexedDB et localStorage.
+                    {t('settings.storageDesc', 'Toutes vos conversations et vos paramètres sont stockés localement sur cet appareil via IndexedDB et localStorage.')}
                   </p>
 
                   <div className="flex gap-3 pt-2">
@@ -471,11 +769,10 @@ export const SettingsPage: React.FC = () => {
                 <div className="p-6 rounded-card border-2 border-app-error/40 bg-app-surface space-y-4">
                   <div className="flex items-center gap-2 text-app-error">
                     <AlertTriangle className="w-5 h-5" />
-                    <h3 className="text-base font-bold">Zone de danger</h3>
+                    <h3 className="text-base font-bold">{t('settings.dangerZoneTitle', 'Zone de danger')}</h3>
                   </div>
                   <p className="text-xs text-app-muted">
-                    La suppression des données locales efface définitivement toutes vos conversations
-                    et réinitialise vos préférences.
+                    {t('settings.dangerZoneDesc', 'La suppression des données locales efface définitivement toutes vos conversations et réinitialise vos préférences.')}
                   </p>
 
                   <Button
@@ -497,27 +794,26 @@ export const SettingsPage: React.FC = () => {
       <Modal
         isOpen={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}
-        title="Supprimer toutes les données ?"
+        title={t('settings.deleteConfirmTitle', 'Supprimer toutes les données ?')}
         maxWidth="sm"
         footer={
           <>
             <Button variant="ghost" onClick={() => setDeleteConfirmOpen(false)}>
-              Annuler
+              {t('common.cancel', 'Annuler')}
             </Button>
             <Button
               variant="destructive"
               disabled={deleteInputText !== 'DELETE'}
               onClick={handleDeleteAll}
             >
-              Confirmer la suppression
+              {t('common.confirm', 'Confirmer')}
             </Button>
           </>
         }
       >
         <div className="space-y-3">
           <p className="text-xs text-app-muted">
-            Cette action effacera toutes les conversations enregistrées. Tapez{' '}
-            <strong className="text-app-error font-mono">DELETE</strong> pour confirmer.
+            {t('settings.deleteConfirmDesc', 'Cette action effacera toutes les conversations enregistrées. Tapez DELETE pour confirmer.')}
           </p>
           <input
             type="text"
