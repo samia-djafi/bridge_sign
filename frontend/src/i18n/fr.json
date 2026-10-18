@@ -281,26 +281,57 @@
     "glossLabel": "Glose LSA :"
   },
   "phrasebook": {
-    "title": "Phrases rapides",
-    "subtitle": "Phrases courantes pour la communication quotidienne.",
-    "searchPlaceholder": "Rechercher une phrase ou un signe…",
+    "title": "Phrases rapides & Vocabulaire essentiel",
+    "subtitle": "Communication pratique pour la pharmacie, le médical, les urgences et le quotidien.",
+    "searchPlaceholder": "Rechercher une phrase ou un signe… (Touche / pour chercher)",
+    "searchVocabPlaceholder": "Rechercher un mot de vocabulaire… (Touche / pour chercher)",
     "filterAll": "Toutes",
+    "filterPharmacyMedical": "Pharmacie & Médical",
     "filterSymptoms": "Symptômes",
     "filterMedication": "Médicaments",
     "filterAppointment": "Rendez-vous",
     "filterEmergency": "Urgences",
     "filterEveryday": "Quotidien",
+    "filterHealthAccess": "Santé & Accessibilité",
     "filterFavorites": "Favoris",
     "allContexts": "Tous les contextes",
     "emptySearch": "Aucune phrase trouvée.",
+    "emptyVocabSearch": "Aucun mot de vocabulaire trouvé.",
+    "emptySearchDesc": "Essayez avec un autre mot-clé ou modifiez la catégorie sélectionnée.",
     "clearFilters": "Effacer les filtres",
     "sendAction": "Envoyer à la conversation",
     "playAction": "Voir en LSA",
     "speakAction": "Écouter",
     "phraseCount": "{{count}} phrases disponibles",
-    "emptySearchDesc": "Essayez avec un autre mot-clé ou modifiez la catégorie sélectionnée.",
+    "vocabCount": "{{count}} mots de vocabulaire disponibles",
     "lsaSequenceTitle": "Séquence LSA",
-    "glossPrefix": "Glose :"
+    "glossPrefix": "Glose :",
+    "addFavorite": "Ajouter aux favoris",
+    "removeFavorite": "Retirer des favoris",
+    "audioVoiceUnavailable": "Aucune voix vocale installée pour cette langue sur votre appareil.",
+    "audioError": "La lecture audio a échoué.",
+    "tabs": {
+      "phrases": "Phrases ({{count}})",
+      "vocabulary": "Vocabulaire ({{count}})"
+    },
+    "categoryBadge": {
+      "pharmacy_medical": "Pharmacie & Médical",
+      "emergency": "Urgence",
+      "everyday": "Quotidien",
+      "health_access": "Santé & Accès",
+      "symptoms": "Symptômes",
+      "medication": "Médicaments",
+      "appointment": "Rendez-vous"
+    },
+    "vocabCategory": {
+      "body_parts": "Parties du corps",
+      "symptoms": "Symptômes",
+      "pharmacy_medicines": "Médicaments & Pharmacie",
+      "medical_places": "Lieux & Personnel",
+      "everyday_needs": "Besoins du quotidien",
+      "communication": "Communication",
+      "urgency": "Urgence"
+    }
   },
   "history": {
     "title": "Historique des conversations",
@@ -617,7 +648,15 @@
     "exportLocalNotesBtn": "Exporter mes anciennes notes",
     "hidePreviousNotes": "Masquer les anciennes notes",
     "showPreviousNotes": "Voir mes anciennes notes enregistrées",
-    "externalFormDisclaimer": "Remarque : L'ouverture du formulaire Google n'enregistre pas automatiquement vos retours. Vous devez cliquer sur Envoyer dans Google Forms."
+    "externalFormDisclaimer": "Remarque : L'ouverture du formulaire Google n'enregistre pas automatiquement vos retours. Vous devez cliquer sur Envoyer dans Google Forms.",
+    "submittingFeedback": "Envoi en cours...",
+    "feedbackSuccessTitle": "Merci pour votre retour !",
+    "feedbackSuccessDesc": "Votre message a bien été transmis directement à l’équipe BridgeSign.",
+    "feedbackErrorTitle": "L'envoi n'a pas pu aboutir",
+    "feedbackErrorDesc": "L'envoi n'a pas pu aboutir. Veuillez vérifier votre connexion internet et réessayer.",
+    "feedbackOfflineError": "Vous semblez être hors-ligne. Veuillez vérifier votre connexion internet et réessayer.",
+    "sendAnotherFeedback": "Envoyer un autre retour",
+    "directSubmissionNotice": "Vos remarques sont transmises directement à notre équipe en arrière-plan."
   },
   "err": {
     "outOfVocab": "Cette phrase est en dehors du vocabulaire actuel du MVP.",
