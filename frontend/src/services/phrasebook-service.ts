@@ -1,6 +1,7 @@
-import { Phrase } from '@/types/domain';
+import { Phrase, VocabularyItem } from '@/types/domain';
 import { PhrasebookService } from '@/types/services';
 import { SEED_PHRASES } from '@/data/phrasebook';
+import { ESSENTIAL_VOCABULARY } from '@/data/vocabulary';
 import { db } from './db';
 import { normalizeText } from '@/lib/text-normalize';
 import { combinedScore } from '@/lib/fuzzy';
@@ -9,6 +10,7 @@ const FAVORITES_STORAGE_KEY = 'bridgesign-phrasebook-favorites';
 
 class AppPhrasebookService implements PhrasebookService {
   private phrases: Phrase[] = SEED_PHRASES;
+  private vocabulary: VocabularyItem[] = ESSENTIAL_VOCABULARY;
   private cachedFavorites: Set<string> = new Set();
   private initialized = false;
 
@@ -82,6 +84,10 @@ class AppPhrasebookService implements PhrasebookService {
     return this.phrases;
   }
 
+  async listVocabulary(): Promise<VocabularyItem[]> {
+    return this.vocabulary;
+  }
+
   async search(query: string, filters?: { category?: string; context?: string }): Promise<Phrase[]> {
     await this.syncWithDb();
     const normQ = normalizeText(query);
@@ -94,6 +100,21 @@ class AppPhrasebookService implements PhrasebookService {
         list = list.filter((p) => favorites.has(p.id));
       } else if (filters.category === 'emergency') {
         list = list.filter((p) => p.emergency || p.category === 'emergency');
+      } else if (
+        filters.category === 'pharmacy_medical' ||
+        filters.category === 'symptoms' ||
+        filters.category === 'medication'
+      ) {
+        list = list.filter(
+          (p) =>
+            p.category === 'pharmacy_medical' ||
+            p.category === 'symptoms' ||
+            p.category === 'medication'
+        );
+      } else if (filters.category === 'health_access' || filters.category === 'appointment') {
+        list = list.filter(
+          (p) => p.category === 'health_access' || p.category === 'appointment'
+        );
       } else {
         list = list.filter((p) => p.category === filters.category);
       }
@@ -112,6 +133,40 @@ class AppPhrasebookService implements PhrasebookService {
       const matchAr = normalizeText(p.text.ar).includes(normQ) || combinedScore(normQ, p.text.ar) >= 0.75;
       const matchEn = normalizeText(p.text.en).includes(normQ) || combinedScore(normQ, p.text.en) >= 0.75;
       const matchGloss = p.gloss.some((g) => normalizeText(g).includes(normQ));
+      return matchFr || matchAr || matchEn || matchGloss;
+    });
+  }
+
+  async searchVocabulary(
+    query: string,
+    filters?: { category?: string }
+  ): Promise<VocabularyItem[]> {
+    await this.syncWithDb();
+    const normQ = normalizeText(query);
+    const favorites = this.cachedFavorites;
+
+    let list = this.vocabulary;
+
+    if (filters?.category) {
+      if (filters.category === 'favorites') {
+        list = list.filter((v) => favorites.has(v.id));
+      } else {
+        list = list.filter((v) => v.category === filters.category);
+      }
+    }
+
+    if (!normQ) {
+      return list;
+    }
+
+    return list.filter((v) => {
+      const matchFr =
+        normalizeText(v.text.fr).includes(normQ) || combinedScore(normQ, v.text.fr) >= 0.75;
+      const matchAr =
+        normalizeText(v.text.ar).includes(normQ) || combinedScore(normQ, v.text.ar) >= 0.75;
+      const matchEn =
+        normalizeText(v.text.en).includes(normQ) || combinedScore(normQ, v.text.en) >= 0.75;
+      const matchGloss = v.gloss ? normalizeText(v.gloss).includes(normQ) : false;
       return matchFr || matchAr || matchEn || matchGloss;
     });
   }
