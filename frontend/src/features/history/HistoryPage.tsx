@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { registry } from '@/services/registry';
@@ -14,6 +14,7 @@ import {
   Trash2,
   ArrowRight,
   Clock,
+  X,
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/time';
 
@@ -27,6 +28,7 @@ export const HistoryPage: React.FC = () => {
   const [sessionToDelete, setSessionToDelete] = useState<ConversationSession | null>(null);
   const [clearAllConfirmOpen, setClearAllConfirmOpen] = useState(false);
   const [storageBannerDismissed, setStorageBannerDismissed] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const loadSessions = async () => {
     const list = await registry.sessions.list();
@@ -115,15 +117,29 @@ export const HistoryPage: React.FC = () => {
         )}
 
         {/* Search */}
-        <div className="relative">
-          <Search className="w-5 h-5 text-app-muted absolute start-3.5 top-1/2 -translate-y-1/2" />
+        <div className="relative flex items-center">
+          <Search className="w-5 h-5 text-app-muted absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
+            ref={searchInputRef}
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('history.searchPlaceholder', 'Rechercher dans l’historique…')}
-            className="w-full h-11 ps-11 pe-4 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong shadow-1"
+            className="w-full h-11 ps-11 pe-10 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong shadow-1"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery('');
+                searchInputRef.current?.focus();
+              }}
+              className="absolute end-3 p-1 text-app-muted hover:text-app-text transition-colors"
+              aria-label={t('topNav.clearAria', 'Effacer la recherche')}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Sessions List */}
@@ -191,7 +207,10 @@ export const HistoryPage: React.FC = () => {
                   <button
                     type="button"
                     aria-label={t('common.delete', 'Supprimer')}
-                    onClick={() => setSessionToDelete(s)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSessionToDelete(s);
+                    }}
                     className="p-2 text-app-muted hover:text-app-error rounded-control hover:bg-app-surface-2 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />

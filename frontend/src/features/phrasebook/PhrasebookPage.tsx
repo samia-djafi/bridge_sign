@@ -10,7 +10,7 @@ import { VocabularyCard } from '@/components/domain/VocabularyCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Sheet } from '@/components/ui/Sheet';
 import { SignPlayer } from '@/components/domain/SignPlayer';
-import { Search, BookOpen, Star, Siren, MessageSquare, BookMarked, Stethoscope, Sparkles } from 'lucide-react';
+import { Search, BookOpen, Star, Siren, MessageSquare, BookMarked, Stethoscope, Sparkles, X } from 'lucide-react';
 
 export const PhrasebookPage: React.FC = () => {
   const { t } = useTranslation();
@@ -69,10 +69,17 @@ export const PhrasebookPage: React.FC = () => {
     load();
   }, [activeTab, searchQuery, selectedPhraseCategory, selectedVocabCategory, t]);
 
-  // Keyboard shortcut: '/' focuses search
+  // Keyboard shortcut: '/' focuses search (only when not inside an input field)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === '/' && document.activeElement !== searchInputRef.current) {
+      const activeEl = document.activeElement;
+      const isInput =
+        activeEl instanceof HTMLInputElement ||
+        activeEl instanceof HTMLTextAreaElement ||
+        activeEl instanceof HTMLSelectElement ||
+        (activeEl instanceof HTMLElement && activeEl.isContentEditable);
+
+      if (e.key === '/' && !isInput && activeEl !== searchInputRef.current) {
         e.preventDefault();
         searchInputRef.current?.focus();
       }
@@ -216,8 +223,8 @@ export const PhrasebookPage: React.FC = () => {
         {/* Toolbar: Search input & Category Filters */}
         <div className="space-y-3">
           {/* Search Input */}
-          <div className="relative">
-            <Search className="w-5 h-5 text-app-muted absolute start-3.5 top-1/2 -translate-y-1/2" />
+          <div className="relative flex items-center">
+            <Search className="w-5 h-5 text-app-muted absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               ref={searchInputRef}
               type="search"
@@ -228,8 +235,21 @@ export const PhrasebookPage: React.FC = () => {
                   ? t('phrasebook.searchPlaceholder', 'Rechercher une phrase ou un signe… (Touche / pour chercher)')
                   : t('phrasebook.searchVocabPlaceholder', 'Rechercher un mot de vocabulaire… (Touche / pour chercher)')
               }
-              className="w-full h-12 ps-11 pe-4 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm shadow-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
+              className="w-full h-12 ps-11 pe-10 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm shadow-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  searchInputRef.current?.focus();
+                }}
+                className="absolute end-3 p-1 text-app-muted hover:text-app-text transition-colors"
+                aria-label={t('topNav.clearAria', 'Effacer la recherche')}
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           {/* Category Chips Horizontal Bar */}

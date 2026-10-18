@@ -670,7 +670,10 @@ export const StoriesPage: React.FC = () => {
                           </span>
                           <button
                             type="button"
-                            onClick={() => handleDeleteFeedback(item.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteFeedback(item.id);
+                            }}
                             className="text-app-muted hover:text-app-error p-1 rounded transition-colors"
                             aria-label={t('stories.deleteNoteAria', 'Delete this note')}
                           >

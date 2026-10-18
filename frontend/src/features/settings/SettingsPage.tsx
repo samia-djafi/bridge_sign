@@ -793,12 +793,21 @@ export const SettingsPage: React.FC = () => {
       {/* Delete All Modal */}
       <Modal
         isOpen={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
+        onClose={() => {
+          setDeleteConfirmOpen(false);
+          setDeleteInputText('');
+        }}
         title={t('settings.deleteConfirmTitle', 'Supprimer toutes les données ?')}
         maxWidth="sm"
         footer={
           <>
-            <Button variant="ghost" onClick={() => setDeleteConfirmOpen(false)}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setDeleteConfirmOpen(false);
+                setDeleteInputText('');
+              }}
+            >
               {t('common.cancel', 'Annuler')}
             </Button>
             <Button
