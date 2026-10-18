@@ -8,7 +8,6 @@ import { downloadFile } from '@/lib/download';
 import {
   HeartHandshake,
   ShieldCheck,
-  Quote,
   MapPin,
   MessageSquare,
   Sparkles,
@@ -369,7 +368,6 @@ export const StoriesPage: React.FC = () => {
 
                   {/* Situation with quote styling */}
                   <div className="relative pt-1">
-                    <Quote className="w-5 h-5 text-app-primary-strong/20 absolute -top-1 -start-1 rtl:-scale-x-100" />
                     <p className="text-xs sm:text-sm text-app-text leading-relaxed italic relative z-10 ps-3 text-start">
                       {story.quote[currentLang] || story.quote.en}
                     </p>
