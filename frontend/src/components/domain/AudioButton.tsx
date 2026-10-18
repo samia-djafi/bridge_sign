@@ -20,6 +20,7 @@ export const AudioButton: React.FC<AudioButtonProps> = ({
   const { t } = useTranslation();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorStatus, setErrorStatus] = useState<string | null>(null);
 
   const speech = registry.speech;
   const isSupported = speech.tts.isSupported();
@@ -38,6 +39,7 @@ export const AudioButton: React.FC<AudioButtonProps> = ({
     }
 
     setIsLoading(true);
+    setErrorStatus(null);
     try {
       setIsPlaying(true);
       setIsLoading(false);
@@ -45,6 +47,12 @@ export const AudioButton: React.FC<AudioButtonProps> = ({
         text,
         lang,
       });
+    } catch (err: any) {
+      if (err?.message?.startsWith('NO_VOICE_FOR_LANG')) {
+        setErrorStatus(t('phrasebook.audioVoiceUnavailable', 'Voix non disponible pour cette langue sur cet appareil'));
+      } else {
+        setErrorStatus(t('phrasebook.audioError', 'Erreur de lecture audio'));
+      }
     } finally {
       setIsPlaying(false);
       setIsLoading(false);
@@ -64,9 +72,10 @@ export const AudioButton: React.FC<AudioButtonProps> = ({
           : t('timeline.playAudio', 'Écouter la prononciation')
       }
       title={
-        !hasVoice
+        errorStatus ||
+        (!hasVoice
           ? t('err.ttsUnavailable', 'Aucune voix disponible pour cette langue')
-          : undefined
+          : undefined)
       }
       className={`inline-flex items-center justify-center rounded-control transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong disabled:opacity-40 disabled:cursor-not-allowed ${
         isPlaying
