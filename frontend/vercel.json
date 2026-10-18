@@ -14,6 +14,10 @@
       "source": "/(.*)",
       "headers": [
         {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' https://docs.google.com https://forms.gle https://va.vercel-scripts.com http://localhost:* ws://localhost:* https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://docs.google.com https://forms.gle; object-src 'none';"
+        },
+        {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
         },
