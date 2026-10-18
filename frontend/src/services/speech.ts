@@ -2,9 +2,9 @@ import { SpokenLang } from '@/types/domain';
 import { SpeechService, Voice } from '@/types/services';
 
 const LANG_MAP: Record<SpokenLang, string[]> = {
-  fr: ['fr-FR', 'fr'],
-  ar: ['ar-DZ', 'ar-SA', 'ar'],
-  en: ['en-US', 'en-GB', 'en'],
+  fr: ['fr-FR', 'fr-DZ', 'fr-CA', 'fr-BE', 'fr-CH', 'fr'],
+  ar: ['ar-DZ', 'ar-SA', 'ar-EG', 'ar-MA', 'ar-TN', 'ar-AE', 'ar'],
+  en: ['en-US', 'en-GB', 'en-CA', 'en-AU', 'en'],
 };
 
 class BrowserSpeechService implements SpeechService {
@@ -105,26 +105,49 @@ class BrowserSpeechService implements SpeechService {
 
       window.speechSynthesis.cancel();
 
-      return new Promise<void>((resolve) => {
+      return new Promise<void>((resolve, reject) => {
         const utterance = new SpeechSynthesisUtterance(opts.text);
         utterance.rate = opts.rate ?? 1.0;
         utterance.volume = opts.volume ?? 1.0;
 
-        const supportedLocales = LANG_MAP[opts.lang];
-        utterance.lang = supportedLocales[0] || 'fr-FR';
+        const supportedLocales = LANG_MAP[opts.lang] || ['en-US'];
+        utterance.lang = supportedLocales[0] || 'en-US';
 
         const voices = window.speechSynthesis.getVoices();
-        if (opts.voiceId) {
-          const v = voices.find((voice) => voice.name === opts.voiceId);
-          if (v) utterance.voice = v;
-        } else {
-          // Match by language prefix
-          const v = voices.find((voice) => supportedLocales.some((l) => voice.lang.toLowerCase().startsWith(l.toLowerCase())));
-          if (v) utterance.voice = v;
+        if (voices && voices.length > 0) {
+          if (opts.voiceId) {
+            const v = voices.find((voice) => voice.name === opts.voiceId);
+            if (v) {
+              utterance.voice = v;
+              utterance.lang = v.lang;
+            }
+          } else {
+            // Find a matching voice for the target language
+            const matchingVoice = voices.find((voice) =>
+              supportedLocales.some((l) => voice.lang.toLowerCase().startsWith(l.toLowerCase()))
+            );
+            if (matchingVoice) {
+              utterance.voice = matchingVoice;
+              utterance.lang = matchingVoice.lang;
+            } else {
+              // If voices are available on the system but NONE match the target language (e.g. Arabic voice missing on Windows)
+              // Do not silently speak Arabic text with an English voice
+              console.warn(`[SpeechService] No TTS voice found for language: ${opts.lang}`);
+              reject(new Error(`NO_VOICE_FOR_LANG_${opts.lang}`));
+              return;
+            }
+          }
         }
 
         utterance.onend = () => resolve();
-        utterance.onerror = () => resolve();
+        utterance.onerror = (e) => {
+          // If cancelled or interrupted intentionally, resolve gracefully
+          if (e.error === 'interrupted' || e.error === 'canceled') {
+            resolve();
+          } else {
+            reject(new Error(e.error || 'TTS_ERROR'));
+          }
+        };
 
         window.speechSynthesis.speak(utterance);
       });
