@@ -92,3 +92,77 @@ describe('BridgeSign Stories & Testimonials', () => {
     });
   });
 });
+
+describe('Google Forms Feedback Integration', () => {
+  it('exports correct Google Forms URLs and Entry IDs', async () => {
+    const {
+      GOOGLE_FORM_SHORT_URL,
+      GOOGLE_FORM_VIEW_URL,
+      FORM_ENTRY_IDS,
+      PROFILE_FORM_VALUES,
+    } = await import('@/features/stories/StoriesPage');
+
+    expect(GOOGLE_FORM_SHORT_URL).toBe('https://forms.gle/ecHfLfLVqgFRW8Bw9');
+    expect(GOOGLE_FORM_VIEW_URL).toContain('docs.google.com/forms/d/e/1FAIpQLSeMpIBUVY6hPLnryGdDBlT1ocNUVaYx4-Ss59wRw9qDZGJo-g/viewform');
+
+    expect(FORM_ENTRY_IDS.name).toBe('entry.380116650');
+    expect(FORM_ENTRY_IDS.profile).toBe('entry.1143297058');
+    expect(FORM_ENTRY_IDS.feedback).toBe('entry.1482854505');
+    expect(FORM_ENTRY_IDS.contact).toBe('entry.1478387733');
+
+    expect(PROFILE_FORM_VALUES.deaf).toBe('Deaf or hard of hearing person');
+    expect(PROFILE_FORM_VALUES.family).toBe('Family member or friend');
+    expect(PROFILE_FORM_VALUES.healthcare).toBe('Healthcare professional');
+    expect(PROFILE_FORM_VALUES.other).toBe('Someone else');
+  });
+
+  it('builds pre-filled Google Form URL with all fields and 4 profiles', async () => {
+    const { buildGoogleFormsUrl, FORM_ENTRY_IDS } = await import(
+      '@/features/stories/StoriesPage'
+    );
+
+    // Test with deaf profile
+    const url1 = buildGoogleFormsUrl({
+      name: 'Amine',
+      profile: 'deaf',
+      feedback: 'Great application for Algerian Sign Language!',
+      contact: 'amine@example.com',
+    });
+
+    const parsedUrl1 = new URL(url1);
+    expect(parsedUrl1.searchParams.get('usp')).toBe('pp_url');
+    expect(parsedUrl1.searchParams.get(FORM_ENTRY_IDS.name)).toBe('Amine');
+    expect(parsedUrl1.searchParams.get(FORM_ENTRY_IDS.profile)).toBe('Deaf or hard of hearing person');
+    expect(parsedUrl1.searchParams.get(FORM_ENTRY_IDS.feedback)).toBe('Great application for Algerian Sign Language!');
+    expect(parsedUrl1.searchParams.get(FORM_ENTRY_IDS.contact)).toBe('amine@example.com');
+
+    // Test with 'other' (Someone else) profile and minimal fields
+    const url2 = buildGoogleFormsUrl({
+      profile: 'other',
+      feedback: 'Feedback from another user',
+    });
+
+    const parsedUrl2 = new URL(url2);
+    expect(parsedUrl2.searchParams.get(FORM_ENTRY_IDS.name)).toBeNull();
+    expect(parsedUrl2.searchParams.get(FORM_ENTRY_IDS.profile)).toBe('Someone else');
+    expect(parsedUrl2.searchParams.get(FORM_ENTRY_IDS.feedback)).toBe('Feedback from another user');
+    expect(parsedUrl2.searchParams.get(FORM_ENTRY_IDS.contact)).toBeNull();
+
+    // Test with family profile
+    const url3 = buildGoogleFormsUrl({
+      profile: 'family',
+      feedback: 'Family feedback',
+    });
+    const parsedUrl3 = new URL(url3);
+    expect(parsedUrl3.searchParams.get(FORM_ENTRY_IDS.profile)).toBe('Family member or friend');
+
+    // Test with healthcare profile
+    const url4 = buildGoogleFormsUrl({
+      profile: 'healthcare',
+      feedback: 'Healthcare feedback',
+    });
+    const parsedUrl4 = new URL(url4);
+    expect(parsedUrl4.searchParams.get(FORM_ENTRY_IDS.profile)).toBe('Healthcare professional');
+  });
+});
+
