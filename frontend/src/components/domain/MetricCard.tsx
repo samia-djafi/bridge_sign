@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface MetricCardProps {
   label: string;
@@ -17,6 +18,8 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   subtext,
   className = '',
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div
       className={`p-4 rounded-card bg-app-surface border border-app-border shadow-1 flex flex-col justify-between ${className}`}
@@ -33,7 +36,7 @@ export const MetricCard: React.FC<MetricCardProps> = ({
                 : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
             }`}
           >
-            {badge === 'demo' ? 'Démo' : 'Direct'}
+            {badge === 'demo' ? t('badge.demo', 'Demo') : t('badge.live', 'Live')}
           </span>
         )}
       </div>
