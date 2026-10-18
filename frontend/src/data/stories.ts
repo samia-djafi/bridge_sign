@@ -1,119 +1,118 @@
 export interface Story {
   id: string;
-  isIllustrative: boolean;
-  scenarioTitle: {
+  badge: 'family' | 'healthcare' | 'deaf_community';
+  title: {
     fr: string;
     ar: string;
     en: string;
   };
-  author: string;
   role: {
     fr: string;
     ar: string;
     en: string;
   };
   location: string;
-  badge: 'deaf_community' | 'healthcare';
-  context: 'pharmacy' | 'clinic' | 'daily';
   quote: {
     fr: string;
     ar: string;
     en: string;
   };
-  details: {
+  // Optional compatibility fields
+  author?: string;
+  scenarioTitle?: {
     fr: string;
     ar: string;
     en: string;
   };
-  date: string;
+  details?: {
+    fr: string;
+    ar: string;
+    en: string;
+  };
+  date?: string;
+  isIllustrative?: boolean;
 }
 
 export const STORIES: Story[] = [
   {
     id: 'story-1',
-    isIllustrative: true,
-    scenarioTitle: {
-      fr: 'Scénario 1 : Consultation en officine',
-      ar: 'سيناريو 1: استشارة في الصيدلية',
-      en: 'Scenario 1: Pharmacy Consultation',
+    badge: 'family',
+    title: {
+      en: 'A Brother',
+      fr: 'Un frère',
+      ar: 'أخ',
     },
-    author: 'Cas d’usage : Demande de médicament',
     role: {
-      fr: 'Patiente sourde (Cas illustratif)',
-      ar: 'مريضة صماء (حالة توضيحية)',
-      en: 'Deaf Patient (Illustrative case)',
+      en: 'Brother of a deaf sister',
+      fr: "Frère d'une sœur sourde",
+      ar: 'أخ لأخت صماء',
     },
-    location: 'Alger (Bab El Oued)',
-    badge: 'deaf_community',
-    context: 'pharmacy',
+    location: 'Tizi-Ouzou',
     quote: {
-      fr: 'Situation illustrée : Exprimer directement des symptômes de migraine et valider la posologie du traitement sans dépendre de papier froissé ou d’un tiers.',
-      ar: 'حالة توضيحية: التعبير عن أعراض الصداع بدقة ومعرفة الجرعة المحددة دون الحاجة إلى قصاصة ورقية أو وسيط.',
-      en: 'Illustrative situation: Expressing headache symptoms directly and validating treatment dosage without relying on scraps of paper or a third party.',
+      en: '“It  will help my sister attend her appointments, visit places, and express herself without always needing me by her side. I want people to communicate directly with her, understand her needs, and respect her independence. She deserves to be heard, even when I\'m not there.”',
+      fr: '«ça aidera ma sœur à se rendre à ses rendez-vous, à se déplacer et à exprimer ses besoins sans avoir toujours besoin de moi à ses côtés. Je veux que les gens communiquent directement avec elle, comprennent ses besoins et respectent son indépendance. Elle mérite d\'être entendue, même lorsque je ne suis pas là. »',
+      ar: '« سيساعد  أختي على الذهاب إلى مواعيدها، والتنقّل، والتعبير عن احتياجاتها دون أن تضطر إلى الاعتماد عليّ في كل مرة. أريد أن يتواصل الناس معها مباشرة، وأن يفهموا احتياجاتها ويحترموا استقلاليتها. فهي تستحق أن يُصغى إليها، حتى عندما لا أكون بجانبها. »',
     },
-    details: {
-      fr: 'Cas d’usage lors d’un épisode de migraine aiguë avec demande de paracétamol et posologie claire.',
-      ar: 'دراسة حالة لاستخدام المنظومة خلال نوبة صداع حاد مع طلب دواء الباراسيتامول ومعرفة الجرعة بدقة.',
-      en: 'Use case during an acute headache episode to request paracetamol and confirm exact dosage.',
+    author: 'A Brother',
+    scenarioTitle: {
+      en: 'A Brother',
+      fr: 'Un frère',
+      ar: 'أخ',
     },
-    date: '2026-09',
+    isIllustrative: false,
   },
   {
     id: 'story-2',
-    isIllustrative: true,
-    scenarioTitle: {
-      fr: 'Scénario 2 : Accueil au comptoir pharmaceutique',
-      ar: 'سيناريو 2: استقبال بالصيدلية وتوضيح الجرعات',
-      en: 'Scenario 2: Pharmacy Counter Communication',
-    },
-    author: 'Cas d’usage : Sécurisation de la posologie',
-    role: {
-      fr: 'Pharmacien d’officine (Cas illustratif)',
-      ar: 'صيدلي ممارس (حالة توضيحية)',
-      en: 'Community Pharmacist (Illustrative case)',
-    },
-    location: 'Oran',
     badge: 'healthcare',
-    context: 'pharmacy',
+    title: {
+      en: 'A Pharmacist',
+      fr: 'Un pharmacien',
+      ar: 'صيدلي',
+    },
+    role: {
+      en: 'Healthcare professional',
+      fr: 'Professionnel de santé',
+      ar: 'ممارس رعاية صحية',
+    },
+    location: 'Alger',
     quote: {
-      fr: 'Situation illustrée : Vérification rigoureuse des allergies médicamenteuses et explication des prises matin et soir dans le respect de la confidentialité du patient.',
-      ar: 'حالة توضيحية: التحقق الدقيق من الحساسية الدوائية وشرح مواعيد تناول الدواء في إطار السرية التامة للمريض.',
-      en: 'Illustrative situation: Rigorous allergy verification and clear morning/evening dosage instructions preserving patient confidentiality.',
+      en: '“Every patient deserves to explain their symptoms and understand their medication without feeling embarrassed or misunderstood. When a deaf person comes into my pharmacy, communication can be difficult. I want to help them feel comfortable, understood, and safe when seeking healthcare.”',
+      fr: '« Chaque patient mérite de pouvoir expliquer ses symptômes et comprendre son traitement sans se sentir gêné ni incompris. Lorsqu\'une personne sourde entre dans ma pharmacie, la communication peut être difficile. Je veux pouvoir l\'aider à se sentir à l\'aise, comprise et en sécurité lorsqu\'elle vient chercher des soins. »',
+      ar: '« يستحق كل مريض أن يشرح أعراضه ويفهم كيفية استعمال دوائه دون أن يشعر بالحرج أو بأن الآخرين لا يفهمونه. عندما يدخل شخص أصم إلى صيدليتي، قد يكون التواصل صعبًا. أريد أن أساعده على الشعور بالراحة، وأن يجد من يفهمه، وأن يحصل على الرعاية الصحية بأمان واطمئنان. »',
     },
-    details: {
-      fr: 'Validation de posologie et explication de prise matin et soir sans intermédiaire.',
-      ar: 'تأكيد الجرعة اليومية وشرح أوقات تناول الدواء صباحًا ومساءً دون وسيط.',
-      en: 'Direct confirmation of twice-daily dosage instructions without needing an intermediary.',
+    author: 'A Pharmacist',
+    scenarioTitle: {
+      en: 'A Pharmacist',
+      fr: 'Un pharmacien',
+      ar: 'صيدلي',
     },
-    date: '2026-09',
+    isIllustrative: false,
   },
   {
     id: 'story-3',
-    isIllustrative: true,
-    scenarioTitle: {
-      fr: 'Scénario 3 : Consultation médicale et vocabulaire LSA',
-      ar: 'سيناريو 3: استشارة طبية ومفردات لغة الإشارة',
-      en: 'Scenario 3: Clinical Consultation & LSA Vocabulary',
-    },
-    author: 'Cas d’usage : Autonomie de communication',
-    role: {
-      fr: 'Étudiant sourd (Cas illustratif)',
-      ar: 'طالب أصم (حالة توضيحية)',
-      en: 'Deaf Student (Illustrative case)',
-    },
-    location: 'Constantine',
     badge: 'deaf_community',
-    context: 'clinic',
+    title: {
+      en: 'A Deaf Person',
+      fr: 'Une personne sourde',
+      ar: 'شخص أصم',
+    },
+    role: {
+      en: 'Deaf person who wants to be understood',
+      fr: "Personne sourde désireuse d'être comprise",
+      ar: 'شخص أصم يريد أن يُفهم',
+    },
+    location: 'Tizi-Ouzou',
     quote: {
-      fr: 'Situation illustrée : Échange direct avec un professionnel de santé pour décrire des antécédents médicaux en s’appuyant sur les signes du lexique LSA standardisé.',
-      ar: 'حالة توضيحية: تواصل مباشر مع الطبيب لوصف التاريخ المرضي بالاعتماد على إشارات القاموس الطبي للغة الإشارة الجزائرية.',
-      en: 'Illustrative situation: Direct communication with a healthcare provider describing medical history using standardized LSA sign vocabulary.',
+      en: '“Sometimes, even the simplest things become difficult when people don\'t understand my language. Asking for help, explaining what I need, or having an everyday conversation shouldn\'t be a struggle. I want to communicate independently, confidently, and without feeling like a burden to anyone.”',
+      fr: '« Parfois, même les choses les plus simples deviennent difficiles lorsque les gens ne comprennent pas ma langue. Demander de l\'aide, expliquer mes besoins ou avoir une conversation au quotidien ne devrait pas être un combat. Je veux pouvoir communiquer de manière autonome, avec confiance, sans avoir l\'impression d\'être un fardeau pour qui que ce soit. »',
+      ar: '« أحيانًا، تصبح أبسط الأمور صعبة عندما لا يفهم الناس لغتي. لا ينبغي أن يكون طلب المساعدة، أو شرح ما أحتاج إليه، أو إجراء محادثة يومية أمرًا شاقًا. أريد أن أتواصل باستقلالية وثقة، دون أن أشعر بأنني عبء على أي شخص. »',
     },
-    details: {
-      fr: 'Cas d’usage d’expression de symptômes lors d’une visite en cabinet médical généraliste.',
-      ar: 'دراسة حالة لوصف الأعراض خلال زيارة عيادة طبية عامة.',
-      en: 'Symptom expression use case during a visit to a general medicine clinic.',
+    author: 'A Deaf Person',
+    scenarioTitle: {
+      en: 'A Deaf Person',
+      fr: 'Une personne sourde',
+      ar: 'شخص أصم',
     },
-    date: '2026-10',
+    isIllustrative: false,
   },
 ];
