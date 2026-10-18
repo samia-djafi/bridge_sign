@@ -69,8 +69,8 @@
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/awal-org/lsa-bridge.git
-cd lsa-bridge
+git clone https://github.com/samia-djafi/bridge_sign.git
+cd bridge_sign/frontend
 npm install
 ```
 
