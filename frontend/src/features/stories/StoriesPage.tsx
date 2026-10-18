@@ -118,7 +118,7 @@ export const StoriesPage: React.FC = () => {
             <p className="text-xs sm:text-sm text-app-muted max-w-2xl leading-relaxed">
               {t(
                 'stories.subtitle',
-                'Histoires vécues et scénarios illustratifs de BridgeSign dans le milieu médical et le quotidien en Algérie.'
+                'Retours d’expérience réels et récits partagés par notre communauté sourde, les familles et les soignants en Algérie.'
               )}
             </p>
           </div>
@@ -138,21 +138,21 @@ export const StoriesPage: React.FC = () => {
           </Button>
         </div>
 
-        {/* Transparency Banner: Honest illustrative disclosure */}
+        {/* Transparency Banner: Honest authentic feedback disclosure */}
         <div
           role="region"
-          aria-label={t('stories.transparencyBannerTitle', 'Engagement de transparence & d’honnêteté')}
+          aria-label={t('stories.transparencyBannerTitle', 'Engagement de transparence & d’authenticité')}
           className="p-4 rounded-card bg-app-surface border border-app-border-strong flex items-start gap-3 shadow-1 text-xs text-app-muted leading-relaxed"
         >
           <ShieldCheck className="w-5 h-5 text-app-primary-strong shrink-0 mt-0.5" />
           <div className="space-y-1">
             <span className="font-bold text-app-text block">
-              {t('stories.transparencyBannerTitle', 'Engagement de transparence & d’honnêteté')}
+              {t('stories.transparencyBannerTitle', 'Engagement de transparence & d’authenticité')}
             </span>
             <p>
               {t(
                 'stories.transparencyNotice',
-                'Ces scénarios sont illustratifs et ne constituent pas des témoignages réels. Les témoignages authentiques seront publiés dès qu’ils auront été recueillis avec le consentement libre et éclairé de leurs participants.'
+                'Ces témoignages représentent des retours réels recueillis auprès de personnes sourdes, de leurs proches et de professionnels de santé en Algérie.'
               )}
             </p>
           </div>
@@ -161,7 +161,20 @@ export const StoriesPage: React.FC = () => {
         {/* Stories Grid: Responsive Layout (1 col mobile, 2 col tablet, 3 col desktop) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {STORIES.map((story) => {
-            const isDeaf = story.badge === 'deaf_community';
+            const badgeClass =
+              story.badge === 'healthcare'
+                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
+                : story.badge === 'family'
+                ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300'
+                : 'bg-app-primary-soft text-app-primary-strong';
+
+            const badgeLabel =
+              story.badge === 'healthcare'
+                ? t('stories.healthcarePartner', 'Professionnel de santé')
+                : story.badge === 'family'
+                ? t('stories.familyCaregiver', 'Proche & Famille')
+                : t('stories.verifiedCommunity', 'Communauté sourde');
+
             return (
               <Card
                 key={story.id}
@@ -169,54 +182,43 @@ export const StoriesPage: React.FC = () => {
                 className="flex flex-col justify-between gap-4 bg-app-surface border border-app-border hover:border-app-border-strong transition-all shadow-1"
               >
                 <div className="space-y-3">
-                  {/* Category Pill & Date */}
+                  {/* Category Pill & City Badge */}
                   <div className="flex items-center justify-between text-[11px] gap-2 flex-wrap">
                     <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-pill font-semibold ${
-                        isDeaf
-                          ? 'bg-app-primary-soft text-app-primary-strong'
-                          : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
-                      }`}
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-pill font-semibold ${badgeClass}`}
                     >
-                      {isDeaf
-                        ? t('stories.verifiedCommunity', 'Cas illustratif — Communauté sourde')
-                        : t('stories.healthcarePartner', 'Cas illustratif — Professionnel de santé')}
+                      {badgeLabel}
                     </span>
-                    <span className="text-app-muted font-mono">{story.date}</span>
+                    <span className="inline-flex items-center gap-1 text-[11px] text-app-muted font-medium">
+                      <MapPin className="w-3.5 h-3.5 text-app-primary-strong shrink-0" />
+                      <bdi>{story.location}</bdi>
+                    </span>
                   </div>
 
-                  {/* Scenario Title */}
-                  <h3 className="font-bold text-sm text-app-text">
-                    {story.scenarioTitle[currentLang] || story.scenarioTitle.fr}
+                  {/* Testimonial Title */}
+                  <h3 className="font-bold text-sm sm:text-base text-app-text text-start">
+                    {story.title[currentLang] || story.title.en}
                   </h3>
 
-                  {/* Illustrated Situation with quote styling */}
+                  {/* Situation with quote styling */}
                   <div className="relative pt-1">
                     <Quote className="w-5 h-5 text-app-primary-strong/20 absolute -top-1 -start-1 rtl:-scale-x-100" />
-                    <p className="text-xs sm:text-sm text-app-text leading-relaxed italic relative z-10 ps-3">
-                      « {story.quote[currentLang] || story.quote.fr} »
+                    <p className="text-xs sm:text-sm text-app-text leading-relaxed italic relative z-10 ps-3 text-start">
+                      {story.quote[currentLang] || story.quote.en}
                     </p>
-                  </div>
-
-                  {/* Context Note */}
-                  <div className="p-2.5 rounded-control bg-app-surface-2 text-[11px] text-app-muted leading-relaxed">
-                    {story.details[currentLang] || story.details.fr}
                   </div>
                 </div>
 
-                {/* Author Info */}
+                {/* Role and City Footer */}
                 <div className="pt-3 border-t border-app-border flex items-center justify-between text-xs gap-2">
                   <div className="min-w-0">
                     <span className="font-semibold text-app-text block truncate">
-                      {story.author}
+                      {story.role[currentLang] || story.role.en}
                     </span>
-                    <p className="text-[11px] text-app-muted truncate">
-                      {story.role[currentLang] || story.role.fr}
-                    </p>
                   </div>
                   <div className="flex items-center gap-1 text-[11px] text-app-muted shrink-0">
-                    <MapPin className="w-3 h-3 text-app-primary-strong shrink-0" />
-                    <span>{story.location}</span>
+                    <MapPin className="w-3.5 h-3.5 text-app-primary-strong shrink-0" />
+                    <bdi>{story.location}</bdi>
                   </div>
                 </div>
               </Card>

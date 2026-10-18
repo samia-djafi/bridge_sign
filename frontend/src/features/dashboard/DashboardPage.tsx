@@ -24,6 +24,7 @@ import {
   ChevronLeft,
   MessageSquarePlus,
   Send,
+  MapPin,
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/time';
 
@@ -602,17 +603,24 @@ export const DashboardPage: React.FC = () => {
                 <div className="space-y-3 pt-1">
                   <div className="relative">
                     <Quote className="w-5 h-5 text-app-primary-strong/20 absolute -top-1 -start-1 rtl:-scale-x-100" />
-                    <p className="text-xs text-app-text italic ps-3 leading-relaxed">
-                      « {currentStory.quote[currentLang] || currentStory.quote.fr} »
+                    <p className="text-xs text-app-text italic ps-3 leading-relaxed text-start">
+                      {currentStory.quote[currentLang] || currentStory.quote.en}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-app-border flex items-center justify-between text-[11px]">
-                    <div>
-                      <span className="font-bold text-app-text block">{currentStory.author}</span>
-                      <span className="text-app-muted">{currentStory.role[currentLang] || currentStory.role.fr}</span>
+                  <div className="pt-2 border-t border-app-border flex items-center justify-between text-[11px] gap-2">
+                    <div className="min-w-0">
+                      <span className="font-bold text-app-text block truncate">
+                        {currentStory.title[currentLang] || currentStory.title.en}
+                      </span>
+                      <span className="text-app-muted truncate block">
+                        {currentStory.role[currentLang] || currentStory.role.en}
+                      </span>
                     </div>
-                    <span className="text-[10px] text-app-muted font-mono">{currentStory.date}</span>
+                    <div className="flex items-center gap-1 text-[11px] text-app-muted shrink-0">
+                      <MapPin className="w-3.5 h-3.5 text-app-primary-strong shrink-0" />
+                      <bdi>{currentStory.location}</bdi>
+                    </div>
                   </div>
                 </div>
               ) : (
