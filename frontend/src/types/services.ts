@@ -5,6 +5,7 @@ import {
   LandmarkFrame,
   ModelMetrics,
   Phrase,
+  VocabularyItem,
   RecognitionResult,
   SignClip,
   SpokenLang,
@@ -90,6 +91,8 @@ export interface SessionRepository {
 export interface PhrasebookService {
   list(): Promise<Phrase[]>;
   search(query: string, filters?: { category?: string; context?: string }): Promise<Phrase[]>;
+  listVocabulary(): Promise<VocabularyItem[]>;
+  searchVocabulary(query: string, filters?: { category?: string }): Promise<VocabularyItem[]>;
   toggleFavorite(phraseId: string): Promise<boolean>;
   isFavorite(phraseId: string): Promise<boolean>;
   getFavorites(): Promise<string[]>;
