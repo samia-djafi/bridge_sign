@@ -407,7 +407,7 @@ export const OnboardingPage: React.FC = () => {
                     {t('mode.twoWay', 'Two-way conversation')}
                   </h3>
                   <Badge variant="demo" size="sm">
-                    {t('onboarding.granted', 'Recommended')}
+                    {t('dash.recommended', 'Recommended')}
                   </Badge>
                 </div>
                 <p className="text-xs text-app-muted leading-relaxed">
