@@ -82,7 +82,7 @@ export const HistoryPage: React.FC = () => {
               {t('history.title', 'Historique des conversations')}
             </h2>
             <p className="text-sm text-app-muted mt-1">
-              Retrouvez et réécoutez vos échanges précédents.
+              {t('history.subtitle', 'Review and listen to your previous conversations.')}
             </p>
           </div>
           {sessions.length > 0 && (
