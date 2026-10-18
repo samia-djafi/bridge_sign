@@ -18,6 +18,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       tooltip,
       flipRtl = false,
       className = '',
+      type = 'button',
       ...props
     },
     ref
@@ -41,11 +42,12 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       <div className="relative inline-flex items-center justify-center">
         <button
           ref={ref}
+          type={type}
           aria-label={ariaLabel}
-          onMouseEnter={() => setShowTooltip(true)}
-          onMouseLeave={() => setShowTooltip(false)}
-          onFocus={() => setShowTooltip(true)}
-          onBlur={() => setShowTooltip(false)}
+          onMouseEnter={() => tooltip && setShowTooltip(true)}
+          onMouseLeave={() => tooltip && setShowTooltip(false)}
+          onFocus={() => tooltip && setShowTooltip(true)}
+          onBlur={() => tooltip && setShowTooltip(false)}
           className={`inline-flex items-center justify-center rounded-control transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none ${sizeStyles} ${variantStyles} ${flipRtl ? 'rtl:-scale-x-100' : ''} ${className}`}
           {...props}
         >

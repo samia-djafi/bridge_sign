@@ -133,8 +133,9 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
               onClick={() => {
                 setSearchQuery('');
                 setIsSearchOpen(false);
+                searchInputRef.current?.focus();
               }}
-              className="absolute end-3 p-0.5 text-app-muted hover:text-app-text"
+              className="absolute end-3 p-0.5 text-app-muted hover:text-app-text transition-colors"
               aria-label={t('topNav.clearAria', 'Effacer')}
             >
               <X className="w-4 h-4" />
@@ -284,8 +285,11 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
             {searchQuery && (
               <button
                 type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute end-2.5 p-1 text-app-muted hover:text-app-text"
+                onClick={() => {
+                  setSearchQuery('');
+                  mobileSearchInputRef.current?.focus();
+                }}
+                className="absolute end-2.5 p-1 text-app-muted hover:text-app-text transition-colors"
                 aria-label={t('topNav.clearAria', 'Effacer la recherche')}
               >
                 <X className="w-4 h-4" />
