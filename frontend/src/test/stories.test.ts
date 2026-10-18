@@ -164,5 +164,64 @@ describe('Google Forms Feedback Integration', () => {
     const parsedUrl4 = new URL(url4);
     expect(parsedUrl4.searchParams.get(FORM_ENTRY_IDS.profile)).toBe('Healthcare professional');
   });
+
+  it('submits feedback directly in the background without opening window or redirecting', async () => {
+    const {
+      submitFeedbackDirectly,
+      GOOGLE_FORM_RESPONSE_URL,
+      FORM_ENTRY_IDS,
+    } = await import('@/features/stories/StoriesPage');
+
+    expect(GOOGLE_FORM_RESPONSE_URL).toContain('/formResponse');
+
+    const openSpy = vi.spyOn(window, 'open');
+    const fetchSpy = vi.fn().mockResolvedValue({ status: 0, type: 'opaque' });
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = fetchSpy;
+
+    try {
+      const res = await submitFeedbackDirectly({
+        name: 'Fatima',
+        profile: 'healthcare',
+        feedback: 'Excellent assistance at the pharmacy!',
+        contact: 'fatima@pharmacie.dz',
+      });
+
+      expect(res.success).toBe(true);
+
+      // Verify that window.open was NEVER called!
+      expect(openSpy).not.toHaveBeenCalled();
+
+      // Verify that fetch was called with background POST and no-cors
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      const [calledUrl, calledInit] = fetchSpy.mock.calls[0]!;
+      expect(calledUrl).toBe(GOOGLE_FORM_RESPONSE_URL);
+      expect(calledInit.method).toBe('POST');
+      expect(calledInit.mode).toBe('no-cors');
+      expect(calledInit.headers['Content-Type']).toBe('application/x-www-form-urlencoded');
+
+      const bodyParams = new URLSearchParams(calledInit.body);
+      expect(bodyParams.get(FORM_ENTRY_IDS.name)).toBe('Fatima');
+      expect(bodyParams.get(FORM_ENTRY_IDS.profile)).toBe('Healthcare professional');
+      expect(bodyParams.get(FORM_ENTRY_IDS.feedback)).toBe('Excellent assistance at the pharmacy!');
+      expect(bodyParams.get(FORM_ENTRY_IDS.contact)).toBe('fatima@pharmacie.dz');
+      expect(bodyParams.get('fvv')).toBe('1');
+      expect(bodyParams.get('pageHistory')).toBe('0');
+    } finally {
+      globalThis.fetch = originalFetch;
+      openSpy.mockRestore();
+    }
+  });
+
+  it('validates empty feedback and throws error', async () => {
+    const { submitFeedbackDirectly } = await import('@/features/stories/StoriesPage');
+
+    await expect(
+      submitFeedbackDirectly({
+        profile: 'deaf',
+        feedback: '   ',
+      })
+    ).rejects.toThrow('FEEDBACK_EMPTY');
+  });
 });
 
