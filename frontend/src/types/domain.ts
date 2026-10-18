@@ -100,14 +100,40 @@ export interface ConversationSession {
   activeMs: number;
 }
 
+export type PhraseCategory =
+  | 'pharmacy_medical'
+  | 'emergency'
+  | 'everyday'
+  | 'health_access'
+  | 'symptoms'
+  | 'medication'
+  | 'appointment';
+
 export interface Phrase {
   id: string;
-  category: 'symptoms' | 'medication' | 'appointment' | 'emergency' | 'everyday';
+  category: PhraseCategory;
   text: Translation;
   gloss: string[];
   contexts: ContextId[];
   emergency?: boolean;
 }
+
+export type VocabularyCategory =
+  | 'body_parts'
+  | 'symptoms'
+  | 'pharmacy_medicines'
+  | 'medical_places'
+  | 'everyday_needs'
+  | 'communication'
+  | 'urgency';
+
+export interface VocabularyItem {
+  id: string;
+  category: VocabularyCategory;
+  text: Translation;
+  gloss?: string;
+}
+
 
 export interface ModelMetrics {
   fps: number;
