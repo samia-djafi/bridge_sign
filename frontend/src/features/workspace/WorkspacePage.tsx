@@ -113,11 +113,11 @@ export const WorkspacePage: React.FC = () => {
     if (!sessionId) return;
     loadSession(sessionId).then((found) => {
       if (!found) {
-        addToast({ message: 'Conversation introuvable', type: 'alert' });
+        addToast({ message: t('workspace.conversationNotFound', 'Conversation introuvable'), type: 'alert' });
         navigate('/app/history');
       }
     });
-  }, [sessionId, loadSession, navigate, addToast]);
+  }, [sessionId, loadSession, navigate, addToast, t]);
 
   // Load context phrases for quick suggestions
   useEffect(() => {
@@ -292,10 +292,10 @@ export const WorkspacePage: React.FC = () => {
         e.preventDefault();
         if (camera.status === 'active') {
           camera.stopCamera();
-          addToast({ message: 'Caméra désactivée (Espace)', type: 'status' });
+          addToast({ message: t('workspace.camDisabledToast', 'Caméra désactivée (Espace)'), type: 'status' });
         } else {
           camera.startCamera();
-          addToast({ message: 'Caméra activée (Espace)', type: 'status' });
+          addToast({ message: t('workspace.camEnabledToast', 'Caméra activée (Espace)'), type: 'status' });
         }
         return;
       }
@@ -306,14 +306,14 @@ export const WorkspacePage: React.FC = () => {
         if (k === 'e') {
           e.preventDefault();
           setEmergencySheetOpen(true);
-          addToast({ message: 'Phrases d’urgence (Alt+E)', type: 'status' });
+          addToast({ message: t('workspace.emergencyToast', 'Phrases d’urgence (Alt+E)'), type: 'status' });
         } else if (k === 'm') {
           e.preventDefault();
           toggleSpeechRecognition();
         } else if (k === 'p') {
           e.preventDefault();
           setPrivacySheetOpen(true);
-          addToast({ message: 'Confidentialité & Aide (Alt+P)', type: 'status' });
+          addToast({ message: t('workspace.privacyToast', 'Confidentialité & Aide (Alt+P)'), type: 'status' });
         } else if (k === 'r') {
           e.preventDefault();
           setPhrasePickerOpen((prev) => !prev);
@@ -428,7 +428,7 @@ export const WorkspacePage: React.FC = () => {
   };
 
   if (!currentSession) {
-    return <div className="p-8 text-center text-app-muted">Chargement de la session…</div>;
+    return <div className="p-8 text-center text-app-muted">{t('workspace.loadingSession', 'Chargement de la session…')}</div>;
   }
 
   const role = settings.role;
@@ -450,7 +450,7 @@ export const WorkspacePage: React.FC = () => {
             }}
             iconStart={<ArrowLeft className="w-4 h-4 rtl:-scale-x-100" />}
           >
-            <span className="hidden sm:inline">Accueil</span>
+            <span className="hidden sm:inline">{t('workspace.homeNav', 'Accueil')}</span>
           </Button>
 
           <div className="flex items-center gap-2 truncate">
@@ -598,7 +598,7 @@ export const WorkspacePage: React.FC = () => {
               value: 'conversation',
               label: (
                 <span className="flex items-center gap-1">
-                  <span>Discussion</span>
+                  <span>{t('workspace.discussionTab', 'Discussion')}</span>
                   {unreadMessages && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
                 </span>
               ),
@@ -630,7 +630,7 @@ export const WorkspacePage: React.FC = () => {
                       {t('mode.signToLang', 'Sign to Text (Algerian Sign Language)')}
                     </h3>
                     <span className="text-[10px] text-amber-700 dark:text-amber-400 font-medium">
-                      AI Model in Active Development · Research Prototype
+                      {t('workspace.aiProtoDisclaimer', 'AI Model in Active Development · Research Prototype')}
                     </span>
                   </div>
                 </div>
@@ -1054,7 +1054,7 @@ export const WorkspacePage: React.FC = () => {
       <Sheet
         isOpen={phrasePickerOpen}
         onClose={() => setPhrasePickerOpen(false)}
-        title="Sélectionner une phrase rapide"
+        title={t('workspace.phrasePickerTitle', 'Sélectionner une phrase rapide')}
         maxWidth="lg"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1076,12 +1076,12 @@ export const WorkspacePage: React.FC = () => {
       <Modal
         isOpen={endConfirmOpen}
         onClose={() => setEndConfirmOpen(false)}
-        title="Terminer la conversation ?"
+        title={t('workspace.endModalTitle', 'Terminer la conversation ?')}
         maxWidth="sm"
         footer={
           <>
             <Button variant="ghost" onClick={() => setEndConfirmOpen(false)}>
-              Continuer
+              {t('workspace.endModalContinue', 'Continuer')}
             </Button>
             <Button
               variant="destructive"
@@ -1089,18 +1089,17 @@ export const WorkspacePage: React.FC = () => {
                 setEndConfirmOpen(false);
                 camera.stopCamera();
                 await endSession();
-                addToast({ message: 'Conversation terminée et enregistrée', type: 'status' });
+                addToast({ message: t('workspace.sessionEndedToast', 'Conversation terminée et enregistrée'), type: 'status' });
                 navigate(`/app/history/${sessionId}`);
               }}
             >
-              Terminer la session
+              {t('workspace.endModalConfirm', 'Terminer la session')}
             </Button>
           </>
         }
       >
         <p className="text-sm text-app-muted leading-relaxed">
-          La session sera clôturée et sauvegardée dans votre Historique local. Vous pourrez la relire
-          et l’exporter à tout moment.
+          {t('workspace.endModalDesc', 'La session sera clôturée et sauvegardée dans votre Historique local. Vous pourrez la relire et l’exporter à tout moment.')}
         </p>
       </Modal>
 
