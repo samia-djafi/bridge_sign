@@ -48,7 +48,7 @@ export const PhraseCard: React.FC<PhraseCardProps> = ({
             </span>
           ) : (
             <span className="text-xs uppercase font-semibold text-app-muted tracking-wider">
-              {phrase.category}
+              {t(`phrasebook.categoryBadge.${phrase.category}`, phrase.category)}
             </span>
           )}
         </div>
