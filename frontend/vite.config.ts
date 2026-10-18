@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'icons/*.png'],
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icons/*.png'],
       manifest: {
         name: 'BridgeSign',
         short_name: 'BridgeSign',
