@@ -248,7 +248,7 @@ export const SettingsPage: React.FC = () => {
           <div>
             <h2 className="text-2xl font-extrabold text-app-text">{t('nav.settings', 'Paramètres')}</h2>
             <p className="text-xs text-app-muted mt-0.5">
-              Préférences d'accessibilité, capteurs et intelligence artificielle.
+              {t('settings.subtitle', 'Accessibility, sensor, and artificial intelligence preferences.')}
             </p>
           </div>
 
@@ -265,7 +265,7 @@ export const SettingsPage: React.FC = () => {
         {/* Two-column layout on desktop: Tab nav on left, settings content on right */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Tab Navigation */}
-          <nav aria-label="Catégories des paramètres" className="flex md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0">
+          <nav aria-label={t('settings.navAria', 'Settings categories')} className="flex md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0">
             {[
               { id: 'profile', label: t('settings.tabs.profile', 'Profil'), icon: <User className="w-4 h-4" /> },
               { id: 'language', label: t('settings.tabs.language', 'Langue'), icon: <Globe className="w-4 h-4" /> },
@@ -408,9 +408,9 @@ export const SettingsPage: React.FC = () => {
                         triggerSaved();
                       }}
                       options={[
-                        { value: '100', label: '100% (Standard)' },
-                        { value: '125', label: '125% (Grand)' },
-                        { value: '150', label: '150% (Très grand)' },
+                        { value: '100', label: t('settings.scale100', '100% (Standard)') },
+                        { value: '125', label: t('settings.scale125', '125% (Large)') },
+                        { value: '150', label: t('settings.scale150', '150% (Extra Large)') },
                       ]}
                       className="w-full"
                     />
@@ -427,9 +427,9 @@ export const SettingsPage: React.FC = () => {
                         triggerSaved();
                       }}
                       options={[
-                        { value: 'system', label: 'Système' },
-                        { value: 'off', label: 'Animations activées' },
-                        { value: 'on', label: 'Animations réduites' },
+                        { value: 'system', label: t('settings.motionSystem', 'System') },
+                        { value: 'off', label: t('settings.motionOff', 'Animations enabled') },
+                        { value: 'on', label: t('settings.motionOn', 'Animations reduced') },
                       ]}
                       className="w-full"
                     />
@@ -630,7 +630,7 @@ export const SettingsPage: React.FC = () => {
                     <div>
                       <h4 className="font-bold text-sm text-app-text">{t('settings.micTest', 'Test microphone')}</h4>
                       <p className="text-xs text-app-muted mt-0.5">
-                        Testez le microphone et observez le volume audio capté en direct.
+                        {t('settings.micTestDesc', 'Test the microphone and monitor captured input volume in real time.')}
                       </p>
                     </div>
 
@@ -702,8 +702,8 @@ export const SettingsPage: React.FC = () => {
                         triggerSaved();
                       }}
                       options={[
-                        { value: 'mock', label: 'Mode Démo (Simulation locale)' },
-                        { value: 'http', label: 'Serveur HTTP direct (Live backend)' },
+                        { value: 'mock', label: t('settings.adapterDemo', 'Demo Mode (Local simulation)') },
+                        { value: 'http', label: t('settings.adapterHttp', 'Direct HTTP Server (Live backend)') },
                       ]}
                       className="w-full"
                     />
