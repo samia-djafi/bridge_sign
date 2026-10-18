@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '@/stores/sessionStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { SessionMode } from '@/types/domain';
 import { Loader } from 'lucide-react';
 
 export const SingleModePage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { startSession } = useSessionStore();
@@ -39,7 +41,7 @@ export const SingleModePage: React.FC = () => {
     <div className="flex flex-col min-h-full">
       <div className="flex-1 flex flex-col items-center justify-center p-8 space-y-3 text-app-muted">
         <Loader className="w-8 h-8 animate-spin text-app-primary-strong" />
-        <p className="text-sm font-medium">Ouverture du mode ciblé…</p>
+        <p className="text-sm font-medium">{t('singleMode.loading', 'Opening focused mode…')}</p>
       </div>
     </div>
   );
