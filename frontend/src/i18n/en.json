@@ -281,26 +281,57 @@
     "glossLabel": "LSA Gloss:"
   },
   "phrasebook": {
-    "title": "Quick phrases",
-    "subtitle": "Common phrases for everyday communication.",
-    "searchPlaceholder": "Search phrase or sign…",
+    "title": "Quick Phrases & Essential Vocabulary",
+    "subtitle": "Practical communication for pharmacy, medical, emergency, and everyday interactions.",
+    "searchPlaceholder": "Search a phrase or sign… (Press / to search)",
+    "searchVocabPlaceholder": "Search an essential vocabulary word… (Press / to search)",
     "filterAll": "All",
+    "filterPharmacyMedical": "Pharmacy & Medical",
     "filterSymptoms": "Symptoms",
     "filterMedication": "Medication",
     "filterAppointment": "Appointments",
     "filterEmergency": "Emergency",
     "filterEveryday": "Everyday",
+    "filterHealthAccess": "Health & Accessibility",
     "filterFavorites": "Favorites",
     "allContexts": "All contexts",
     "emptySearch": "No phrases found.",
+    "emptyVocabSearch": "No vocabulary words found.",
+    "emptySearchDesc": "Try a different search term or change the selected category.",
     "clearFilters": "Clear filters",
     "sendAction": "Send to conversation",
     "playAction": "View in LSA",
     "speakAction": "Listen",
     "phraseCount": "{{count}} phrases available",
-    "emptySearchDesc": "Try a different search term or change the selected category.",
+    "vocabCount": "{{count}} vocabulary words available",
     "lsaSequenceTitle": "LSA Sequence",
-    "glossPrefix": "Gloss:"
+    "glossPrefix": "Gloss:",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove favorite",
+    "audioVoiceUnavailable": "No speech voice installed for this language on your device.",
+    "audioError": "Audio playback failed.",
+    "tabs": {
+      "phrases": "Phrases ({{count}})",
+      "vocabulary": "Vocabulary ({{count}})"
+    },
+    "categoryBadge": {
+      "pharmacy_medical": "Pharmacy & Medical",
+      "emergency": "Emergency",
+      "everyday": "Everyday",
+      "health_access": "Health & Access",
+      "symptoms": "Symptoms",
+      "medication": "Medication",
+      "appointment": "Appointment"
+    },
+    "vocabCategory": {
+      "body_parts": "Body Parts",
+      "symptoms": "Symptoms",
+      "pharmacy_medicines": "Medicines & Pharmacy",
+      "medical_places": "Medical Places & Staff",
+      "everyday_needs": "Everyday Needs",
+      "communication": "Communication",
+      "urgency": "Urgency"
+    }
   },
   "history": {
     "title": "Conversation history",
@@ -617,7 +648,15 @@
     "exportLocalNotesBtn": "Export previous notes",
     "hidePreviousNotes": "Hide previous notes",
     "showPreviousNotes": "View previous saved notes",
-    "externalFormDisclaimer": "Note: Opening Google Forms does not automatically submit your feedback. You must click Submit in Google Forms."
+    "externalFormDisclaimer": "Note: Opening Google Forms does not automatically submit your feedback. You must click Submit in Google Forms.",
+    "submittingFeedback": "Sending feedback...",
+    "feedbackSuccessTitle": "Thank you for your feedback!",
+    "feedbackSuccessDesc": "Your feedback has been received and directly submitted to the BridgeSign team.",
+    "feedbackErrorTitle": "Submission could not be completed",
+    "feedbackErrorDesc": "Submission could not be completed. Please check your internet connection and try again.",
+    "feedbackOfflineError": "You appear to be offline. Please check your internet connection and try again.",
+    "sendAnotherFeedback": "Send another feedback",
+    "directSubmissionNotice": "Your feedback is submitted directly to our team in the background."
   },
   "err": {
     "outOfVocab": "This phrase is outside the current MVP vocabulary.",
