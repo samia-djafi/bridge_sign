@@ -4,28 +4,134 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { STORIES } from '@/data/stories';
+import { downloadFile } from '@/lib/download';
 import {
   HeartHandshake,
   ShieldCheck,
   Quote,
   MapPin,
-  Save,
   MessageSquare,
   Sparkles,
-  CheckCircle2,
   Trash2,
   Info,
+  ChevronDown,
+  ChevronUp,
+  Download,
+  AlertCircle,
+  FileText,
+  CheckCircle2,
+  Loader2,
+  Send,
 } from 'lucide-react';
 
 interface LocalFeedbackEntry {
   id: string;
   authorName: string;
-  authorRole: 'deaf' | 'healthcare' | 'supporter';
+  authorRole: 'deaf' | 'family' | 'healthcare' | 'other' | 'supporter';
   message: string;
+  contact?: string;
   createdAt: number;
 }
 
 const LOCAL_FEEDBACK_KEY = 'bridgesign-local-feedback';
+
+// Google Form constants
+export const GOOGLE_FORM_VIEW_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSeMpIBUVY6hPLnryGdDBlT1ocNUVaYx4-Ss59wRw9qDZGJo-g/viewform';
+export const GOOGLE_FORM_SHORT_URL = 'https://forms.gle/ecHfLfLVqgFRW8Bw9';
+export const GOOGLE_FORM_RESPONSE_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSeMpIBUVY6hPLnryGdDBlT1ocNUVaYx4-Ss59wRw9qDZGJo-g/formResponse';
+
+export const FORM_ENTRY_IDS = {
+  name: 'entry.380116650',
+  profile: 'entry.1143297058',
+  feedback: 'entry.1482854505',
+  contact: 'entry.1478387733',
+} as const;
+
+export const PROFILE_FORM_VALUES: Record<'deaf' | 'family' | 'healthcare' | 'other', string> = {
+  deaf: 'Deaf or hard of hearing person',
+  family: 'Family member or friend',
+  healthcare: 'Healthcare professional',
+  other: 'Someone else',
+};
+
+export interface FeedbackSubmissionData {
+  name?: string;
+  profile: 'deaf' | 'family' | 'healthcare' | 'other';
+  feedback: string;
+  contact?: string;
+}
+
+export async function submitFeedbackDirectly(
+  data: FeedbackSubmissionData
+): Promise<{ success: boolean }> {
+  const trimmedFeedback = data.feedback ? data.feedback.trim() : '';
+  if (!trimmedFeedback) {
+    throw new Error('FEEDBACK_EMPTY');
+  }
+
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    throw new Error('NETWORK_OFFLINE');
+  }
+
+  const formProfileValue = PROFILE_FORM_VALUES[data.profile] || 'Someone else';
+
+  const formData = new URLSearchParams();
+  if (data.name && data.name.trim()) {
+    formData.append(FORM_ENTRY_IDS.name, data.name.trim());
+  }
+  formData.append(FORM_ENTRY_IDS.profile, formProfileValue);
+  formData.append(FORM_ENTRY_IDS.feedback, trimmedFeedback);
+  if (data.contact && data.contact.trim()) {
+    formData.append(FORM_ENTRY_IDS.contact, data.contact.trim());
+  }
+  formData.append('fvv', '1');
+  formData.append('pageHistory', '0');
+
+  // Submit in the background directly without opening Google Forms or redirecting the user
+  await fetch(GOOGLE_FORM_RESPONSE_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: formData.toString(),
+  });
+
+  return { success: true };
+}
+
+export function buildGoogleFormsUrl(data: {
+  name?: string;
+  profile: 'deaf' | 'family' | 'healthcare' | 'other';
+  feedback: string;
+  contact?: string;
+}): string {
+  try {
+    const params = new URLSearchParams();
+    params.append('usp', 'pp_url');
+
+    if (data.name && data.name.trim()) {
+      params.append(FORM_ENTRY_IDS.name, data.name.trim());
+    }
+
+    const formProfileValue = PROFILE_FORM_VALUES[data.profile] || 'Someone else';
+    params.append(FORM_ENTRY_IDS.profile, formProfileValue);
+
+    if (data.feedback && data.feedback.trim()) {
+      params.append(FORM_ENTRY_IDS.feedback, data.feedback.trim());
+    }
+
+    if (data.contact && data.contact.trim()) {
+      params.append(FORM_ENTRY_IDS.contact, data.contact.trim());
+    }
+
+    return `${GOOGLE_FORM_VIEW_URL}?${params.toString()}`;
+  } catch {
+    return GOOGLE_FORM_SHORT_URL;
+  }
+}
 
 export const StoriesPage: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -35,16 +141,21 @@ export const StoriesPage: React.FC = () => {
     | 'ar';
 
   const [shareModalOpen, setShareModalOpen] = useState(false);
-  const [modalTab, setModalTab] = useState<'form' | 'list'>('form');
-  const [savedFeedbacks, setSavedFeedbacks] = useState<LocalFeedbackEntry[]>([]);
-  const [saveSuccess, setSaveSuccess] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const [modalState, setModalState] = useState<'form' | 'success'>('form');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
 
+  // Form Fields
   const [authorName, setAuthorName] = useState('');
-  const [authorRole, setAuthorRole] = useState<'deaf' | 'healthcare' | 'supporter'>('deaf');
+  const [authorRole, setAuthorRole] = useState<'deaf' | 'family' | 'healthcare' | 'other'>('deaf');
   const [authorMessage, setAuthorMessage] = useState('');
+  const [authorContact, setAuthorContact] = useState('');
 
-  // Load saved local feedback on mount
+  // Previous local notes (preserved from earlier versions)
+  const [savedFeedbacks, setSavedFeedbacks] = useState<LocalFeedbackEntry[]>([]);
+  const [showPreviousNotes, setShowPreviousNotes] = useState(false);
+
   useEffect(() => {
     document.title = `${t('nav.realStories', 'Real Stories')} | ${t('app.name', 'BridgeSign')}`;
     loadLocalFeedback();
@@ -60,34 +171,7 @@ export const StoriesPage: React.FC = () => {
         }
       }
     } catch {
-      // ignore local storage read errors
-    }
-  };
-
-  const handleSubmitFeedback = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!authorMessage.trim()) return;
-
-    setSaveError(null);
-    try {
-      const newEntry: LocalFeedbackEntry = {
-        id: `fb-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        authorName: authorName.trim() || 'Anonyme',
-        authorRole,
-        message: authorMessage.trim(),
-        createdAt: Date.now(),
-      };
-
-      const updated = [newEntry, ...savedFeedbacks];
-      localStorage.setItem(LOCAL_FEEDBACK_KEY, JSON.stringify(updated));
-      setSavedFeedbacks(updated);
-      setSaveSuccess(true);
-      setAuthorName('');
-      setAuthorMessage('');
-    } catch (err) {
-      setSaveError(
-        t('stories.saveLocalError', 'Impossible d’enregistrer la note localement (mémoire de stockage saturée ou désactivée).')
-      );
+      // ignore storage errors
     }
   };
 
@@ -101,8 +185,95 @@ export const StoriesPage: React.FC = () => {
     }
   };
 
+  const handleExportPreviousNotes = () => {
+    if (savedFeedbacks.length === 0) return;
+    const content = JSON.stringify(savedFeedbacks, null, 2);
+    downloadFile(
+      `bridgesign_saved_notes_${new Date().toISOString().slice(0, 10)}.json`,
+      content,
+      'application/json'
+    );
+  };
+
+  const handleSendFeedback = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    const trimmedMessage = authorMessage.trim();
+
+    if (!trimmedMessage) {
+      setValidationError(
+        t('stories.feedbackRequiredError', 'Please enter your suggestion or feedback before sending.')
+      );
+      return;
+    }
+
+    setValidationError(null);
+    setSubmissionError(null);
+    setIsSubmitting(true);
+
+    try {
+      await submitFeedbackDirectly({
+        name: authorName,
+        profile: authorRole,
+        feedback: trimmedMessage,
+        contact: authorContact,
+      });
+
+      // Archive a local record for user reference
+      const newEntry: LocalFeedbackEntry = {
+        id: `fb_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        authorName: authorName.trim() || t('stories.profileDeaf', 'Anonymous'),
+        authorRole,
+        message: trimmedMessage,
+        contact: authorContact.trim() || undefined,
+        createdAt: Date.now(),
+      };
+      const updatedList = [newEntry, ...savedFeedbacks];
+      setSavedFeedbacks(updatedList);
+      try {
+        localStorage.setItem(LOCAL_FEEDBACK_KEY, JSON.stringify(updatedList));
+      } catch {
+        // ignore storage quota errors
+      }
+
+      // Reset form fields
+      setAuthorName('');
+      setAuthorMessage('');
+      setAuthorContact('');
+      setModalState('success');
+    } catch (err: any) {
+      console.error('[Feedback] Submission error:', err);
+      if (err?.message === 'NETWORK_OFFLINE') {
+        setSubmissionError(
+          t(
+            'stories.feedbackOfflineError',
+            'You appear to be offline. Please check your internet connection and try again.'
+          )
+        );
+      } else {
+        setSubmissionError(
+          t(
+            'stories.feedbackErrorDesc',
+            'Submission could not be completed. Please check your internet connection and try again.'
+          )
+        );
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleOpenModal = () => {
+    setValidationError(null);
+    setSubmissionError(null);
+    setIsSubmitting(false);
+    setModalState('form');
+    setShareModalOpen(true);
+  };
+
   return (
-    <div className="flex flex-col min-h-full">
+    <div className="flex flex-col min-h-full bg-app-bg text-app-text">
       <div className="p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto space-y-6">
         {/* Header Hero */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-app-border">
@@ -127,14 +298,10 @@ export const StoriesPage: React.FC = () => {
             variant="primary"
             size="md"
             iconStart={<MessageSquare className="w-4 h-4" />}
-            onClick={() => {
-              setSaveSuccess(false);
-              setSaveError(null);
-              setShareModalOpen(true);
-            }}
+            onClick={handleOpenModal}
             className="shrink-0"
           >
-            {t('stories.shareCta', 'Enregistrer une suggestion locale')}
+            {t('stories.shareCta', 'Send feedback')}
           </Button>
         </div>
 
@@ -234,203 +401,266 @@ export const StoriesPage: React.FC = () => {
               <span>{t('stories.fieldTrialTitle', 'Vous souhaitez tester BridgeSign sur le terrain ?')}</span>
             </h3>
             <p className="text-xs text-app-muted max-w-xl">
-              {t('stories.fieldTrialDesc', 'Participez à nos essais pour adapter le vocabulaire médical et quotidien de la LSA aux besoins concrets des échanges en santé en Algérie.')}
+              {t(
+                'stories.fieldTrialDesc',
+                'Participez à nos essais pour adapter le vocabulaire médical et quotidien de la LSA aux besoins concrets des échanges en santé en Algérie.'
+              )}
             </p>
           </div>
           <Button
             variant="secondary"
             size="md"
-            onClick={() => {
-              setSaveSuccess(false);
-              setSaveError(null);
-              setShareModalOpen(true);
-            }}
+            onClick={handleOpenModal}
             className="shrink-0"
           >
-            {t('stories.fieldTrialBtn', 'Noter une suggestion')}
+            {t('stories.fieldTrialBtn', 'Send feedback')}
           </Button>
         </div>
       </div>
 
-      {/* Share / Local Feedback Modal */}
+      {/* Google Forms Feedback Modal */}
       <Modal
         isOpen={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
-        title={t('stories.feedbackTitle', 'Retours & suggestions (brouillon local)')}
+        title={t('stories.feedbackTitle', 'Feedback & Suggestions')}
         maxWidth="md"
       >
         <div className="space-y-4">
-          {/* Honest local storage banner */}
-          <div className="p-3 rounded-control bg-app-surface-2 border border-app-border flex items-start gap-2.5 text-xs text-app-muted leading-relaxed">
-            <Info className="w-4 h-4 text-app-primary-strong shrink-0 mt-0.5" />
-            <div>
-              <p className="font-semibold text-app-text">{t('stories.saveLocalBanner', 'Enregistrement local sur cet appareil')}</p>
-              <p className="mt-0.5">
-                {t(
-                  'stories.feedbackDesc',
-                  'Vos retours sont conservés uniquement sur cet appareil pour vos futures contributions. Aucune transmission à un serveur distant.'
-                )}
-              </p>
-            </div>
-          </div>
-
-          {/* Sub-tabs if saved entries exist */}
-          <div className="flex border-b border-app-border text-xs font-semibold">
-            <button
-              type="button"
-              onClick={() => {
-                setModalTab('form');
-                setSaveSuccess(false);
-              }}
-              className={`pb-2 px-3 border-b-2 transition-colors ${
-                modalTab === 'form'
-                  ? 'border-app-primary-strong text-app-primary-strong'
-                  : 'border-transparent text-app-muted hover:text-app-text'
-              }`}
-            >
-              {t('stories.newNoteTab', 'Nouvelle note')}
-            </button>
-            <button
-              type="button"
-              onClick={() => setModalTab('list')}
-              className={`pb-2 px-3 border-b-2 transition-colors flex items-center gap-1.5 ${
-                modalTab === 'list'
-                  ? 'border-app-primary-strong text-app-primary-strong'
-                  : 'border-transparent text-app-muted hover:text-app-text'
-              }`}
-            >
-              <span>{t('stories.myNotesTab', 'Mes notes locales')}</span>
-              <span className="px-1.5 py-0.2 rounded-pill bg-app-surface-2 text-[10px] font-mono">
-                {savedFeedbacks.length}
-              </span>
-            </button>
-          </div>
-
-          {modalTab === 'form' ? (
-            saveSuccess ? (
-              <div className="p-6 text-center space-y-3">
-                <CheckCircle2 className="w-12 h-12 text-app-success mx-auto" />
-                <p className="font-bold text-base text-app-text">
-                  {t('stories.localSavedSuccess', 'Note enregistrée localement avec succès !')}
+          {modalState === 'form' ? (
+            <>
+              {/* Direct Background Submission Information Banner */}
+              <div className="p-3.5 rounded-control bg-app-surface-2 border border-app-border flex items-start gap-2.5 text-xs text-app-muted leading-relaxed">
+                <Info className="w-4 h-4 text-app-primary-strong shrink-0 mt-0.5" />
+                <p className="font-medium text-app-text">
+                  {t(
+                    'stories.directSubmissionNotice',
+                    'Your feedback is submitted directly to our team in the background.'
+                  )}
                 </p>
-                <p className="text-xs text-app-muted leading-relaxed">
-                  {t('stories.localSavedSuccessDesc', 'Votre brouillon est sauvegardé dans le stockage local de ce navigateur. Il n’a pas été transmis à un serveur et reste accessible depuis cet appareil.')}
-                </p>
-                <div className="pt-2 flex justify-center gap-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      setSaveSuccess(false);
-                      setModalTab('list');
-                    }}
-                  >
-                    {t('stories.viewNotesBtn', { count: savedFeedbacks.length, defaultValue: `Voir mes notes (${savedFeedbacks.length})` })}
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => {
-                      setSaveSuccess(false);
-                    }}
-                  >
-                    {t('stories.addAnotherNoteBtn', 'Ajouter une autre note')}
-                  </Button>
-                </div>
               </div>
-            ) : (
-              <form onSubmit={handleSubmitFeedback} className="space-y-4 text-xs sm:text-sm">
-                {saveError && (
-                  <div className="p-2.5 rounded-control bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-app-error text-xs">
-                    {saveError}
+
+              {/* Feedback Form */}
+              <form onSubmit={handleSendFeedback} className="space-y-4 text-xs sm:text-sm">
+                {validationError && (
+                  <div
+                    role="alert"
+                    className="p-3 rounded-control bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-app-error text-xs flex items-center gap-2"
+                  >
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{validationError}</span>
                   </div>
                 )}
 
+                {submissionError && (
+                  <div
+                    role="alert"
+                    className="p-3 rounded-control bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-app-error text-xs flex items-center gap-2"
+                  >
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{submissionError}</span>
+                  </div>
+                )}
+
+                {/* 1. Name or Reference (Optional) */}
                 <div className="space-y-1.5">
-                  <label htmlFor="author-name" className="block text-xs font-semibold text-app-text">
-                    {t('stories.authorNameLabel', 'Nom ou référence (facultatif)')}
+                  <label htmlFor="feedback-author-name" className="block text-xs font-semibold text-app-text">
+                    {t('stories.authorNameLabel', 'Name or reference (optional)')}
                   </label>
                   <input
-                    id="author-name"
+                    id="feedback-author-name"
                     type="text"
+                    disabled={isSubmitting}
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    placeholder={t('stories.authorNamePlaceholder', 'Ex: Pharmacie El-Biar, Yasmine B.')}
-                    className="w-full h-10 px-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
+                    placeholder={t('stories.authorNamePlaceholder', 'e.g. El-Biar Pharmacy, Yasmine B.')}
+                    className="w-full h-10 px-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong disabled:opacity-50"
                   />
                 </div>
 
+                {/* 2. Your Profile (4 Options matching Google Form) */}
                 <div className="space-y-1.5">
-                  <label htmlFor="author-role" className="block text-xs font-semibold text-app-text">
-                    {t('stories.yourProfileLabel', 'Votre profil')}
+                  <label htmlFor="feedback-author-role" className="block text-xs font-semibold text-app-text">
+                    {t('stories.yourProfileLabel', 'Your profile')}
                   </label>
                   <select
-                    id="author-role"
+                    id="feedback-author-role"
+                    disabled={isSubmitting}
                     value={authorRole}
-                    onChange={(e) => setAuthorRole(e.target.value as any)}
-                    className="w-full h-10 px-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
+                    onChange={(e) =>
+                      setAuthorRole(e.target.value as 'deaf' | 'family' | 'healthcare' | 'other')
+                    }
+                    className="w-full h-10 px-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong disabled:opacity-50"
                   >
-                    <option value="deaf">{t('stories.profileDeaf', 'Personne sourde ou malentendante')}</option>
-                    <option value="healthcare">
-                      {t('stories.profileHealthcare', 'Professionnel de santé (pharmacien, médecin…)')}
+                    <option value="deaf">
+                      {t('stories.profileDeaf', 'Deaf or hard of hearing person')}
                     </option>
-                    <option value="supporter">{t('stories.profileSupporter', 'Proche aidant / Interprète')}</option>
+                    <option value="family">
+                      {t('stories.profileFamily', 'Family member or friend')}
+                    </option>
+                    <option value="healthcare">
+                      {t('stories.profileHealthcare', 'Healthcare professional')}
+                    </option>
+                    <option value="other">
+                      {t('stories.profileOther', 'Someone else')}
+                    </option>
                   </select>
                 </div>
 
+                {/* 3. Suggestion / Feedback (Required) */}
                 <div className="space-y-1.5">
-                  <label
-                    htmlFor="author-message"
-                    className="block text-xs font-semibold text-app-text"
-                  >
-                    {t('stories.suggestionLabel', "Votre suggestion ou retour d'expérience *")}
+                  <label htmlFor="feedback-author-message" className="block text-xs font-semibold text-app-text">
+                    {t('stories.suggestionLabel', 'Your suggestion or experience feedback *')}
                   </label>
                   <textarea
-                    id="author-message"
+                    id="feedback-author-message"
                     required
+                    disabled={isSubmitting}
                     rows={4}
                     value={authorMessage}
-                    onChange={(e) => setAuthorMessage(e.target.value)}
-                    placeholder={t('stories.suggestionPlaceholder', "Notez les signes manquants, les difficultés rencontrées ou les propositions d'amélioration…")}
-                    className="w-full p-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong resize-none"
+                    onChange={(e) => {
+                      setAuthorMessage(e.target.value);
+                      if (validationError) setValidationError(null);
+                      if (submissionError) setSubmissionError(null);
+                    }}
+                    placeholder={t(
+                      'stories.suggestionPlaceholder',
+                      'What worked, what was difficult, which signs are missing, or what should we improve?…'
+                    )}
+                    className="w-full p-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong resize-none disabled:opacity-50"
                   />
                 </div>
 
-                <div className="pt-2 flex justify-end gap-2">
+                {/* 4. Contact Information (Optional) */}
+                <div className="space-y-1.5">
+                  <label htmlFor="feedback-author-contact" className="block text-xs font-semibold text-app-text">
+                    {t('stories.contactLabel', 'Can we contact you about your feedback? (Optional)')}
+                  </label>
+                  <input
+                    id="feedback-author-contact"
+                    type="text"
+                    disabled={isSubmitting}
+                    value={authorContact}
+                    onChange={(e) => setAuthorContact(e.target.value)}
+                    placeholder={t(
+                      'stories.contactPlaceholder',
+                      'Email or another contact method. Leave blank if you prefer to remain anonymous.'
+                    )}
+                    className="w-full h-10 px-3 rounded-control border border-app-border bg-app-surface text-app-text text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong disabled:opacity-50"
+                  />
+                </div>
+
+                {/* Action Buttons */}
+                <div className="pt-2 flex items-center justify-end gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     type="button"
+                    disabled={isSubmitting}
                     onClick={() => setShareModalOpen(false)}
                   >
-                    {t('common.close', 'Fermer')}
+                    {t('common.cancel', 'Cancel')}
                   </Button>
                   <Button
                     variant="primary"
                     size="sm"
                     type="submit"
-                    iconStart={<Save className="w-3.5 h-3.5" />}
+                    disabled={isSubmitting}
+                    iconStart={
+                      isSubmitting ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Send className="w-3.5 h-3.5" />
+                      )
+                    }
                   >
-                    {t('stories.saveLocallyBtn', 'Enregistrer localement')}
+                    {isSubmitting
+                      ? t('stories.submittingFeedback', 'Sending feedback...')
+                      : t('stories.sendFeedbackBtn', 'Send feedback')}
                   </Button>
                 </div>
               </form>
-            )
+            </>
           ) : (
-            <div className="space-y-3">
-              {savedFeedbacks.length === 0 ? (
-                <div className="p-8 text-center text-xs text-app-muted space-y-2">
-                  <p>{t('stories.noNotesYet', 'Aucune note enregistrée pour le moment.')}</p>
-                  <Button variant="secondary" size="sm" onClick={() => setModalTab('form')}>
-                    {t('stories.createNoteBtn', 'Créer une note')}
-                  </Button>
-                </div>
-              ) : (
-                <div className="max-h-72 overflow-y-auto space-y-2.5 pe-1">
+            /* Success State: Confirmed programmatic background submission */
+            <div className="p-6 text-center space-y-4">
+              <div className="w-14 h-14 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/30 shadow-1">
+                <CheckCircle2 className="w-7 h-7" />
+              </div>
+
+              <div className="space-y-1.5">
+                <h3 className="font-extrabold text-base sm:text-lg text-app-text">
+                  {t('stories.feedbackSuccessTitle', 'Thank you for your feedback!')}
+                </h3>
+                <p className="text-xs sm:text-sm text-app-muted max-w-md mx-auto leading-relaxed">
+                  {t(
+                    'stories.feedbackSuccessDesc',
+                    'Your feedback has been received and directly submitted to the BridgeSign team.'
+                  )}
+                </p>
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2.5">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => {
+                    setValidationError(null);
+                    setSubmissionError(null);
+                    setModalState('form');
+                  }}
+                >
+                  {t('stories.sendAnotherFeedback', 'Send another feedback')}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShareModalOpen(false)}
+                >
+                  {t('common.close', 'Close')}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Preserved Local Notes Recovery Section (Shown only if user had notes from previous version) */}
+          {savedFeedbacks.length > 0 && (
+            <div className="pt-3 border-t border-app-border space-y-2">
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setShowPreviousNotes(!showPreviousNotes)}
+                  className="text-xs font-semibold text-app-muted hover:text-app-text flex items-center gap-1.5"
+                >
+                  <FileText className="w-3.5 h-3.5 text-app-primary-strong" />
+                  <span>
+                    {t('stories.previousNotesTitle', {
+                      count: savedFeedbacks.length,
+                      defaultValue: `Previous local notes (${savedFeedbacks.length})`,
+                    })}
+                  </span>
+                  {showPreviousNotes ? (
+                    <ChevronUp className="w-3.5 h-3.5" />
+                  ) : (
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleExportPreviousNotes}
+                  className="text-xs text-app-primary-strong hover:underline flex items-center gap-1 font-semibold"
+                >
+                  <Download className="w-3 h-3" />
+                  <span>{t('stories.exportLocalNotesBtn', 'Export previous notes')}</span>
+                </button>
+              </div>
+
+              {showPreviousNotes && (
+                <div className="max-h-56 overflow-y-auto space-y-2 pe-1 pt-1">
                   {savedFeedbacks.map((item) => (
                     <div
                       key={item.id}
-                      className="p-3 rounded-control bg-app-surface-2 border border-app-border text-xs space-y-1.5 relative group"
+                      className="p-3 rounded-control bg-app-surface-2 border border-app-border text-xs space-y-1 relative group"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-bold text-app-text">{item.authorName}</span>
@@ -442,7 +672,7 @@ export const StoriesPage: React.FC = () => {
                             type="button"
                             onClick={() => handleDeleteFeedback(item.id)}
                             className="text-app-muted hover:text-app-error p-1 rounded transition-colors"
-                            aria-label={t('stories.deleteNoteAria', 'Supprimer cette note')}
+                            aria-label={t('stories.deleteNoteAria', 'Delete this note')}
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
