@@ -60,7 +60,7 @@ export const AppShell: React.FC = () => {
 
       {/* Desktop / Tablet Sidebar (hidden on mobile < 768) */}
       <aside
-        aria-label="Navigation principale"
+        aria-label={t('nav.mainNavAria', 'Main navigation')}
         className="hidden md:flex flex-col justify-between w-18 lg:w-64 bg-app-surface border-e border-app-border shrink-0 select-none z-20"
       >
         {/* Top: Logo & Nav sections */}
@@ -84,7 +84,7 @@ export const AppShell: React.FC = () => {
           </NavLink>
 
           {/* Main Navigation in exact requested order */}
-          <nav aria-label="Navigation des pages" className="space-y-1 mb-6">
+          <nav aria-label={t('nav.pagesNavAria', 'Pages navigation')} className="space-y-1 mb-6">
             {/* 1. Home */}
             <NavLink to="/app" end className={navLinkClass}>
               <Home className="w-5 h-5 shrink-0" />
@@ -116,7 +116,7 @@ export const AppShell: React.FC = () => {
               <HeartHandshake className="w-5 h-5 shrink-0 text-app-primary-strong" />
               <span className="hidden lg:inline flex-1">{t('nav.realStories', 'Témoignages')}</span>
               <span className="hidden lg:inline-flex text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-pill bg-app-primary-soft text-app-primary-strong border border-app-primary-strong/30">
-                New
+                {t('badge.new', 'New')}
               </span>
             </NavLink>
 
@@ -194,7 +194,7 @@ export const AppShell: React.FC = () => {
 
         {/* Mobile Bottom Tab Bar (fixed on screen bottom with safe area insets) */}
         <nav
-          aria-label="Navigation mobile"
+          aria-label={t('nav.mobileNavAria', 'Mobile navigation')}
           className="md:hidden fixed bottom-0 inset-x-0 h-[calc(4rem+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] bg-app-surface border-t border-app-border flex items-center justify-around z-30 px-2 select-none"
         >
           {/* Home */}
