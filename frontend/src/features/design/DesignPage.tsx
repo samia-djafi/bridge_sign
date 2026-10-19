@@ -23,7 +23,7 @@ export const DesignPage: React.FC = () => {
   return (
     <div className="p-8 max-w-5xl mx-auto space-y-10">
       <div>
-        <h1 className="text-3xl font-extrabold text-app-text">BridgeSign — Design System Showcase</h1>
+        <h1 className="text-3xl font-extrabold text-app-text">ConnectSign — Design System Showcase</h1>
         <p className="text-sm text-app-muted mt-1">
           Vérification de tous les composants d'interface, jetons de design et états d'accessibilité.
         </p>
