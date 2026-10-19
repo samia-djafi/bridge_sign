@@ -68,6 +68,25 @@ describe('LocalProfileService', () => {
     expect(profile).toBeNull();
   });
 
+  it('migrates legacy bridgesign-profile to connectsign-profile seamlessly', () => {
+    const legacyData = {
+      id: 'legacy-user-123',
+      preferredName: 'Nadia',
+      createdAt: new Date('2026-01-01T00:00:00.000Z').toISOString(),
+      updatedAt: new Date('2026-01-02T00:00:00.000Z').toISOString(),
+    };
+    localStorage.setItem('bridgesign-profile', JSON.stringify(legacyData));
+
+    const migrated = service.getProfile();
+    expect(migrated).not.toBeNull();
+    expect(migrated?.id).toBe('legacy-user-123');
+    expect(migrated?.preferredName).toBe('Nadia');
+
+    // Verify saved to new key and cleared from legacy key
+    expect(localStorage.getItem(PROFILE_STORAGE_KEY)).toContain('Nadia');
+    expect(localStorage.getItem('bridgesign-profile')).toBeNull();
+  });
+
   it('clears profile correctly', () => {
     service.saveProfile('Samia');
     expect(service.getProfile()).not.toBeNull();
