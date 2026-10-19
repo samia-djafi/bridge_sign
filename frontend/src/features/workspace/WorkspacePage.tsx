@@ -420,10 +420,10 @@ export const WorkspacePage: React.FC = () => {
             m.direction === 'sign_to_language' ? 'LSA (Signeur)' : 'Interlocuteur'
           }: ${m.outputs[data.session.spokenLang]} (Glose: ${m.gloss.join(' ')})`
       );
-      const text = `CONVERSATION BRIDGESIGN\nTitre: ${data.session.title}\nDate: ${new Date(
+      const text = `CONVERSATION CONNECTSIGN\nTitre: ${data.session.title}\nDate: ${new Date(
         data.session.startedAt
       ).toLocaleString()}\n\n${lines.join('\n')}`;
-      downloadFile(`bridgesign_conversation_${sessionId}.txt`, text, 'text/plain');
+      downloadFile(`connectsign_conversation_${sessionId}.txt`, text, 'text/plain');
     }
   };
 
