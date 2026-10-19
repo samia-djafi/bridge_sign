@@ -9,21 +9,21 @@ export const NotFoundPage: React.FC = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    document.title = `Page introuvable (404) — BridgeSign`;
+    document.title = `Page introuvable (404) — ConnectSign`;
   }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-app-bg text-app-text select-none">
       <div className="max-w-md w-full p-6 sm:p-8 rounded-card bg-app-surface border border-app-border-strong text-center space-y-6 shadow-3">
-        {/* BridgeSign Official Logo Mark */}
+        {/* ConnectSign Official Logo Mark */}
         <div className="flex flex-col items-center justify-center gap-2">
           <img
             src="/icons/logo-mark.png"
-            alt="BridgeSign Logo"
+            alt="ConnectSign Logo"
             className="w-14 h-14 rounded-control shadow-1 object-cover"
           />
           <div className="space-y-0.5">
-            <h1 className="text-xl font-extrabold text-app-text tracking-tight">BridgeSign</h1>
+            <h1 className="text-xl font-extrabold text-app-text tracking-tight">ConnectSign</h1>
             <p className="text-xs text-app-primary-strong font-medium italic">
               {t('app.tagline', 'Every Hand Has a Voice.')}
             </p>
