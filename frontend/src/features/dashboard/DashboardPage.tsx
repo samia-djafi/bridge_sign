@@ -107,48 +107,7 @@ export const DashboardPage: React.FC = () => {
         <section aria-labelledby="welcome-heading">
           <div className="relative overflow-hidden rounded-card bg-app-surface border border-app-border-strong/60 shadow-1 p-5 sm:p-6 lg:p-7 transition-all">
             <div className="flex flex-col md:flex-row md:items-center gap-6 lg:gap-8">
-              {/* Left Side: Elegant Two-Hand Communication Motif */}
-              <div className="shrink-0 flex items-center justify-center">
-                <div className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-2xl bg-gradient-to-br from-teal-500/10 via-app-surface-2 to-teal-500/5 border border-teal-500/25 p-3 flex items-center justify-center shadow-1 group">
-                  {/* Two Interlocking Hands Symbolic SVG (ConnectSign Palette: Teal #0D9488 & Deep Teal) */}
-                  <svg
-                    viewBox="0 0 120 120"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-full h-full text-[#0D9488] transition-transform duration-300 group-hover:scale-105"
-                    role="img"
-                    aria-label={t('dash.motifAria', 'Symbole de communication en langue des signes à deux mains')}
-                  >
-                    {/* Background Soft Glow Disc */}
-                    <circle cx="60" cy="60" r="48" className="fill-teal-500/10" />
-
-                    {/* Left Supporting Hand (Open receiving hand gesturing upwards) */}
-                    <path
-                      d="M26 74 C 26 58, 38 48, 52 48 C 55 48, 58 49, 61 51 C 61 44, 66 38, 73 38 C 76 38, 79 39, 81 41 C 82 35, 87 31, 93 31 C 98 31, 102 34, 104 38 C 105 44, 105 52, 101 64 C 95 82, 80 94, 60 94 C 41 94, 26 86, 26 74 Z"
-                      fill="currentColor"
-                      fillOpacity="0.88"
-                    />
-
-                    {/* Right Interlocking Inner Hand (Connecting palm silhouette) */}
-                    <path
-                      d="M50 78 C 45 74, 43 68, 45 61 C 47 54, 53 50, 58 53 C 62 55, 63 60, 61 66 C 65 60, 71 58, 75 62 C 78 65, 77 71, 73 76 C 77 72, 83 73, 84 78 C 85 83, 81 87, 75 88 C 67 89, 58 85, 50 78 Z"
-                      className="fill-teal-950 dark:fill-white/90"
-                      fillOpacity="0.9"
-                    />
-
-                    {/* Connection Bridge Arcs */}
-                    <path
-                      d="M36 44 C 48 32, 72 32, 84 44"
-                      stroke="#2DD4BF"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeDasharray="2 3"
-                    />
-                    <circle cx="60" cy="34" r="2.5" fill="#2DD4BF" />
-                  </svg>
-                </div>
-              </div>
-
+          
               {/* Right Side: Welcome Content */}
               <div className="relative z-10 max-w-xl space-y-1.5 text-start">
                 <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-pill bg-teal-500/10 text-[#0D9488] text-[11px] font-bold uppercase tracking-wider mb-1">
@@ -167,7 +126,7 @@ export const DashboardPage: React.FC = () => {
                   {t('dash.welcomeQuote', 'Communication is a right, not a barrier.')}
                 </p>
                 <p className="text-xs text-app-muted leading-relaxed">
-                  {t('app.tagline', 'Every Hand Has a Voice.')} — {t('dash.startTwoWaySub', 'Les deux personnes communiquent au même endroit.')}
+                  {t('app.tagline', 'Every Hand Has a Voice.')} - {t('dash.startTwoWaySub', 'Les deux personnes communiquent au même endroit.')}
                 </p>
               </div>
             </div>
