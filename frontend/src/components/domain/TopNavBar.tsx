@@ -97,11 +97,11 @@ export const TopNavBar: React.FC<TopNavBarProps> = () => {
           type="button"
           onClick={() => navigate('/app')}
           className="flex items-center gap-2 p-1 rounded-control focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-app-primary-strong"
-          aria-label="BridgeSign Accueil"
+          aria-label="ConnectSign Accueil"
         >
           <img
             src="/icons/logo-mark.png"
-            alt="BridgeSign Logo"
+            alt="ConnectSign Logo"
             className="w-8 h-8 rounded-control shrink-0 shadow-1 object-cover"
           />
         </button>
