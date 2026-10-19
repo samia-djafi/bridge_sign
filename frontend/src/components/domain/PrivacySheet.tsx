@@ -112,7 +112,7 @@ export const PrivacySheet: React.FC = () => {
           <p className="text-xs text-app-muted leading-relaxed">
             {t(
               'disclaimer',
-              "BridgeSign est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical."
+              "ConnectSign est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical."
             )}
           </p>
         </div>
