@@ -133,7 +133,7 @@ export const OnboardingPage: React.FC = () => {
               <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-2 border border-teal-500/20 bg-[#0F2229] p-1.5 flex items-center justify-center">
                 <img
                   src="/icons/logo-mark.png"
-                  alt="BridgeSign Logo"
+                  alt="ConnectSign Logo"
                   className="w-full h-full object-cover rounded-xl"
                 />
               </div>
@@ -142,7 +142,7 @@ export const OnboardingPage: React.FC = () => {
             {/* Product branding */}
             <div className="space-y-1">
               <span className="text-xs font-bold tracking-widest uppercase text-[#0D9488]">
-                BridgeSign
+                ConnectSign
               </span>
               <p className="text-xs text-app-muted italic">
                 {t('app.tagline', 'Every Hand Has a Voice.')}
@@ -555,7 +555,7 @@ export const OnboardingPage: React.FC = () => {
                 <span className="text-xs text-app-text leading-relaxed font-medium">
                   {t(
                     'onboarding.limitationsAck',
-                    'I understand that BridgeSign is an experimental tool with a defined vocabulary and does not replace a certified human interpreter.'
+                    'I understand that ConnectSign is an experimental tool with a defined vocabulary and does not replace a certified human interpreter.'
                   )}
                 </span>
               </label>
