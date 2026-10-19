@@ -1,10 +1,10 @@
-# BridgeSign (جسر لغة الإشارة الجزائرية)
+# ConnectSign (جسر لغة الإشارة الجزائرية)
 
-> **"Two modalities. One conversation."**  
-> *FR: "Deux modalités. Une seule conversation."*  
-> *AR: "طريقتان للتواصل. محادثة واحدة."*
+> **"Every Hand Has a Voice"**<br />
+> *FR: "Chaque main a une voix"*<br />
+> *AR: "لكل يد صوت"*
 
-**BridgeSign** is an installable, offline-first Progressive Web App (PWA) facilitating real-time bidirectional communication between Algerian Sign Language (LSA) and spoken/written French, Arabic, and English. Engineered specifically for critical frontline scenarios—such as a Deaf patient consulting a pharmacist or clinic triage desk without an in-person interpreter.
+**ConnectSign** is an installable, offline-first Progressive Web App (PWA) facilitating real-time bidirectional communication between Algerian Sign Language (LSA) and spoken/written French, Arabic, and English. Engineered specifically for critical frontline scenarios—such as a Deaf patient consulting a pharmacist or clinic triage desk without an in-person interpreter.
 
 ---
 
@@ -28,7 +28,7 @@
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                              BRIDGESIGN PWA                            │
+│                             CONNECTSIGN PWA                            │
 │                                                                        │
 │   [Deaf User] ────▶  Webcam Ingestion (720p @ 30FPS)                   │
 │                              │                                         │
@@ -69,8 +69,8 @@
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/samia-djafi/bridge_sign.git
-cd bridge_sign/frontend
+git clone https://github.com/samia-djafi/connect_sign.git
+cd connect_sign/frontend
 npm install
 ```
 
@@ -82,7 +82,7 @@ cp .env.example .env
 
 | Variable | Description | Default |
 |---|---|---|
-| `VITE_APP_NAME` | Application display name | `BridgeSign` |
+| `VITE_APP_NAME` | Application display name | `ConnectSign` |
 | `VITE_AI_ADAPTER` | Active recognition adapter (`mock` \| `http`) | `mock` |
 | `VITE_API_BASE_URL` | Base endpoint for REST AI inference | `http://localhost:8000` |
 | `VITE_WS_URL` | WebSocket streaming endpoint | `ws://localhost:8000/ws/recognize` |
@@ -125,7 +125,7 @@ npm run preview
 
 ## 📱 Progressive Web App (PWA) Installation
 
-BridgeSign is configured with `vite-plugin-pwa` for immediate standalone desktop and mobile installation:
+ConnectSign is configured with `vite-plugin-pwa` for immediate standalone desktop and mobile installation:
 - **Desktop (Chrome / Edge / Brave):** Click the install icon in the address bar or use the in-app "Installer l'application" banner.
 - **iOS (Safari):** Tap **Share** $\rightarrow$ **Add to Home Screen**.
 - **Android (Chrome):** Tap **Menu** $\rightarrow$ **Install App**.
@@ -148,6 +148,6 @@ Comprehensive engineering documents are located in the [`docs/`](file:///d:/Awal
 
 ## 🤝 Community & Ethical Statement
 
-BridgeSign is developed in active partnership and consultation with the Algerian Deaf community. All sign assets, gloss definitions, and regional variants adhere to cultural consensus across Algerian wilayas.
+ConnectSign is developed in active partnership and consultation with the Algerian Deaf community. All sign assets, gloss definitions, and regional variants adhere to cultural consensus across Algerian wilayas.
 
-BridgeSign is **not** a medical diagnostic tool or an interpreter replacement; it is an assistive communication bridge designed to ensure equity, privacy, and safety in healthcare encounters.
+ConnectSign is **not** a medical diagnostic tool or an interpreter replacement; it is an assistive communication bridge designed to ensure equity, privacy, and safety in healthcare encounters.
