@@ -13,7 +13,7 @@ build/
 .env*.local
 !.env.example
 
-# Test outputs & coverage
+
 coverage/
 test-results/
 playwright-report/
