@@ -17,7 +17,19 @@ export const resources = {
 function getSavedLanguage(): UiLang | null {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem('lsab.i18n.lang');
+    let raw = localStorage.getItem('connectsign.i18n.lang');
+    if (!raw) {
+      const legacyRaw = localStorage.getItem('lsab.i18n.lang');
+      if (legacyRaw) {
+        raw = legacyRaw;
+        try {
+          localStorage.setItem('connectsign.i18n.lang', legacyRaw);
+          localStorage.removeItem('lsab.i18n.lang');
+        } catch {
+          // ignore
+        }
+      }
+    }
     if (raw === 'fr' || raw === 'ar' || raw === 'en') {
       return raw;
     }
@@ -44,7 +56,7 @@ i18n
     detection: {
       order: ['localStorage'],
       caches: ['localStorage'],
-      lookupLocalStorage: 'lsab.i18n.lang',
+      lookupLocalStorage: 'connectsign.i18n.lang',
     },
   });
 
