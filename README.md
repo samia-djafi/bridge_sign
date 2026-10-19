@@ -1,5 +1,4 @@
-# ConnectSign (جسر لغة الإشارة الجزائرية)
-
+# ConnectSign
 [![Production](https://img.shields.io/badge/Production-Live-0D9488?style=flat&logo=vercel)](https://bridge-sign.vercel.app/app)
 [![WCAG 2.2 AA](https://img.shields.io/badge/A11y-WCAG%202.2%20AA%20Compliant-15803D?style=flat)](frontend/docs/a11y-manual-test.md)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?style=flat&logo=typescript)](frontend/tsconfig.json)
