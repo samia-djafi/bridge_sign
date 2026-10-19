@@ -1,18 +1,18 @@
-# BridgeSign (جسر لغة الإشارة الجزائرية)
+# ConnectSign (جسر لغة الإشارة الجزائرية)
 
 [![Production](https://img.shields.io/badge/Production-Live-0D9488?style=flat&logo=vercel)](https://bridge-sign.vercel.app/app)
 [![WCAG 2.2 AA](https://img.shields.io/badge/A11y-WCAG%202.2%20AA%20Compliant-15803D?style=flat)](frontend/docs/a11y-manual-test.md)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?style=flat&logo=typescript)](frontend/tsconfig.json)
 [![License](https://img.shields.io/badge/License-MIT-gray?style=flat)](#license)
 
-> **"Two modalities. One conversation."**  
-> *FR: "Deux modalités. Une seule conversation."*  
-> *AR: "طريقتان للتواصل. محادثة واحدة."*
+> **"Every Hand Has a Voice"**<br />
+> *FR: "Chaque main a une voix"*<br />
+> *AR: "لكل يد صوت"*
 
-**BridgeSign** is an installable, offline-first Progressive Web App (PWA) facilitating real-time bidirectional communication between **Algerian Sign Language (LSA)** and spoken/written French, Arabic, and English. Engineered specifically for frontline accessibility scenarios—such as a Deaf patient consulting a pharmacist or medical clinic triage desk without an in-person interpreter.
+**ConnectSign** is an installable, offline-first Progressive Web App (PWA) facilitating real-time bidirectional communication between **Algerian Sign Language (LSA)** and spoken/written French, Arabic, and English. Engineered specifically for frontline accessibility scenarios—such as a Deaf patient consulting a pharmacist or medical clinic triage desk without an in-person interpreter.
 
 - **Production Deployment:** [https://bridge-sign.vercel.app/app](https://bridge-sign.vercel.app/app)
-- **Repository:** [https://github.com/samia-djafi/bridge_sign](https://github.com/samia-djafi/bridge_sign)
+- **Repository:** [https://github.com/samia-djafi/connect_sign](https://github.com/samia-djafi/connect_sign)
 
 ---
 
@@ -37,7 +37,7 @@
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                              BRIDGESIGN PWA                            │
+│                             CONNECTSIGN PWA                            │
 │                                                                        │
 │   [Deaf User] ────▶  Webcam Ingestion (720p @ 30FPS)                   │
 │                              │                                         │
@@ -73,7 +73,7 @@
 ## 📁 Repository Structure
 
 ```
-bridge_sign/
+connect_sign/
 ├── .gitignore                    # Root repository ignore rules
 ├── README.md                     # Root project documentation
 ├── vercel.json                   # Root deployment & HTTP security headers configuration
@@ -108,8 +108,8 @@ bridge_sign/
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/samia-djafi/bridge_sign.git
-cd bridge_sign/frontend
+git clone https://github.com/samia-djafi/connect_sign.git
+cd connect_sign/frontend
 npm install
 ```
 
@@ -121,7 +121,7 @@ cp .env.example .env
 
 | Variable | Description | Default |
 |---|---|---|
-| `VITE_APP_NAME` | Application display name | `BridgeSign` |
+| `VITE_APP_NAME` | Application display name | `ConnectSign` |
 | `VITE_AI_ADAPTER` | Active recognition adapter (`mock` \| `http`) | `mock` |
 | `VITE_API_BASE_URL` | Base endpoint for REST AI inference | `http://localhost:8000` |
 | `VITE_WS_URL` | WebSocket streaming endpoint | `ws://localhost:8000/ws/recognize` |
@@ -167,7 +167,7 @@ npm run preview
 ## 🔒 Security & Privacy Guarantees
 
 - **No Remote Video Streaming:** Camera streams are processed locally in browser memory via MediaPipe and canvas overlays. No images or videos are transmitted to remote servers.
-- **Client-Side Data Storage:** Conversation history and notes are saved strictly in IndexedDB (`lsa-bridge`) and localStorage on the user's device.
+- **Client-Side Data Storage:** Conversation history and notes are saved strictly in IndexedDB (`connectsign`, with automatic idempotent backward compatibility for legacy `lsa-bridge`) and localStorage on the user's device.
 - **Content Security Policy (CSP):** Configured in `vercel.json` with strict directives for scripts, styles, fonts, and network connections.
 - **Clickjacking Protection:** Protected via `X-Frame-Options: DENY` and CSP `frame-ancestors 'none'`.
 - **MIME Sniffing Prevention:** `X-Content-Type-Options: nosniff`.
@@ -189,6 +189,6 @@ Comprehensive engineering documents are located in the [`frontend/docs/`](fronte
 
 ## 🤝 Community & Ethical Statement
 
-BridgeSign is developed in active partnership and consultation with the Algerian Deaf community. All sign assets, gloss definitions, and regional variants adhere to cultural consensus across Algerian wilayas.
+ConnectSign is developed in active partnership and consultation with the Algerian Deaf community. All sign assets, gloss definitions, and regional variants adhere to cultural consensus across Algerian wilayas.
 
-BridgeSign is **not** a medical diagnostic tool or a human interpreter replacement; it is an assistive communication bridge designed to ensure equity, privacy, and safety in healthcare encounters.
+ConnectSign is **not** a medical diagnostic tool or a human interpreter replacement; it is an assistive communication bridge designed to ensure equity, privacy, and safety in healthcare encounters.
