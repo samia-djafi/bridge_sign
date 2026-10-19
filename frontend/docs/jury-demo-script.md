@@ -1,6 +1,6 @@
-# BridgeSign — 3-Minute Live Jury Demonstration Script
+# ConnectSign — 3-Minute Live Jury Demonstration Script
 
-**Title:** BridgeSign: Real-Time Bidirectional Healthcare Communication for Algerian Sign Language  
+**Title:** ConnectSign: Real-Time Bidirectional Healthcare Communication for Algerian Sign Language<br />
 **Target Duration:** Exactly 3 minutes (180 seconds)  
 **Presenter Setup:** Laptop or Tablet with webcam, modern browser (Chrome / Edge / Firefox), audio unmuted.
 
@@ -21,7 +21,7 @@
 ### Phase 1: Problem & First Impression (0:00 – 0:30)
 
 - **Spoken Pitch:**  
-  *"In Algeria, over 200,000 Deaf citizens rely on Algerian Sign Language (LSA). When a Deaf patient arrives at a pharmacy or emergency room without an interpreter, simple misunderstandings over medications can be dangerous. This is BridgeSign — an installable PWA designed for two-way conversations without requiring internet access."*
+  *"In Algeria, over 200,000 Deaf citizens rely on Algerian Sign Language (LSA). When a Deaf patient arrives at a pharmacy or emergency room without an interpreter, simple misunderstandings over medications can be dangerous. This is ConnectSign — an installable PWA designed for two-way conversations without requiring internet access."*
 - **Action on Screen:**
   1. Open the application at the dashboard.
   2. Click the Language dropdown in the header and select **العربية (Arabic)**.
@@ -50,7 +50,7 @@
 ### Phase 3: Language-to-Sign: Pharmacist to Deaf Patient (1:15 – 2:00)
 
 - **Spoken Pitch:**  
-  *"Now, the pharmacist replies in spoken or written French or Arabic. Watch how BridgeSign parses medical dosage and translates it into high-definition sign clips."*
+  *"Now, the pharmacist replies in spoken or written French or Arabic. Watch how ConnectSign parses medical dosage and translates it into high-definition sign clips."*
 - **Action on Screen:**
   1. In the workspace reply area, type:  
      `"Prenez deux comprimés par jour après le repas pendant 5 jours"`  
@@ -92,4 +92,4 @@
   4. Open DevTools $\rightarrow$ Network $\rightarrow$ toggle **Offline**.
   5. Refresh the page: the application loads instantaneously from the Service Worker cache with full IndexedDB history intact.
 - **Concluding Sentence:**  
-  *"BridgeSign delivers dignified, immediate, and honest communication access for Algeria's Deaf community. Thank you."*
+  *"ConnectSign delivers dignified, immediate, and honest communication access for Algeria's Deaf community. Thank you."*
