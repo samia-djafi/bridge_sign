@@ -102,7 +102,7 @@ describe('Feedback Form Typing & Submission', () => {
 
     // Type complete multi-sentence paragraph
     const feedbackText =
-      'BridgeSign helped communicate clearly at the hospital. Adding more regional medical signs would be wonderful!';
+      'ConnectSign helped communicate clearly at the hospital. Adding more regional medical signs would be wonderful!';
     fireEvent.change(textarea, { target: { value: feedbackText } });
 
     expect(textarea).toHaveValue(feedbackText);
@@ -111,11 +111,11 @@ describe('Feedback Form Typing & Submission', () => {
     // Editing in the middle and deleting text
     fireEvent.change(textarea, {
       target: {
-        value: 'BridgeSign helped communicate clearly at the hospital. Extra signs needed.',
+        value: 'ConnectSign helped communicate clearly at the hospital. Extra signs needed.',
       },
     });
     expect(textarea).toHaveValue(
-      'BridgeSign helped communicate clearly at the hospital. Extra signs needed.'
+      'ConnectSign helped communicate clearly at the hospital. Extra signs needed.'
     );
     expect(document.activeElement).toBe(textarea);
   });
