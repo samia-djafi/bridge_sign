@@ -1,8 +1,8 @@
-# BridgeSign — API Contract & Service Specification
+# ConnectSign — API Contract & Service Specification
 
 ## 1. Overview
 
-BridgeSign operates on a decoupled adapter architecture. In MVP mode, client requests are routed through a client-side mock adapter or a backend AI inference service adhering to the contracts detailed below.
+ConnectSign operates on a decoupled adapter architecture. In MVP mode, client requests are routed through a client-side mock adapter or a backend AI inference service adhering to the contracts detailed below.
 
 - **Base URL (REST):** `http://localhost:8000/v1` (configured via `VITE_API_BASE_URL`)
 - **WebSocket URL:** `ws://localhost:8000/ws/recognize` (configured via `VITE_WS_URL`)
