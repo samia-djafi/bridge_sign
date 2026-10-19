@@ -1,8 +1,8 @@
-# BridgeSign — Architecture & Technical Design
+# ConnectSign — Architecture & Technical Design
 
 ## 1. System Architecture Overview
 
-BridgeSign is an offline-capable, Progressive Web App engineered to bridge communication between Algerian Sign Language (LSA) signers and hearing non-signers. The system is designed around a decoupled, reactive architecture ensuring sub-200ms processing, strict privacy boundaries, and accessibility compliance.
+ConnectSign is an offline-capable, Progressive Web App engineered to bridge communication between Algerian Sign Language (LSA) signers and hearing non-signers. The system is designed around a decoupled, reactive architecture ensuring sub-200ms processing, strict privacy boundaries, and accessibility compliance.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -107,7 +107,7 @@ To prevent accidental loss of important medical conversation logs:
 
 ## 4. Progressive Web App & Offline Architecture
 
-BridgeSign is built with a strict offline-first requirement to ensure full utility in Algerian health centers with unreliable mobile networks:
+ConnectSign is built with a strict offline-first requirement to ensure full utility in Algerian health centers with unreliable mobile networks:
 
 1. **Service Worker (Workbox):**
    - Built with Vite PWA Plugin using `injectManifest`.
