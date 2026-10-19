@@ -56,7 +56,7 @@ export const HistoryDetailPage: React.FC = () => {
             m.direction === 'sign_to_language' ? 'LSA (Signeur)' : 'Interlocuteur'
           }: ${m.outputs[session.spokenLang]} (Glose: ${m.gloss.join(' ')})`
       );
-      const text = `TRANSCRIPTION BRIDGESIGN\nTitre: ${session.title}\nDate: ${new Date(
+      const text = `TRANSCRIPTION CONNECTSIGN\nTitre: ${session.title}\nDate: ${new Date(
         session.startedAt
       ).toLocaleString()}\n\n${lines.join('\n')}`;
       downloadFile(`transcript_${session.title.replace(/\s+/g, '_')}.txt`, text, 'text/plain');
