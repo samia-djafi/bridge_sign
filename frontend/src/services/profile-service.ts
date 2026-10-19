@@ -1,7 +1,8 @@
 import { LocalProfile, ProfileStorageService } from '@/types/profile';
 import { generateId } from '@/lib/ids';
 
-export const PROFILE_STORAGE_KEY = 'bridgesign-profile';
+export const PROFILE_STORAGE_KEY = 'connectsign-profile';
+export const LEGACY_PROFILE_STORAGE_KEY = 'bridgesign-profile';
 
 // Safe in-memory fallback cache when localStorage is disabled or throws
 let memoryProfileCache: LocalProfile | null = null;
@@ -11,7 +12,7 @@ function isStorageAvailable(): boolean {
     return false;
   }
   try {
-    const testKey = '__bs_storage_test__';
+    const testKey = '__cs_storage_test__';
     window.localStorage.setItem(testKey, '1');
     window.localStorage.removeItem(testKey);
     return true;
@@ -31,7 +32,21 @@ export class LocalProfileService implements ProfileStorageService {
     }
 
     try {
-      const raw = window.localStorage.getItem(PROFILE_STORAGE_KEY);
+      let raw = window.localStorage.getItem(PROFILE_STORAGE_KEY);
+      if (!raw) {
+        // Transparent backward compatibility: migrate legacy profile key if present
+        const legacyRaw = window.localStorage.getItem(LEGACY_PROFILE_STORAGE_KEY);
+        if (legacyRaw) {
+          raw = legacyRaw;
+          try {
+            window.localStorage.setItem(PROFILE_STORAGE_KEY, legacyRaw);
+            window.localStorage.removeItem(LEGACY_PROFILE_STORAGE_KEY);
+          } catch {
+            // ignore non-critical migration write error
+          }
+        }
+      }
+
       if (!raw) {
         return memoryProfileCache;
       }
@@ -55,7 +70,7 @@ export class LocalProfileService implements ProfileStorageService {
       }
       return memoryProfileCache;
     } catch (err) {
-      console.warn('BridgeSign: Failed to read local profile, falling back gracefully:', err);
+      console.warn('ConnectSign: Failed to read local profile, falling back gracefully:', err);
       return memoryProfileCache;
     }
   }
@@ -81,7 +96,7 @@ export class LocalProfileService implements ProfileStorageService {
       try {
         window.localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
       } catch (err) {
-        console.warn('BridgeSign: Failed to persist local profile to localStorage:', err);
+        console.warn('ConnectSign: Failed to persist local profile to localStorage:', err);
       }
     }
 
@@ -103,8 +118,9 @@ export class LocalProfileService implements ProfileStorageService {
     if (isStorageAvailable()) {
       try {
         window.localStorage.removeItem(PROFILE_STORAGE_KEY);
+        window.localStorage.removeItem(LEGACY_PROFILE_STORAGE_KEY);
       } catch (err) {
-        console.warn('BridgeSign: Failed to clear local profile:', err);
+        console.warn('ConnectSign: Failed to clear local profile:', err);
       }
     }
   }
