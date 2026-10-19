@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'icons/*.png'],
       manifest: {
-        name: 'BridgeSign',
-        short_name: 'BridgeSign',
+        name: 'ConnectSign',
+        short_name: 'ConnectSign',
         description: 'Accessible communication between Algerian Sign Language (LSA) users and hearing people.',
         id: '/',
         start_url: '/app?source=pwa',
