@@ -6,7 +6,8 @@ import { db } from './db';
 import { normalizeText } from '@/lib/text-normalize';
 import { combinedScore } from '@/lib/fuzzy';
 
-const FAVORITES_STORAGE_KEY = 'bridgesign-phrasebook-favorites';
+const FAVORITES_STORAGE_KEY = 'connectsign-phrasebook-favorites';
+const LEGACY_FAVORITES_STORAGE_KEY = 'bridgesign-phrasebook-favorites';
 
 class AppPhrasebookService implements PhrasebookService {
   private phrases: Phrase[] = SEED_PHRASES;
@@ -21,7 +22,19 @@ class AppPhrasebookService implements PhrasebookService {
   private initFavorites(): void {
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
-        const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+        let raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+        if (!raw) {
+          const legacyRaw = localStorage.getItem(LEGACY_FAVORITES_STORAGE_KEY);
+          if (legacyRaw) {
+            raw = legacyRaw;
+            try {
+              localStorage.setItem(FAVORITES_STORAGE_KEY, legacyRaw);
+              localStorage.removeItem(LEGACY_FAVORITES_STORAGE_KEY);
+            } catch {
+              // ignore
+            }
+          }
+        }
         if (raw) {
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed)) {
