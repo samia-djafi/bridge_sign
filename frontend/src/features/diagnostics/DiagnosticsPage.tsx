@@ -65,7 +65,6 @@ export const DiagnosticsPage: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-app-border pb-4">
           <div className="space-y-1">
             <h2 className="text-2xl font-extrabold text-app-text flex items-center gap-2">
-              <Activity className="w-6 h-6 text-app-primary-strong" />
               <span>{t('diagnostics.title', 'AI Diagnostics')}</span>
             </h2>
             <p className="text-xs sm:text-sm text-app-muted">
