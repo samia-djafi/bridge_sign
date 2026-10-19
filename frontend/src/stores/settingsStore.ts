@@ -3,7 +3,8 @@ import { Settings, UiLang } from '@/types/domain';
 import { registry } from '@/services/registry';
 import { setAppLanguage } from '@/i18n';
 
-const STORAGE_KEY = 'lsab.settings.v1';
+const STORAGE_KEY = 'connectsign.settings.v1';
+const LEGACY_STORAGE_KEY = 'lsab.settings.v1';
 
 const DEFAULT_SETTINGS: Settings = {
   version: 1,
@@ -93,7 +94,19 @@ function applyDomSettings(settings: Settings) {
 function loadInitialSettings(): Settings {
   if (typeof window === 'undefined') return DEFAULT_SETTINGS;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    let raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (legacyRaw) {
+        raw = legacyRaw;
+        try {
+          localStorage.setItem(STORAGE_KEY, legacyRaw);
+          localStorage.removeItem(LEGACY_STORAGE_KEY);
+        } catch {
+          // ignore
+        }
+      }
+    }
     if (!raw) return DEFAULT_SETTINGS;
     const parsed = JSON.parse(raw);
     if (parsed.version === 1) {
@@ -155,6 +168,9 @@ export const useSettingsStore = create<SettingsStore>((set) => ({
 
   resetSettings: () => {
     localStorage.removeItem(STORAGE_KEY);
+    try {
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+    } catch {}
     applyDomSettings(DEFAULT_SETTINGS);
     setAppLanguage(DEFAULT_SETTINGS.uiLang);
     set({ settings: DEFAULT_SETTINGS });
