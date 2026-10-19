@@ -23,7 +23,7 @@ const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
   <Suspense
     fallback={
       <div className="flex items-center justify-center min-h-[50vh] p-8 text-app-muted text-sm font-medium animate-pulse">
-        Loading BridgeSign…
+        Loading ConnectSign…
       </div>
     }
   >
