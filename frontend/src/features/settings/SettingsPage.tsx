@@ -192,7 +192,7 @@ export const SettingsPage: React.FC = () => {
   }, [activeTab]);
 
   useEffect(() => {
-    document.title = `${t('nav.settings', 'Settings')} | ${t('app.name', 'BridgeSign')}`;
+    document.title = `${t('nav.settings', 'Settings')} | ${t('app.name', 'ConnectSign')}`;
   }, [t]);
 
   const [savedIndicator, setSavedIndicator] = useState(false);
@@ -238,7 +238,7 @@ export const SettingsPage: React.FC = () => {
       settings,
       sessions: list,
     };
-    downloadFile('bridgesign_full_backup.json', JSON.stringify(payload, null, 2), 'application/json');
+    downloadFile('connectsign_full_backup.json', JSON.stringify(payload, null, 2), 'application/json');
   };
 
   return (
