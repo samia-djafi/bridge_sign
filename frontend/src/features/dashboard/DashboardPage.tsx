@@ -20,7 +20,6 @@ import {
   Pill,
   BookOpen,
   HeartHandshake,
-  Quote,
   ChevronLeft,
   MessageSquarePlus,
   Send,
@@ -46,7 +45,7 @@ export const DashboardPage: React.FC = () => {
     | 'ar';
 
   useEffect(() => {
-    document.title = `${t('nav.dashboard', 'Home')} | ${t('app.name', 'BridgeSign')}`;
+    document.title = `${t('nav.dashboard', 'Home')} | ${t('app.name', 'ConnectSign')}`;
 
     async function loadData() {
       try {
@@ -111,7 +110,7 @@ export const DashboardPage: React.FC = () => {
               {/* Left Side: Elegant Two-Hand Communication Motif */}
               <div className="shrink-0 flex items-center justify-center">
                 <div className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-2xl bg-gradient-to-br from-teal-500/10 via-app-surface-2 to-teal-500/5 border border-teal-500/25 p-3 flex items-center justify-center shadow-1 group">
-                  {/* Two Interlocking Hands Symbolic SVG (BridgeSign Palette: Teal #0D9488 & Deep Teal) */}
+                  {/* Two Interlocking Hands Symbolic SVG (ConnectSign Palette: Teal #0D9488 & Deep Teal) */}
                   <svg
                     viewBox="0 0 120 120"
                     fill="none"
@@ -161,7 +160,7 @@ export const DashboardPage: React.FC = () => {
                       {greetingText}, <span className="text-app-primary-strong">{preferredName}</span>
                     </>
                   ) : (
-                    <span>{t('dash.welcomeGeneric', 'Welcome to BridgeSign.')}</span>
+                    <span>{t('dash.welcomeGeneric', 'Welcome to ConnectSign.')}</span>
                   )}
                 </h2>
                 <p className="text-xs sm:text-sm font-semibold text-app-text">
@@ -602,7 +601,6 @@ export const DashboardPage: React.FC = () => {
               {currentStory ? (
                 <div className="space-y-3 pt-1">
                   <div className="relative">
-                    <Quote className="w-5 h-5 text-app-primary-strong/20 absolute -top-1 -start-1 rtl:-scale-x-100" />
                     <p className="text-xs text-app-text italic ps-3 leading-relaxed text-start">
                       {currentStory.quote[currentLang] || currentStory.quote.en}
                     </p>
@@ -625,7 +623,7 @@ export const DashboardPage: React.FC = () => {
                 </div>
               ) : (
                 <p className="text-xs text-app-muted">
-                  {t('dash.noStoriesYet', 'Be the first to share your experience with BridgeSign.')}
+                  {t('dash.noStoriesYet', 'Be the first to share your experience with ConnectSign.')}
                 </p>
               )}
             </div>
