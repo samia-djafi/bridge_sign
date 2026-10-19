@@ -50,13 +50,13 @@ export const PublicEntryPage: React.FC = () => {
       <main className="w-full max-w-md mx-auto my-auto flex flex-col items-center text-center space-y-6">
         {/* Logo mark 56px */}
         <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-2 flex items-center justify-center">
-          <img src="/icons/logo-mark.png" alt="BridgeSign Logo" className="w-full h-full object-cover" />
+          <img src="/icons/logo-mark.png" alt="ConnectSign Logo" className="w-full h-full object-cover" />
         </div>
 
         {/* Headings */}
         <div className="space-y-1.5">
           <h1 className="text-3xl font-extrabold tracking-tight text-app-text">
-            {t('app.name', 'BridgeSign')}
+            {t('app.name', 'ConnectSign')}
           </h1>
           <p className="text-sm font-semibold text-app-primary-strong tracking-wide">
             {t('app.tagline', 'Every Hand Has a Voice.')}
@@ -101,7 +101,7 @@ export const PublicEntryPage: React.FC = () => {
           <p className="text-xs text-app-muted leading-relaxed">
             {t(
               'disclaimer',
-              "BridgeSign est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical."
+              "ConnectSign est un outil d'aide à la communication. Il ne remplace pas un interprète professionnel et ne fournit ni diagnostic ni conseil médical."
             )}
           </p>
         </div>
