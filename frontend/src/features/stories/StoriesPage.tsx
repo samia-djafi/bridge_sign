@@ -32,7 +32,8 @@ interface LocalFeedbackEntry {
   createdAt: number;
 }
 
-const LOCAL_FEEDBACK_KEY = 'bridgesign-local-feedback';
+const LOCAL_FEEDBACK_KEY = 'connectsign-local-feedback';
+const LEGACY_LOCAL_FEEDBACK_KEY = 'bridgesign-local-feedback';
 
 // Google Form constants
 export const GOOGLE_FORM_VIEW_URL =
@@ -156,13 +157,25 @@ export const StoriesPage: React.FC = () => {
   const [showPreviousNotes, setShowPreviousNotes] = useState(false);
 
   useEffect(() => {
-    document.title = `${t('nav.realStories', 'Real Stories')} | ${t('app.name', 'BridgeSign')}`;
+    document.title = `${t('nav.realStories', 'Real Stories')} | ${t('app.name', 'ConnectSign')}`;
     loadLocalFeedback();
   }, [t]);
 
   const loadLocalFeedback = () => {
     try {
-      const raw = localStorage.getItem(LOCAL_FEEDBACK_KEY);
+      let raw = localStorage.getItem(LOCAL_FEEDBACK_KEY);
+      if (!raw) {
+        const legacyRaw = localStorage.getItem(LEGACY_LOCAL_FEEDBACK_KEY);
+        if (legacyRaw) {
+          raw = legacyRaw;
+          try {
+            localStorage.setItem(LOCAL_FEEDBACK_KEY, legacyRaw);
+            localStorage.removeItem(LEGACY_LOCAL_FEEDBACK_KEY);
+          } catch {
+            // ignore
+          }
+        }
+      }
       if (raw) {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
@@ -188,7 +201,7 @@ export const StoriesPage: React.FC = () => {
     if (savedFeedbacks.length === 0) return;
     const content = JSON.stringify(savedFeedbacks, null, 2);
     downloadFile(
-      `bridgesign_saved_notes_${new Date().toISOString().slice(0, 10)}.json`,
+      `connectsign_saved_notes_${new Date().toISOString().slice(0, 10)}.json`,
       content,
       'application/json'
     );
@@ -396,7 +409,7 @@ export const StoriesPage: React.FC = () => {
           <div className="space-y-1 text-center sm:text-start">
             <h3 className="text-sm font-bold text-app-text flex items-center gap-2 justify-center sm:justify-start">
               <Sparkles className="w-4 h-4 text-app-primary-strong" />
-              <span>{t('stories.fieldTrialTitle', 'Vous souhaitez tester BridgeSign sur le terrain ?')}</span>
+              <span>{t('stories.fieldTrialTitle', 'Vous souhaitez tester ConnectSign sur le terrain ?')}</span>
             </h3>
             <p className="text-xs text-app-muted max-w-xl">
               {t(
@@ -592,7 +605,7 @@ export const StoriesPage: React.FC = () => {
                 <p className="text-xs sm:text-sm text-app-muted max-w-md mx-auto leading-relaxed">
                   {t(
                     'stories.feedbackSuccessDesc',
-                    'Your feedback has been received and directly submitted to the BridgeSign team.'
+                    'Your feedback has been received and directly submitted to the ConnectSign team.'
                   )}
                 </p>
               </div>
