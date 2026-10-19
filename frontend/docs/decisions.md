@@ -1,6 +1,6 @@
-# BridgeSign — Architecture Decision Records (ADRs)
+# ConnectSign — Architecture Decision Records (ADRs)
 
-This document formalizes key engineering, design, accessibility, and product decisions made during the construction of BridgeSign.
+This document formalizes key engineering, design, accessibility, and product decisions made during the construction of ConnectSign.
 
 ---
 
