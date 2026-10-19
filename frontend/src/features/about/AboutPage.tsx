@@ -25,7 +25,7 @@ export const AboutPage: React.FC = () => {
   const { startDemo } = useDemoStore();
 
   useEffect(() => {
-    document.title = `${t('nav.about', 'About')} | ${t('app.name', 'BridgeSign')}`;
+    document.title = `${t('nav.about', 'About')} | ${t('app.name', 'ConnectSign')}`;
   }, [t]);
 
   const handleStartDemo = () => {
@@ -39,11 +39,11 @@ export const AboutPage: React.FC = () => {
         {/* Header Hero */}
         <div className="flex items-center gap-4 pb-2 border-b border-app-border">
           <div className="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center shrink-0 shadow-2 border border-teal-500/20 bg-[#0F2229] p-1">
-            <img src="/icons/logo-mark.png" alt="BridgeSign Logo" className="w-full h-full object-cover rounded-xl" />
+            <img src="/icons/logo-mark.png" alt="ConnectSign Logo" className="w-full h-full object-cover rounded-xl" />
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-app-text tracking-tight">
-              {t('about.title', 'About BridgeSign')}
+              {t('about.title', 'About ConnectSign')}
             </h1>
             <p className="text-sm font-semibold text-app-primary-strong">
               {t('app.tagline', 'Every Hand Has a Voice.')}
@@ -162,7 +162,7 @@ export const AboutPage: React.FC = () => {
         {/* 6. Calls to Action */}
         <Card p={24} className="space-y-4 bg-app-surface-2 border border-app-border shadow-1">
           <h3 className="text-sm font-bold text-app-text">
-            {t('about.ctaTitle', 'Explore BridgeSign')}
+            {t('about.ctaTitle', 'Explore ConnectSign')}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Button
