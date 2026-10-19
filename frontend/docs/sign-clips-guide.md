@@ -1,6 +1,6 @@
-# BridgeSign — Video Recording & Sign Asset Production Guide
+# ConnectSign — Video Recording & Sign Asset Production Guide
 
-This guide establishes the linguistic, ethical, and technical standards for recording Algerian Sign Language (LSA) video assets for integration into BridgeSign.
+This guide establishes the linguistic, ethical, and technical standards for recording Algerian Sign Language (LSA) video assets for integration into ConnectSign.
 
 ---
 
