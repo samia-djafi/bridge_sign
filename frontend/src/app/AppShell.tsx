@@ -72,11 +72,11 @@ export const AppShell: React.FC = () => {
           >
             <img
               src="/icons/logo-mark.png"
-              alt="BridgeSign Logo"
+              alt="ConnectSign Logo"
               className="w-10 h-10 rounded-control shrink-0 shadow-1 object-cover"
             />
             <div className="hidden lg:flex flex-col">
-              <span className="font-bold text-base tracking-tight text-app-text">BridgeSign</span>
+              <span className="font-bold text-base tracking-tight text-app-text">ConnectSign</span>
               <span className="text-[10px] text-app-muted leading-tight truncate">
                 {t('app.tagline', 'Every Hand Has a Voice.')}
               </span>
@@ -314,7 +314,7 @@ export const AppShell: React.FC = () => {
               navigate('/app/about');
             }}
           >
-            {t('nav.about', 'À propos de BridgeSign')}
+            {t('nav.about', 'À propos de ConnectSign')}
           </Button>
 
           <Button
