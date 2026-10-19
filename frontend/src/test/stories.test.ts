@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { STORIES } from '@/data/stories';
 
-describe('BridgeSign Stories & Testimonials', () => {
+describe('ConnectSign Stories & Testimonials', () => {
   it('contains exactly three testimonials', () => {
     expect(STORIES).toHaveLength(3);
   });
