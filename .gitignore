@@ -56,3 +56,15 @@ Desktop.ini
 !.vscode/extensions.json
 !.vscode/settings.json
 
+# Python & Backend
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*/.pytest_cache/
+.venv/
+*/.venv/
+backend/models/*.task
+
+
