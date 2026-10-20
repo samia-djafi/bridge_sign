@@ -3,7 +3,7 @@ import { SignRecognitionService } from '@/types/services';
 
 export class HttpSignRecognitionAdapter implements SignRecognitionService {
   readonly adapter = 'live' as const;
-  private frames: LandmarkFrame[] = [];
+  private frames: any[] = [];
   private currentLang: SpokenLang = 'fr';
   private baseUrl: string;
 
@@ -20,7 +20,7 @@ export class HttpSignRecognitionAdapter implements SignRecognitionService {
     this.frames = [];
   }
 
-  push(frame: LandmarkFrame): void {
+  push(frame: LandmarkFrame | any): void {
     this.frames.push(frame);
   }
 
