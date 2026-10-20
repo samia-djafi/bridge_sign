@@ -45,6 +45,7 @@ import {
   Send,
   Sparkles,
   MessageSquare,
+  AlertTriangle,
 } from 'lucide-react';
 
 export const WorkspacePage: React.FC = () => {
@@ -107,6 +108,46 @@ export const WorkspacePage: React.FC = () => {
       triggerHaptic(40);
     },
   });
+
+  // Real Webcam frame extraction loop for Live ML Recognition
+  useEffect(() => {
+    if (recognition.state !== 'recognizing' && recognition.state !== 'capturing') {
+      return;
+    }
+
+    const videoEl = camera.videoRef.current;
+    if (!videoEl) return;
+
+    let canvas: HTMLCanvasElement | null = null;
+    let ctx: CanvasRenderingContext2D | null = null;
+
+    const intervalId = setInterval(() => {
+      if (!videoEl || videoEl.readyState < 2 || videoEl.paused || videoEl.ended) {
+        return;
+      }
+
+      if (!canvas) {
+        canvas = document.createElement('canvas');
+        canvas.width = 320;
+        canvas.height = 240;
+        ctx = canvas.getContext('2d');
+      }
+
+      if (ctx) {
+        ctx.drawImage(videoEl, 0, 0, 320, 240);
+        try {
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+          recognition.pushFrame({ image: dataUrl, t: Date.now() });
+        } catch {
+          // Ignore transient frame capture error
+        }
+      }
+    }, 100);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [recognition.state, recognition.pushFrame, camera.videoRef]);
 
   // Load session from DB
   useEffect(() => {
@@ -715,6 +756,21 @@ export const WorkspacePage: React.FC = () => {
                   onSend={handleSendProposed}
                   onDiscard={recognition.resetToReady}
                 />
+              )}
+
+              {/* Rejection / Uncertainty Message Banner */}
+              {recognition.state === 'low_confidence' && (
+                <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-control flex items-center justify-between text-xs text-amber-700 dark:text-amber-400">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
+                    <span className="font-medium">
+                      {(recognition.recognizedResult as any)?.rejectionMessage || t('rec.low', 'Sign not recognized. Please try again.')}
+                    </span>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={recognition.resetToReady}>
+                    {t('common.dismiss', 'OK')}
+                  </Button>
+                </div>
               )}
             </div>
 
