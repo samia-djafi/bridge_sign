@@ -22,7 +22,7 @@ export interface ServiceError {
 
 export interface SignRecognitionService {
   start(opts: { lang: SpokenLang }): Promise<void>;
-  push(frame: LandmarkFrame): void;
+  push(frame: LandmarkFrame | any): void;
   finalize(): Promise<RecognitionResult>;
   reset(): void;
   readonly adapter: AiMode;
