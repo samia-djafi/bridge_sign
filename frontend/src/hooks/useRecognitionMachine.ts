@@ -43,7 +43,7 @@ export function useRecognitionMachine({ spokenLang, onRecognized }: UseRecogniti
     try {
       const result = await registry.ai.recognition.finalize();
 
-      if (!result.signs || result.signs.length === 0 || result.level === 'low') {
+      if (!result.signs || result.signs.length === 0 || result.level === 'low' || (result as any).isUncertain) {
         transitionTo('low_confidence', "Reconnaissance incertaine. Veuillez répéter le signe.");
         setRecognizedResult(result);
         return;
@@ -97,12 +97,13 @@ export function useRecognitionMachine({ spokenLang, onRecognized }: UseRecogniti
     }
   }, [state, finalizeRecognition, transitionTo]);
 
-  // Push incoming landmark frame from camera/tracking
+  // Push incoming landmark or webcam image frame from camera/tracking
   const pushFrame = useCallback(
-    (frame: LandmarkFrame) => {
+    (frame: LandmarkFrame | any) => {
       if (state !== 'recognizing' && state !== 'capturing') return;
 
-      const hasHands = frame.hands && frame.hands.length > 0;
+      const isImageFrame = frame && (typeof frame === 'string' || 'image' in frame || 'data' in frame);
+      const hasHands = isImageFrame || Boolean(frame.hands && frame.hands.length > 0);
 
       if (hasHands) {
         isTrackingHandsRef.current = true;
@@ -114,6 +115,12 @@ export function useRecognitionMachine({ spokenLang, onRecognized }: UseRecogniti
 
         framesBufferRef.current.push(frame);
         registry.ai.recognition.push(frame);
+
+        // Auto-finalize once a complete 16-frame gesture window is recorded (~1.6s)
+        if (framesBufferRef.current.length >= 16) {
+          finalizeRecognition();
+          return;
+        }
 
         // Reset absence timer
         if (handsAbsentTimerRef.current) clearTimeout(handsAbsentTimerRef.current);
