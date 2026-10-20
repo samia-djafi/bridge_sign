@@ -231,7 +231,7 @@
     "langLabel": "Spoken language",
     "modeLabel": "Starting mode",
     "titleLabel": "Title (optional)",
-    "titlePlaceholder": "e.g. Pharmacy — Tuesday",
+    "titlePlaceholder": "e.g. Pharmacy - Tuesday",
     "startAction": "Start conversation",
     "cancelAction": "Cancel",
     "subtitle": "Set up the environment before starting the conversation.",
