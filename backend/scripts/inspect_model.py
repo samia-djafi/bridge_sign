@@ -55,7 +55,7 @@ def inspect(model_dir: str = "models"):
     print("\n--- Model Loading & Inference Test ---")
     t0 = time.time()
     try:
-        from src.models.classifier import SignClassifier
+        from app.ml.classifier import SignClassifier
         clf = SignClassifier.load(model_path)
     except Exception:
         clf = joblib.load(model_path)
