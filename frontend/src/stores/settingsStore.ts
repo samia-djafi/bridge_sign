@@ -6,6 +6,13 @@ import { setAppLanguage } from '@/i18n';
 const STORAGE_KEY = 'connectsign.settings.v1';
 const LEGACY_STORAGE_KEY = 'lsab.settings.v1';
 
+export const PRODUCTION_RENDER_AI_URL = 'https://connect-sign.onrender.com';
+
+const DEFAULT_AI_ADAPTER: 'mock' | 'http' =
+  (import.meta.env.VITE_AI_ADAPTER as any) === 'mock' ? 'mock' : 'http';
+const DEFAULT_API_BASE_URL: string =
+  import.meta.env.VITE_API_BASE_URL || PRODUCTION_RENDER_AI_URL;
+
 const DEFAULT_SETTINGS: Settings = {
   version: 1,
   onboarded: false,
@@ -34,8 +41,8 @@ const DEFAULT_SETTINGS: Settings = {
     voices: {},
   },
   ai: {
-    adapter: (import.meta.env.VITE_AI_ADAPTER as any) === 'http' ? 'http' : 'mock',
-    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+    adapter: DEFAULT_AI_ADAPTER,
+    apiBaseUrl: DEFAULT_API_BASE_URL,
     threshold: Number(import.meta.env.VITE_CONFIDENCE_THRESHOLD || 0.70),
   },
   privacy: {
@@ -110,7 +117,34 @@ function loadInitialSettings(): Settings {
     if (!raw) return DEFAULT_SETTINGS;
     const parsed = JSON.parse(raw);
     if (parsed.version === 1) {
-      return { ...DEFAULT_SETTINGS, ...parsed };
+      const merged: Settings = { ...DEFAULT_SETTINGS, ...parsed };
+
+      // Safe migration:
+      // If legacy localhost base URL is stored while running on production/remote domains,
+      // migrate to Render AI default. If on localhost, allow the developer override.
+      const isLocalHost =
+        typeof window !== 'undefined' &&
+        (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+      if (
+        (!isLocalHost && merged.ai?.apiBaseUrl === 'http://localhost:8000') ||
+        !merged.ai?.apiBaseUrl
+      ) {
+        merged.ai = {
+          ...merged.ai,
+          apiBaseUrl: DEFAULT_API_BASE_URL,
+        };
+      }
+
+      // If adapter was missing or empty, ensure Render AI is default
+      if (!merged.ai?.adapter) {
+        merged.ai = {
+          ...merged.ai,
+          adapter: DEFAULT_AI_ADAPTER,
+        };
+      }
+
+      return merged;
     }
   } catch (e) {
     console.error('Failed to parse stored settings, falling back to defaults', e);
