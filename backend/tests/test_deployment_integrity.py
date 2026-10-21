@@ -41,6 +41,10 @@ def test_cors_settings_parsing():
     s_quotes = Settings(CORS_ORIGINS='"https://app.vercel.app", "http://localhost:3000"')
     assert s_quotes.CORS_ORIGINS == ["https://app.vercel.app", "http://localhost:3000"]
 
+    # Scheme auto-prefixing for bare hostnames
+    s_bare = Settings(CORS_ORIGINS="connect-sign-nine.vercel.app")
+    assert "https://connect-sign-nine.vercel.app" in s_bare.CORS_ORIGINS
+
     # Empty string fallback to safe defaults
     s_empty = Settings(CORS_ORIGINS="")
     assert "http://localhost:5173" in s_empty.CORS_ORIGINS
