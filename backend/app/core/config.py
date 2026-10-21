@@ -39,8 +39,15 @@ class Settings(BaseSettings):
             "https://bridge-sign.vercel.app",
         ]
 
-        def _clean(item: str) -> str:
-            return str(item).strip().strip("'\"[]").rstrip("/")
+        def _clean(item: str) -> List[str]:
+            cleaned = str(item).strip().strip("'\"[]").rstrip("/")
+            if not cleaned:
+                return []
+            results = [cleaned]
+            # If scheme was omitted (e.g. 'connect-sign-nine.vercel.app'), add https:// automatically
+            if not (cleaned.startswith("http://") or cleaned.startswith("https://")):
+                results.append(f"https://{cleaned}")
+            return results
 
         if isinstance(v, str):
             v_str = v.strip().strip("'\"")
@@ -50,14 +57,20 @@ class Settings(BaseSettings):
                 try:
                     parsed = json.loads(v_str)
                     if isinstance(parsed, list):
-                        res = [_clean(item) for item in parsed if _clean(item)]
+                        res: List[str] = []
+                        for item in parsed:
+                            res.extend(_clean(item))
                         return res or default_origins
                 except Exception:
                     pass
-            res = [_clean(i) for i in v_str.split(",") if _clean(i)]
+            res = []
+            for i in v_str.split(","):
+                res.extend(_clean(i))
             return res or default_origins
         elif isinstance(v, list):
-            res = [_clean(i) for i in v if _clean(i)]
+            res = []
+            for i in v:
+                res.extend(_clean(i))
             return res or default_origins
         return default_origins
 
