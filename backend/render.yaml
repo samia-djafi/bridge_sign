@@ -1,0 +1,24 @@
+# Render Blueprint Specification for ConnectSign Backend (backend root)
+version: "1"
+
+services:
+  - type: web
+    name: connectsign-backend
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10
+      - key: ENVIRONMENT
+        value: production
+      - key: MODEL_DIR
+        value: models
+      - key: UNCERTAINTY_THRESHOLD
+        value: "0.12"
+      - key: CORS_ORIGINS
+        sync: false
+        value: "http://localhost:5173,https://bridge-sign.vercel.app"
