@@ -40,6 +40,10 @@ backend/
 │   │       └── recognition.py   # POST /v1/recognize
 │   ├── core/
 │   │   └── config.py            # Pydantic BaseSettings, CORS, thresholds
+│   ├── ml/                      # Self-contained ML inference package
+│   │   ├── classifier.py        # SignClassifier wrapper (LinearSVC + Scaler)
+│   │   ├── frame_sampler.py     # Deterministic temporal frame sampling
+│   │   └── feature_extractor.py # LandmarkFeatureExtractor (MediaPipe Tasks + dicts)
 │   ├── schemas/
 │   │   └── recognition.py       # Pydantic schemas (Request, Response, Signs)
 │   ├── services/
@@ -57,13 +61,16 @@ backend/
 ├── scripts/
 │   └── inspect_model.py         # Standalone model inspector & verification tool
 ├── tests/
+│   ├── test_deployment_integrity.py # CORS parsing, safety limits, model integrity
 │   ├── test_health.py           # Automated health & readiness test
 │   ├── test_phrases.py          # Automated phrase listing & matching tests
 │   └── test_recognition.py      # Automated input validation & rejection tests
 ├── .env.example                 # Safe environment configuration template
 ├── .gitignore                   # Exclusions for virtualenvs, caches, logs
 ├── README.md                    # This documentation
-└── requirements.txt             # CPU-friendly Python dependencies
+├── render.yaml                  # Render Infrastructure Blueprint configuration
+├── requirements.txt             # CPU-friendly production Python dependencies
+└── requirements-dev.txt         # Dev and test dependencies (pytest, httpx)
 ```
 
 ---
