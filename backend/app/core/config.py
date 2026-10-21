@@ -30,19 +30,36 @@ class Settings(BaseSettings):
     @field_validator("CORS_ORIGINS", mode="after")
     @classmethod
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+        default_origins = [
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "http://localhost:4173",
+            "http://127.0.0.1:5173",
+            "http://127.0.0.1:3000",
+            "https://bridge-sign.vercel.app",
+        ]
+
+        def _clean(item: str) -> str:
+            return str(item).strip().strip("'\"[]").rstrip("/")
+
         if isinstance(v, str):
-            v_str = v.strip()
+            v_str = v.strip().strip("'\"")
+            if not v_str:
+                return default_origins
             if v_str.startswith("[") and v_str.endswith("]"):
                 try:
                     parsed = json.loads(v_str)
                     if isinstance(parsed, list):
-                        return [str(item).strip() for item in parsed if str(item).strip()]
+                        res = [_clean(item) for item in parsed if _clean(item)]
+                        return res or default_origins
                 except Exception:
                     pass
-            return [i.strip() for i in v_str.split(",") if i.strip()]
+            res = [_clean(i) for i in v_str.split(",") if _clean(i)]
+            return res or default_origins
         elif isinstance(v, list):
-            return [str(i).strip() for i in v if str(i).strip()]
-        return []
+            res = [_clean(i) for i in v if _clean(i)]
+            return res or default_origins
+        return default_origins
 
     # Model configuration
     MODEL_DIR: str = os.getenv(
