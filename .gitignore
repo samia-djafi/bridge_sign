@@ -65,6 +65,6 @@ __pycache__/
 */.pytest_cache/
 .venv/
 */.venv/
-backend/models/*.task
+# backend/models/*.task (tracked for server vision inference: hand_landmarker.task and pose_landmarker_lite.task)
 
 
