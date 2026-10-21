@@ -21,10 +21,12 @@ class LandmarkFrame(BaseModel):
 class RecognitionRequest(BaseModel):
     frames: List[Any] = Field(
         ...,
-        description="Array of webcam frames (base64 image strings) or LandmarkFrame dictionaries.",
+        max_length=120,
+        description="Array of webcam frames (base64 image strings) or LandmarkFrame dictionaries (max 120 frames).",
     )
     lang: Optional[str] = Field(
         "fr",
+        max_length=10,
         description="Spoken language context for sentence mapping ('fr', 'ar', 'en').",
     )
 
