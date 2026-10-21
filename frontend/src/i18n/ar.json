@@ -562,7 +562,9 @@
     "motionOff": "الحركات مفعلة",
     "motionOn": "تقليل الحركات",
     "adapterDemo": "وضع العرض (محاكاة محلية)",
-    "adapterHttp": "خادم HTTP مباشر (نظام حي)",
+    "adapterHttp": "Render AI (خادم الإنتاج المباشر)",
+    "resetDefaultUrl": "استعادة رابط Render الافتراضي",
+    "aiAdapterDesc": "محرك التعرف على إشارات لغة الإشارة الجزائرية (LSA).",
     "micTestDesc": "اختبر الميكروفون وراقب مستوى الصوت الملتقط بشكل مباشر."
   },
   "about": {

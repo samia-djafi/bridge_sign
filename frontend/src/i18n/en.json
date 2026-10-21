@@ -562,7 +562,9 @@
     "motionOff": "Animations enabled",
     "motionOn": "Animations reduced",
     "adapterDemo": "Demo Mode (Local simulation)",
-    "adapterHttp": "Direct HTTP Server (Live backend)",
+    "adapterHttp": "Render AI (Live Production Server)",
+    "resetDefaultUrl": "Reset to default Render URL",
+    "aiAdapterDesc": "Recognition engine for Algerian Sign Language (LSA) gestures.",
     "micTestDesc": "Test the microphone and monitor captured input volume in real time."
   },
   "about": {

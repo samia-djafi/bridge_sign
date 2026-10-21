@@ -562,7 +562,9 @@
     "motionOff": "Animations activées",
     "motionOn": "Animations réduites",
     "adapterDemo": "Mode Démo (Simulation locale)",
-    "adapterHttp": "Serveur HTTP direct (Live backend)",
+    "adapterHttp": "Render AI (Serveur de production)",
+    "resetDefaultUrl": "Rétablir l’URL Render par défaut",
+    "aiAdapterDesc": "Moteur de reconnaissance des gestes de la Langue des Signes Algérienne (LSA).",
     "micTestDesc": "Testez le microphone et observez le volume audio capté en direct."
   },
   "about": {
