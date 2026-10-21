@@ -16,10 +16,9 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
-# Ensure bridge_sign_model src is available if needed for shared logic
-REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "bridge_sign_model"))
-if os.path.exists(REPO_ROOT) and REPO_ROOT not in sys.path:
-    sys.path.insert(0, REPO_ROOT)
+# Self-contained ML modules
+from app.ml.classifier import SignClassifier
+from app.ml.feature_extractor import LandmarkFeatureExtractor
 
 from app.core.config import settings
 from app.schemas.recognition import (
@@ -76,7 +75,7 @@ class InferenceService:
         search_dirs = [
             self.model_dir,
             os.path.join(os.path.dirname(__file__), "..", "..", "models"),
-            os.path.join(REPO_ROOT, "artifacts", "classifier"),
+            os.path.join(os.getcwd(), "models"),
         ]
 
         config_path = None
@@ -102,20 +101,13 @@ class InferenceService:
 
             self.target_names = self.config.get("target_names", [])
 
-            # Load classifier via SignClassifier or directly via joblib
-            try:
-                from src.models.classifier import SignClassifier
-                self.classifier = SignClassifier.load(model_path)
-            except Exception:
-                import joblib
-                self.classifier = joblib.load(model_path)
+            # Load classifier via self-contained SignClassifier
+            self.classifier = SignClassifier.load(model_path)
 
-            # Initialize LandmarkFeatureExtractor
-            from src.features.feature_extractor import LandmarkFeatureExtractor
-
+            # Initialize self-contained LandmarkFeatureExtractor
             hand_task = None
             pose_task = None
-            for d in search_dirs + [os.path.join(REPO_ROOT, "artifacts", "models")]:
+            for d in search_dirs:
                 ht = os.path.join(d, "hand_landmarker.task")
                 pt = os.path.join(d, "pose_landmarker_lite.task")
                 if os.path.exists(ht) and not hand_task:
