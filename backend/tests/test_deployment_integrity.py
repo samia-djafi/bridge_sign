@@ -33,6 +33,18 @@ def test_cors_settings_parsing():
     s_list = Settings(CORS_ORIGINS=["http://localhost:5173", "http://localhost:3000"])
     assert s_list.CORS_ORIGINS == ["http://localhost:5173", "http://localhost:3000"]
 
+    # Trailing slashes stripped
+    s_slash = Settings(CORS_ORIGINS="https://app.vercel.app/, https://test.local/")
+    assert s_slash.CORS_ORIGINS == ["https://app.vercel.app", "https://test.local"]
+
+    # Quoted string elements stripped
+    s_quotes = Settings(CORS_ORIGINS='"https://app.vercel.app", "http://localhost:3000"')
+    assert s_quotes.CORS_ORIGINS == ["https://app.vercel.app", "http://localhost:3000"]
+
+    # Empty string fallback to safe defaults
+    s_empty = Settings(CORS_ORIGINS="")
+    assert "http://localhost:5173" in s_empty.CORS_ORIGINS
+
 
 def test_request_max_frames_validation(client):
     """Verify that requests exceeding 120 frames are rejected with 422 to prevent OOM."""
