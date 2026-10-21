@@ -12,7 +12,7 @@ import { AiMode } from '@/types/domain';
 import { SignRecognitionService } from '@/types/services';
 
 class ServiceRegistry {
-  private activeAiMode: 'mock' | 'http' = (import.meta.env.VITE_AI_ADAPTER as any) === 'http' ? 'http' : 'mock';
+  private activeAiMode: 'mock' | 'http' = (import.meta.env.VITE_AI_ADAPTER as any) === 'mock' ? 'mock' : 'http';
 
   setAiAdapter(mode: 'mock' | 'http', customBaseUrl?: string) {
     this.activeAiMode = mode;
