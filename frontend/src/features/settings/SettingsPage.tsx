@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useUiStore } from '@/stores/uiStore';
@@ -206,18 +207,51 @@ export const SettingsPage: React.FC = () => {
     setTimeout(() => setSavedIndicator(false), 1500);
   };
 
+  const [testApiStatus, setTestApiStatus] = useState<'success' | 'warning' | 'error' | null>(null);
+
   const handleTestApi = async () => {
     setTestApiLoading(true);
     setTestApiResult(null);
+    setTestApiStatus(null);
+    const targetUrl = (settings.ai?.apiBaseUrl || 'https://connect-sign.onrender.com').replace(/\/+$/, '');
     try {
-      const res = await fetch(`${settings.ai.apiBaseUrl}/health`, { method: 'GET' });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+      const res = await fetch(`${targetUrl}/health`, {
+        method: 'GET',
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
       if (res.ok) {
-        setTestApiResult('Connexion réussie ✓ (API LSA active)');
+        const data = await res.json().catch(() => null);
+        if (data && data.model_loaded) {
+          setTestApiResult(
+            `✓ Connecté à ${data.service || 'Render AI'} v${data.version || '0.2.0'} — Modèle actif (${data.active_vocabulary_classes || 32} classes LSA chargées sur ${data.device || 'CPU'})`
+          );
+          setTestApiStatus('success');
+        } else if (data && !data.model_loaded) {
+          setTestApiResult(
+            `⚠️ Serveur Render connecté mais modèle non chargé (Statut : ${data.status || 'dégradé'})`
+          );
+          setTestApiStatus('warning');
+        } else {
+          setTestApiResult('✓ Connexion au serveur Render AI réussie');
+          setTestApiStatus('success');
+        }
       } else {
-        setTestApiResult(`Erreur HTTP: ${res.status}`);
+        setTestApiResult(`Erreur HTTP ${res.status} : ${res.statusText || 'Réponse inattendue'}`);
+        setTestApiStatus('error');
       }
-    } catch {
-      setTestApiResult('Serveur injoignable (Erreur AI-004)');
+    } catch (err: any) {
+      if (err?.name === 'AbortError') {
+        setTestApiResult('⏳ Délai d’attente dépassé (12s) : le serveur Render est probablement en phase de réveil (Cold Start). Veuillez réessayer dans 15 secondes.');
+        setTestApiStatus('warning');
+      } else {
+        setTestApiResult('✕ Serveur Render injoignable (Erreur AI-004 : vérifiez votre connexion réseau et la configuration CORS Render)');
+        setTestApiStatus('error');
+      }
     } finally {
       setTestApiLoading(false);
     }
@@ -693,7 +727,21 @@ export const SettingsPage: React.FC = () => {
             {activeTab === 'ai' && (
               <Card p={24} className="space-y-6">
                 <div>
-                  <h3 className="text-base font-bold text-app-text">{t('settings.aiAdapterLabel', 'Adaptateur IA')}</h3>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-bold text-app-text">{t('settings.aiAdapterLabel', 'Adaptateur IA')}</h3>
+                      <p className="text-xs text-app-muted mt-0.5">
+                        {t('settings.aiAdapterDesc', 'Moteur de reconnaissance des gestes de la Langue des Signes Algérienne (LSA).')}
+                      </p>
+                    </div>
+                    {settings.ai.adapter === 'http' && (
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Render AI
+                      </span>
+                    )}
+                  </div>
+
                   <div className="mt-3">
                     <SegmentedControl
                       value={settings.ai.adapter}
@@ -702,8 +750,8 @@ export const SettingsPage: React.FC = () => {
                         triggerSaved();
                       }}
                       options={[
-                        { value: 'mock', label: t('settings.adapterDemo', 'Demo Mode (Local simulation)') },
-                        { value: 'http', label: t('settings.adapterHttp', 'Direct HTTP Server (Live backend)') },
+                        { value: 'http', label: t('settings.adapterHttp', 'Render AI (Serveur de production)') },
+                        { value: 'mock', label: t('settings.adapterDemo', 'Mode Démo (Simulation locale)') },
                       ]}
                       className="w-full"
                     />
@@ -712,9 +760,23 @@ export const SettingsPage: React.FC = () => {
 
                 {settings.ai.adapter === 'http' && (
                   <div className="space-y-3 pt-3 border-t border-app-border">
-                    <label className="text-xs font-bold uppercase tracking-wider text-app-muted">
-                      {t('settings.apiBaseUrl', 'URL de base de l’API')}
-                    </label>
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold uppercase tracking-wider text-app-muted">
+                        {t('settings.apiBaseUrl', 'URL de base de l’API')}
+                      </label>
+                      {settings.ai.apiBaseUrl !== 'https://connect-sign.onrender.com' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            updateSettings({ ai: { ...settings.ai, apiBaseUrl: 'https://connect-sign.onrender.com' } });
+                            triggerSaved();
+                          }}
+                          className="text-xs text-app-primary hover:underline font-medium"
+                        >
+                          {t('settings.resetDefaultUrl', 'Rétablir l’URL Render par défaut')}
+                        </button>
+                      )}
+                    </div>
                     <div className="flex gap-2">
                       <input
                         type="url"
@@ -724,7 +786,8 @@ export const SettingsPage: React.FC = () => {
                             ai: { ...settings.ai, apiBaseUrl: e.target.value },
                           })
                         }
-                        className="flex-1 h-11 px-3.5 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm"
+                        placeholder="https://connect-sign.onrender.com"
+                        className="flex-1 h-11 px-3.5 rounded-control border border-app-border-strong bg-app-surface text-app-text text-sm font-mono"
                       />
                       <Button
                         variant="secondary"
@@ -737,7 +800,17 @@ export const SettingsPage: React.FC = () => {
                     </div>
 
                     {testApiResult && (
-                      <p className="text-xs font-medium text-app-muted">{testApiResult}</p>
+                      <div
+                        className={clsx(
+                          'p-3 rounded-control text-xs border transition-all leading-relaxed',
+                          testApiStatus === 'success' && 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30',
+                          testApiStatus === 'warning' && 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30',
+                          testApiStatus === 'error' && 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30',
+                          !testApiStatus && 'bg-app-surface text-app-muted border-app-border'
+                        )}
+                      >
+                        {testApiResult}
+                      </div>
                     )}
                   </div>
                 )}
