@@ -2,8 +2,10 @@
 Application Configuration for ConnectSign AI Backend.
 """
 
-from typing import List
+from typing import List, Union
+import json
 import os
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,10 +13,12 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "ConnectSign AI Recognition API"
     VERSION: str = "0.2.0"
     API_V1_STR: str = "/v1"
-    ENVIRONMENT: str = "development"
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+    HOST: str = os.getenv("HOST", "0.0.0.0")
+    PORT: int = int(os.getenv("PORT", "8000"))
 
-    # Explicit allowed CORS origins
-    CORS_ORIGINS: List[str] = [
+    # Explicit allowed CORS origins (supports JSON array or comma-separated string)
+    CORS_ORIGINS: Union[List[str], str] = [
         "http://localhost:5173",
         "http://localhost:3000",
         "http://localhost:4173",
@@ -23,13 +27,30 @@ class Settings(BaseSettings):
         "https://bridge-sign.vercel.app",
     ]
 
+    @field_validator("CORS_ORIGINS", mode="after")
+    @classmethod
+    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
+        if isinstance(v, str):
+            v_str = v.strip()
+            if v_str.startswith("[") and v_str.endswith("]"):
+                try:
+                    parsed = json.loads(v_str)
+                    if isinstance(parsed, list):
+                        return [str(item).strip() for item in parsed if str(item).strip()]
+                except Exception:
+                    pass
+            return [i.strip() for i in v_str.split(",") if i.strip()]
+        elif isinstance(v, list):
+            return [str(i).strip() for i in v if str(i).strip()]
+        return []
+
     # Model configuration
     MODEL_DIR: str = os.getenv(
         "MODEL_DIR",
         os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "models"),
     )
     UNCERTAINTY_THRESHOLD: float = float(os.getenv("UNCERTAINTY_THRESHOLD", "0.12"))
-    MAX_FRAMES: int = 48
+    MAX_FRAMES: int = int(os.getenv("MAX_FRAMES", "48"))
     MIN_FRAMES: int = 1
     DEVICE: str = "cpu"
 
