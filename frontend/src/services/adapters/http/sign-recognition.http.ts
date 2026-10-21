@@ -1,18 +1,20 @@
 import { LandmarkFrame, RecognitionResult, SpokenLang } from '@/types/domain';
 import { SignRecognitionService } from '@/types/services';
 
+export const PRODUCTION_RENDER_AI_URL = 'https://connect-sign.onrender.com';
+
 export class HttpSignRecognitionAdapter implements SignRecognitionService {
   readonly adapter = 'live' as const;
   private frames: any[] = [];
   private currentLang: SpokenLang = 'fr';
   private baseUrl: string;
 
-  constructor(baseUrl: string = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000') {
-    this.baseUrl = baseUrl;
+  constructor(baseUrl: string = import.meta.env.VITE_API_BASE_URL || PRODUCTION_RENDER_AI_URL) {
+    this.baseUrl = baseUrl.replace(/\/+$/, '');
   }
 
   setBaseUrl(url: string) {
-    this.baseUrl = url;
+    this.baseUrl = url.replace(/\/+$/, '');
   }
 
   async start(opts: { lang: SpokenLang }): Promise<void> {
@@ -37,7 +39,8 @@ export class HttpSignRecognitionAdapter implements SignRecognitionService {
     while (retries >= 0) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        // Accommodate Render cold starts (free tier spin-up can take 10-15s)
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
 
         const res = await fetch(`${this.baseUrl}/v1/recognize`, {
           method: 'POST',
@@ -63,7 +66,7 @@ export class HttpSignRecognitionAdapter implements SignRecognitionService {
         if (retries === 0) {
           this.frames = [];
           if (err.name === 'AbortError') {
-            throw { code: 'AI-002', message: 'Recognition timeout', retryable: true };
+            throw { code: 'AI-002', message: 'Recognition timeout (server may be waking up)', retryable: true };
           }
           throw { code: 'AI-004', message: 'Backend unreachable', retryable: true };
         }
