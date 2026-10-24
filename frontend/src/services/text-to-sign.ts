@@ -23,6 +23,31 @@ export class AppTextToSignService implements TextToSignService {
       }
     }
 
+    // 1b. Match common candidate everyday and healthcare phrase variations
+    const COMMON_ALIASES: Record<string, { phraseId: string; gloss: string[] }> = {
+      // English candidate phrases
+      'i need a doctor': { phraseId: 'ph_need_doctor', gloss: ['NEED', 'DOCTOR'] },
+      'i need help': { phraseId: 'ph_help', gloss: ['NEED', 'HELP'] },
+      // French candidate phrases
+      'j ai besoin d un medecin': { phraseId: 'ph_need_doctor', gloss: ['NEED', 'DOCTOR'] },
+      'j ai besoin d aide': { phraseId: 'ph_help', gloss: ['NEED', 'HELP'] },
+      // Arabic candidate phrases
+      'احتاج الي مساعده': { phraseId: 'ph_help', gloss: ['NEED', 'HELP'] },
+      'احتاج مساعده': { phraseId: 'ph_help', gloss: ['NEED', 'HELP'] },
+      'احتاج الي طبيب': { phraseId: 'ph_need_doctor', gloss: ['NEED', 'DOCTOR'] },
+      'احتاج طبيب': { phraseId: 'ph_need_doctor', gloss: ['NEED', 'DOCTOR'] },
+    };
+
+    const alias = COMMON_ALIASES[norm];
+    if (alias) {
+      return {
+        gloss: alias.gloss,
+        unsupportedTokens: [],
+        matchedPhraseId: alias.phraseId,
+        suggestions: [],
+      };
+    }
+
     // 2. Slot template match (Duration)
     const slotResult = matchDurationSlot(text, lang);
     if (slotResult && slotResult.matched) {

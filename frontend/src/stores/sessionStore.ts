@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ConversationMessage, ConversationSession, SessionStatus, SpokenLang } from '@/types/domain';
+import { ConversationMessage, ConversationSession, SessionMode, SessionStatus, SpokenLang } from '@/types/domain';
 import { registry } from '@/services/registry';
 
 interface SessionState {
@@ -17,6 +17,7 @@ interface SessionState {
   addMessage: (msg: Omit<ConversationMessage, 'id' | 'createdAt' | 'sessionId'>) => Promise<ConversationMessage | null>;
   editMessage: (messageId: string, newOutputs: ConversationMessage['outputs']) => Promise<void>;
   setSpokenLang: (lang: SpokenLang) => Promise<void>;
+  setSessionMode: (mode: SessionMode) => Promise<void>;
   updateSessionTitle: (title: string) => Promise<void>;
   clearSessionMessages: () => Promise<boolean>;
   incrementActiveTime: (deltaMs: number) => void;
@@ -185,6 +186,16 @@ export const useSessionStore = create<SessionState>((set, get) => ({
     await registry.sessions.update(currentSession.id, { spokenLang: lang });
     set({
       currentSession: { ...currentSession, spokenLang: lang },
+    });
+  },
+
+  setSessionMode: async (mode: SessionMode) => {
+    const { currentSession } = get();
+    if (!currentSession) return;
+
+    await registry.sessions.update(currentSession.id, { mode });
+    set({
+      currentSession: { ...currentSession, mode },
     });
   },
 

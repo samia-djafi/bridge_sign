@@ -11,13 +11,17 @@ export const SingleModePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { startSession } = useSessionStore();
-  const { settings } = useSettingsStore();
+  const { settings, updateSettings } = useSettingsStore();
 
   const isSignToLang = location.pathname.includes('sign-to-language');
   const targetMode: SessionMode = isSignToLang ? 'sign_to_language' : 'language_to_sign';
 
   useEffect(() => {
     async function initSession() {
+      updateSettings({
+        lastMode: targetMode,
+      });
+
       // Create session in target mode and navigate into workspace
       const title = isSignToLang
         ? `LSA → ${settings.defaultSpokenLang.toUpperCase()}`

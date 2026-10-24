@@ -28,6 +28,13 @@ export const NewConversationPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const qMode = searchParams.get('mode') as SessionMode;
+    if (qMode && ['two_way', 'sign_to_language', 'language_to_sign'].includes(qMode)) {
+      setMode(qMode);
+    }
+  }, [searchParams]);
+
   // Accurate sensor permission inspection without triggering getUserMedia
   type SensorStatus = 'pending_start' | 'granted' | 'denied' | 'unsupported' | 'not_needed';
   const [camStatus, setCamStatus] = useState<SensorStatus>('pending_start');
