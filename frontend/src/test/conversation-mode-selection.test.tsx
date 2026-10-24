@@ -191,4 +191,42 @@ describe('Conversation Mode Selection & Conditional Interface Rendering', () => 
       expect(useSettingsStore.getState().settings.lastMode).toBe('sign_to_language');
     });
   });
+
+  it('End button terminates session cleanly and efficiently in one click without top mode switcher', async () => {
+    const session = await sessionRepository.create({
+      title: 'Session to End',
+      context: 'healthcare',
+      signLanguage: 'LSA',
+      spokenLang: 'fr',
+      mode: 'two_way',
+      status: 'active',
+      aiMode: 'demo',
+      privacy: 'local',
+    });
+
+    render(
+      <MemoryRouter initialEntries={[`/app/workspace/${session.id}`]}>
+        <Routes>
+          <Route path="/app/workspace/:sessionId" element={<WorkspacePage />} />
+          <Route path="/app" element={<div data-testid="dashboard-screen" />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('two-way-view')).toBeInTheDocument();
+    });
+
+    // Verify top bar does NOT have the mode switcher buttons
+    expect(screen.queryByRole('button', { name: /^Double sens$/i })).toBeNull();
+
+    // Click End button in header
+    const endBtn = screen.getByTestId('end-session-header-btn');
+    fireEvent.click(endBtn);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dashboard-screen')).toBeInTheDocument();
+      expect(useSessionStore.getState().status).toBe('ended');
+    });
+  });
 });

@@ -64,7 +64,6 @@ export const WorkspacePage: React.FC = () => {
     addMessage,
     editMessage,
     setSpokenLang,
-    setSessionMode,
     updateSessionTitle,
     clearSessionMessages,
   } = useSessionStore();
@@ -93,6 +92,7 @@ export const WorkspacePage: React.FC = () => {
   const [conversationDrawerOpen, setConversationDrawerOpen] = useState(false);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleInput, setTitleInput] = useState('');
+  const [isEnding, setIsEnding] = useState(false);
 
   // Right panel (Language composer) state
   const [composerText, setComposerText] = useState('');
@@ -102,7 +102,6 @@ export const WorkspacePage: React.FC = () => {
 
   // Refs
   const timelineRef = useRef<HTMLDivElement>(null);
-  const composerTextareaRef = useRef<HTMLTextAreaElement>(null);
   const [showScrollBottom, setShowScrollBottom] = useState(false);
 
   // Camera & recognition hooks
@@ -263,7 +262,7 @@ export const WorkspacePage: React.FC = () => {
         message: t('err.micUnsupported', 'La saisie vocale n’est pas disponible sur ce navigateur. Veuillez écrire.'),
         type: 'alert',
       });
-      setTimeout(() => composerTextareaRef.current?.focus(), 50);
+      setTimeout(() => document.getElementById('text-to-sign-input')?.focus(), 50);
       return;
     }
 
@@ -289,7 +288,7 @@ export const WorkspacePage: React.FC = () => {
             msg = t('err.micUnsupported', 'La saisie vocale n’est pas disponible sur ce navigateur. Veuillez écrire.');
           }
           addToast({ message: msg, type: 'alert' });
-          setTimeout(() => composerTextareaRef.current?.focus(), 50);
+          setTimeout(() => document.getElementById('text-to-sign-input')?.focus(), 50);
         },
       });
     }
@@ -365,7 +364,7 @@ export const WorkspacePage: React.FC = () => {
         } else if (k === 't') {
           e.preventDefault();
           setTimeout(() => {
-            composerTextareaRef.current?.focus();
+            document.getElementById('text-to-sign-input')?.focus();
           }, 50);
         }
       }
@@ -491,6 +490,35 @@ export const WorkspacePage: React.FC = () => {
         data.session.startedAt
       ).toLocaleString()}\n\n${lines.join('\n')}`;
       downloadFile(`connectsign_conversation_${sessionId}.txt`, text, 'text/plain');
+    }
+  };
+
+  // End session cleanly & navigate home
+  const handleEndSession = async () => {
+    if (isEnding) return;
+    setIsEnding(true);
+    try {
+      if (recognition.state === 'recognizing' || recognition.state === 'capturing') {
+        recognition.stopRecognition();
+      }
+      camera.stopCamera();
+      if (sttListening) {
+        toggleSpeechRecognition();
+      }
+      await endSession();
+      addToast({
+        message: t('workspace.sessionEndedToast', 'Conversation terminée et enregistrée'),
+        type: 'status',
+      });
+      navigate('/app', { replace: true });
+    } catch {
+      addToast({
+        message: t('err.generic', 'Une erreur est survenue'),
+        type: 'alert',
+      });
+    } finally {
+      setIsEnding(false);
+      setEndConfirmOpen(false);
     }
   };
 
@@ -731,30 +759,8 @@ export const WorkspacePage: React.FC = () => {
               {t(`contexts.${currentSession.context}`)}
             </span>
 
-            {/* Interactive Mode Switcher (Desktop) */}
-            <div className="hidden lg:flex items-center gap-1 bg-app-surface-2 p-0.5 rounded-control text-xs font-semibold">
-              {[
-                { id: 'two_way' as const, label: t('mode.twoWay', 'Double sens') },
-                { id: 'sign_to_language' as const, label: t('mode.signToLang', 'LSA → Texte') },
-                { id: 'language_to_sign' as const, label: t('mode.langToSign', 'Texte → LSA') },
-              ].map((m) => (
-                <button
-                  key={m.id}
-                  type="button"
-                  onClick={() => setSessionMode(m.id)}
-                  className={`px-2 py-0.5 rounded-control transition-all ${
-                    currentSession.mode === m.id
-                      ? 'bg-app-surface text-app-primary-strong shadow-1 font-bold'
-                      : 'text-app-muted hover:text-app-text'
-                  }`}
-                >
-                  {m.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Mode badge for smaller screens */}
-            <span className="lg:hidden hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-pill bg-teal-500/10 text-[11px] font-semibold text-teal-700 dark:text-teal-300 border border-teal-500/30">
+            {/* Mode badge */}
+            <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-pill bg-teal-500/10 text-[11px] font-semibold text-teal-700 dark:text-teal-300 border border-teal-500/30">
               {currentSession.mode === 'language_to_sign'
                 ? t('mode.langToSign', 'Texte → LSA')
                 : currentSession.mode === 'sign_to_language'
@@ -834,11 +840,13 @@ export const WorkspacePage: React.FC = () => {
 
           {/* End session */}
           <Button
+            data-testid="end-session-header-btn"
             variant="destructive"
             size="sm"
-            onClick={() => setEndConfirmOpen(true)}
+            disabled={isEnding}
+            onClick={handleEndSession}
           >
-            {t('dash.end', 'Terminer')}
+            {isEnding ? t('common.loading', 'Fin…') : t('dash.end', 'Terminer')}
           </Button>
 
           {/* Theme toggle */}
@@ -1147,15 +1155,10 @@ export const WorkspacePage: React.FC = () => {
             </Button>
             <Button
               variant="destructive"
-              onClick={async () => {
-                setEndConfirmOpen(false);
-                camera.stopCamera();
-                await endSession();
-                addToast({ message: t('workspace.sessionEndedToast', 'Conversation terminée et enregistrée'), type: 'status' });
-                navigate(`/app/history/${sessionId}`);
-              }}
+              disabled={isEnding}
+              onClick={handleEndSession}
             >
-              {t('workspace.endModalConfirm', 'Terminer la session')}
+              {isEnding ? t('common.loading', 'Fin…') : t('workspace.endModalConfirm', 'Terminer la session')}
             </Button>
           </>
         }
